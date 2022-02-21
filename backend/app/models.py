@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=500)
     year = models.CharField(max_length=4, default="1900")
     imdbid = models.CharField(max_length=20, blank=True)
     tmdbid = models.CharField(max_length=20, blank=True)
@@ -14,12 +14,11 @@ class Movie(models.Model):
 
 class User(AbstractUser):
     GENDER_CHOICES = (
-        ('m', 'Male'),
-        ('f', 'Female'),
-        ('o', 'Other')
+        ('M', 'Male'),
+        ('F', 'Female'),
     )
     bio = models.TextField(blank=True)
-    location = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
