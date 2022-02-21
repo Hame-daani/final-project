@@ -15,18 +15,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Movie',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=500)),
                 ('year', models.CharField(default='1900', max_length=4)),
                 ('imdbid', models.CharField(blank=True, max_length=20)),
                 ('tmdbid', models.CharField(blank=True, max_length=20)),
-                ('genres', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=10), size=None)),
+                ('genres', django.contrib.postgres.fields.ArrayField(
+                    base_field=models.CharField(max_length=10), size=None)),
             ],
-        ),
-        migrations.AddField(
-            model_name='user',
-            name='friends',
-            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
@@ -36,6 +33,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='watchlist',
-            field=models.ManyToManyField(related_name='watchlist', to='app.Movie'),
+            field=models.ManyToManyField(
+                related_name='watchlist', to='app.Movie'),
         ),
     ]

@@ -40,11 +40,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='movie',
-            name='title',
-            field=models.CharField(max_length=500)
-        ),
         migrations.RunPython(
             add_movies,
             reverse_code=reverse_add_movies,

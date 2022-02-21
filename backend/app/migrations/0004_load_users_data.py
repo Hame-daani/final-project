@@ -44,17 +44,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='user',
-            name='gender',
-            field=models.CharField(
-                choices=[('M', 'Male'), ('F', 'Female')], max_length=1),
-        ),
-        migrations.AlterField(
-            model_name='user',
-            name='location',
-            field=models.CharField(max_length=50, blank=True),
-        ),
         migrations.RunPython(
             add_users,
             reverse_code=reverse_add_users,
