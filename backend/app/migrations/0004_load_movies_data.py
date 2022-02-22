@@ -1,12 +1,24 @@
 from django.db import migrations, models
 import pandas as pd
+import time
 
 
+def timed(func):
+    """
+    records approximate durations of function calls
+    """
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        print(f'\n-----{func.__name__} started-----')
+        func(*args, **kwargs)
+        print(
+            f"\n-----{func.__name__} finished in {time.time() - start:.2f} seconds-----")
+    return wrapper
+
+
+@timed
 def add_movies(apps, schema):
-    print("\n-----start adding movies-----")
-    df_movies = pd.read_csv('data/movies.csv', low_memory=False)
-    df_links = pd.read_csv('data/links.csv', low_memory=False)
-    df = df_movies.set_index("movieId").join(df_links.set_index("movieId"))
+    df = pd.read_csv('data/movies_full.csv', low_memory=False)
     Movie = apps.get_model('app', 'Movie')
     for index, row in df.iterrows():
         id = index
@@ -20,6 +32,7 @@ def add_movies(apps, schema):
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
         tmdbid = row['tmdbId']
+        poster = row['poster']
         Movie.objects.create(
             id=id,
             title=title,
@@ -27,16 +40,15 @@ def add_movies(apps, schema):
             genres=genres,
             imdbid=imdbid,
             tmdbid=tmdbid,
+            poster=poster
         )
         print(f"movie {index} added", end='\r')
-    print("\n-----finished adding movies-----")
 
 
+@timed
 def reverse_add_movies(apps, schema):
-    print("\n-----start removing movies-----")
     Movie = apps.get_model('app', 'Movie')
     Movie.objects.all().delete()
-    print("\n-----finished removing movies-----")
 
 
 class Migration(migrations.Migration):
