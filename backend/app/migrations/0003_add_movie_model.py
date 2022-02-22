@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ('app', '0002_load_users_data'),
     ]
 
     operations = [
@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('year', models.CharField(default='1900', max_length=4)),
                 ('imdbid', models.CharField(blank=True, max_length=20)),
                 ('tmdbid', models.CharField(blank=True, max_length=20)),
+                ('poster', models.URLField(blank=True)),
                 ('genres', django.contrib.postgres.fields.ArrayField(
                     base_field=models.CharField(max_length=10), size=None)),
             ],

@@ -18,6 +18,7 @@ def add_users(apps, schema):
         gender = 'M' if i % 2 else 'F'
         location = faker.city()
         User.objects.create(
+            id=i,
             username=username,
             first_name=first_name,
             last_name=last_name,
@@ -40,7 +41,7 @@ def reverse_add_users(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0003_load_movies_data'),
+        ('app', '0001_add_user_model'),
     ]
 
     operations = [

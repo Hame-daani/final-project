@@ -10,6 +10,10 @@ class Movie(models.Model):
     imdbid = models.CharField(max_length=20, blank=True)
     tmdbid = models.CharField(max_length=20, blank=True)
     genres = ArrayField(models.CharField(max_length=10))
+    poster = models.URLField(blank=True)
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class User(AbstractUser):
@@ -17,7 +21,7 @@ class User(AbstractUser):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    bio = models.TextField(blank=True)
+    bio = models.CharField(max_length=500, blank=True)
     location = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     friends = models.ManyToManyField("self")

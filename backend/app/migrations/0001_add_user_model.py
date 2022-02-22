@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                     default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(
                     default=django.utils.timezone.now, verbose_name='date joined')),
-                ('bio', models.TextField(blank=True)),
+                ('bio', models.CharField(max_length=500, blank=True)),
                 ('location', models.CharField(blank=True, max_length=50)),
                 ('gender', models.CharField(choices=[
                  ('M', 'Male'), ('F', 'Female')], max_length=1)),
