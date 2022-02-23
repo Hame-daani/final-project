@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Movie(models.Model):
     title = models.CharField(max_length=500)
+    plot = models.CharField(max_length=500, blank=True)
     year = models.CharField(max_length=4, default="1900")
     imdbid = models.CharField(max_length=20, blank=True)
     tmdbid = models.CharField(max_length=20, blank=True)
@@ -27,3 +28,17 @@ class User(AbstractUser):
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
     liked = models.ManyToManyField(Movie, related_name='liked')
+
+
+class Review(models.Model):
+    user = models.ForeignKey(User, related_name='reviews',
+                             on_delete=models.CASCADE)
+    movie = models.ForeignKey(
+        Movie, related_name='reviews', on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()
+    text = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.get_full_name()} [{self.movie.title}] - {self.rating}"
