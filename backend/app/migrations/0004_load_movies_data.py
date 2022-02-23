@@ -1,4 +1,4 @@
-from django.db import migrations, models
+from django.db import migrations
 import pandas as pd
 import time
 
@@ -46,7 +46,7 @@ def add_movies(apps, schema):
 
 
 @timed
-def reverse_add_movies(apps, schema):
+def removing_movies(apps, schema):
     Movie = apps.get_model('app', 'Movie')
     Movie.objects.all().delete()
 
@@ -60,6 +60,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             add_movies,
-            reverse_code=reverse_add_movies,
+            reverse_code=removing_movies,
         ),
     ]

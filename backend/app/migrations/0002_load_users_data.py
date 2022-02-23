@@ -1,16 +1,30 @@
-from django.db import migrations, models
+from django.db import migrations
 from faker import Faker
 from faker.providers import address, person
+import time
 
 
+def timed(func):
+    """
+    records approximate durations of function calls
+    """
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        print(f'\n-----{func.__name__} started-----')
+        func(*args, **kwargs)
+        print(
+            f"\n-----{func.__name__} finished in {time.time() - start:.2f} seconds-----")
+    return wrapper
+
+
+@timed
 def add_users(apps, schema):
-    print("\n-----start adding users-----")
     faker = Faker()
     Faker.seed(0)
     faker.add_provider(address)
     faker.add_provider(person)
     User = apps.get_model('app', 'User')
-    for i in range(162541):
+    for i in range(5000):
         first_name = faker.first_name()
         last_name = faker.last_name()
         username = first_name+last_name+str(i)
@@ -28,14 +42,11 @@ def add_users(apps, schema):
             location=location
         )
         print(f"user {i} added", end='\r')
-    print("\n-----finished adding users-----")
 
 
-def reverse_add_users(apps, schema):
-    print("\n-----start removing users-----")
+def removing_users(apps, schema):
     User = apps.get_model('app', 'User')
     User.objects.all().delete()
-    print("\n-----finished removing users-----")
 
 
 class Migration(migrations.Migration):
@@ -47,6 +58,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             add_users,
-            reverse_code=reverse_add_users,
+            reverse_code=removing_users,
         ),
     ]
