@@ -18,10 +18,10 @@ def timed(func):
 
 @timed
 def add_movies(apps, schema):
-    df = pd.read_csv('data/movies_full.csv', low_memory=False)
+    df = pd.read_csv('data/movies_clean.csv', low_memory=False)
     Movie = apps.get_model('app', 'Movie')
     for index, row in df.iterrows():
-        id = index
+        id = row['movieId']
         title = row['title']
         a = title.rfind('(')
         b = title.rfind(')')
@@ -32,7 +32,7 @@ def add_movies(apps, schema):
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
         tmdbid = f"{row['tmdbId']:.0f}"
-        poster = row['poster']
+        poster = ''
         Movie.objects.create(
             id=id,
             title=title,
