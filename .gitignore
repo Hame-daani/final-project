@@ -298,3 +298,4 @@ yarn-error.log
 # End of https://www.toptal.com/developers/gitignore/api/django,virtualenv,visualstudiocode,vuejs,python,git
 
 #data/
+*.zip
