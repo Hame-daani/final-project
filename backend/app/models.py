@@ -42,3 +42,18 @@ class Review(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.get_full_name()} [{self.movie.title}] - {self.rating}"
+
+
+class FriendRequest(models.Model):
+    STATUS_CHOICES = (
+        ('p', 'Pending'),
+        ('a', 'Accepted'),
+        ('r', 'Rejected')
+    )
+    from_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='my_reqs')
+    to_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='to_me_reqs')
+    date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=1, choices=STATUS_CHOICES, default='p')
