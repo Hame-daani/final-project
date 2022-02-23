@@ -3,6 +3,9 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
 
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+
 
 class Movie(models.Model):
     title = models.CharField(max_length=500)
@@ -27,7 +30,20 @@ class User(AbstractUser):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
-    liked = models.ManyToManyField(Movie, related_name='liked')
+    favorites = models.ManyToManyField(Movie, related_name='favorites')
+
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        User, related_name='likes', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.first_name} liked this {self.content_type.model} {self.object_id}"
 
 
 class Review(models.Model):
@@ -39,9 +55,10 @@ class Review(models.Model):
     text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    likes = GenericRelation(Like)
 
     def __str__(self) -> str:
-        return f"{self.user.get_full_name()} [{self.movie.title}] - {self.rating}"
+        return f"{self.user.first_name} [{self.movie.title}] - {self.rating}"
 
 
 class FriendRequest(models.Model):
@@ -72,11 +89,13 @@ class Comment(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    likes = GenericRelation(Like)
 
     def __str__(self) -> str:
         if self.review:
-            return f"{self.user.get_full_name()} on review [{self.review.id}] says {self.text}"
-        if self.comment:
-            return f"{self.user.get_full_name()} on comment [{self.comment.id}] says {self.text}"
+            s = f"[review {self.review.id}]"
+        elif self.comment:
+            s = f"[comment {self.comment.id}]"
         else:
-            return f"im lonely!"
+            return "im lonely :("
+        return f"{self.user.first_name} on {s} says {self.text}"
