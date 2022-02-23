@@ -31,7 +31,7 @@ def add_movies(apps, schema):
         title = title[:a]
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
-        tmdbid = row['tmdbId']
+        tmdbid = f"{row['tmdbId']:.0f}"
         poster = row['poster']
         Movie.objects.create(
             id=id,
