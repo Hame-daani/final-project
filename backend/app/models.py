@@ -57,3 +57,26 @@ class FriendRequest(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default='p')
+
+    def __str__(self) -> str:
+        return f"{self.from_user.get_full_name()} wants to be {self.to_user.get_full_name()} friends"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User, related_name='comments', on_delete=models.CASCADE)
+    review = models.ForeignKey(
+        Review, related_name='comments', on_delete=models.CASCADE, null=True)
+    comment = models.ForeignKey(
+        'self', related_name='comments', on_delete=models.CASCADE, null=True)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        if self.review:
+            return f"{self.user.get_full_name()} on review [{self.review.id}] says {self.text}"
+        if self.comment:
+            return f"{self.user.get_full_name()} on comment [{self.comment.id}] says {self.text}"
+        else:
+            return f"im lonely!"
