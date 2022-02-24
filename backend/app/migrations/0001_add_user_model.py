@@ -43,6 +43,8 @@ class Migration(migrations.Migration):
                 ('location', models.CharField(blank=True, max_length=50)),
                 ('gender', models.CharField(choices=[
                  ('M', 'Male'), ('F', 'Female')], max_length=1)),
+                ('avatar', models.ImageField(
+                    default='defautl_avatar.png', upload_to='avatars')),
                 ('friends', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
                  related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),

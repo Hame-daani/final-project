@@ -28,6 +28,8 @@ class User(AbstractUser):
     bio = models.CharField(max_length=500, blank=True)
     location = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    avatar = models.ImageField(
+        upload_to='avatars', default='defautl_avatar.png')
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
     favorites = models.ManyToManyField(Movie, related_name='favorites')
