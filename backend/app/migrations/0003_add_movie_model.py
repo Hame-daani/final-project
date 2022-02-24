@@ -29,8 +29,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='user',
-            name='liked',
-            field=models.ManyToManyField(related_name='liked', to='app.Movie'),
+            name='favorites',
+            field=models.ManyToManyField(
+                related_name='favorites', to='app.Movie'),
         ),
         migrations.AddField(
             model_name='user',
