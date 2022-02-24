@@ -1,6 +1,7 @@
 from django.db import migrations
 import pandas as pd
 from app.utils import timed
+from math import isnan
 
 
 @timed
@@ -18,9 +19,16 @@ def add_movies(apps, schema):
         title = title[:a]
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
-        tmdbid = f"{row['tmdbId']:.0f}"
+        if isnan(row['tmdbId']):
+            tmdbid = ''
+        else:
+            tmdbid = f"{row['tmdbId']:.0f}"
         poster = row['poster']
+        if type(poster) != str:
+            poster = ''
         plot = row['plot']
+        if type(plot) != str:
+            plot = ''
         Movie.objects.create(
             id=id,
             title=title,
