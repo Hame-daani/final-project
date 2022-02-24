@@ -1,37 +1,25 @@
 from django.db import migrations
-from faker import Faker
-from faker.providers import address, person, lorem
+import pandas as pd
 from app.utils import timed
 
 
 @timed
 def add_users(apps, schema):
-    faker = Faker()
-    Faker.seed(0)
-    faker.add_provider(address)
-    faker.add_provider(person)
-    faker.add_provider(lorem)
+    df = pd.read_csv('data/users.csv', low_memory=False)
     User = apps.get_model('app', 'User')
-    for i in range(5000):
-        first_name = faker.first_name()
-        last_name = faker.last_name()
-        username = first_name+last_name+str(i)
-        email = f"{username}@this.com"
-        gender = 'M' if i % 2 else 'F'
-        location = faker.city()
-        bio = faker.sentence(nb_words=10)
+    for index, row in df.iterrows():
         User.objects.create(
-            id=i,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
+            id=row['id'],
+            username=row['username'],
+            first_name=row['first_name'],
+            last_name=row['last_name'],
+            email=row['email'],
             password='12345678',
-            bio=bio,
-            gender=gender,
-            location=location
+            bio=row['bio'],
+            gender=row['gender'],
+            location=row['location']
         )
-        print(f"user {i} added", end='\r')
+        print(f"user {index} added", end='\r')
 
 
 def removing_users(apps, schema):

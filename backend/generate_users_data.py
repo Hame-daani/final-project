@@ -2,11 +2,14 @@ import pandas as pd
 from app.utils import timed
 from faker import Faker
 from faker.providers import address, person, lorem
+from random import randint
 
 
 @timed
 def get_data():
     users = []
+    min_id = 0
+    max_id = 4999
     faker = Faker()
     Faker.seed(0)
     faker.add_provider(address)
@@ -20,6 +23,12 @@ def get_data():
         gender = 'M' if i % 2 else 'F'
         location = faker.city()
         bio = faker.sentence(nb_words=10)
+        n = randint(0, 100)
+        friends = []
+        for _ in range(n):
+            pk = randint(min_id, max_id)
+            if pk != i:
+                friends.append(pk)
         users.append(
             {
                 'id': i,
@@ -29,7 +38,8 @@ def get_data():
                 'email': email,
                 'gender': gender,
                 'location': location,
-                'bio': bio
+                'bio': bio,
+                'friends': friends
             }
         )
         print(f"user {i} added", end='\r')

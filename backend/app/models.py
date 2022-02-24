@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class Movie(models.Model):
     title = models.CharField(max_length=500)
-    plot = models.CharField(max_length=500, blank=True)
+    plot = models.TextField(blank=True)
     year = models.CharField(max_length=4, default="1900")
     imdbid = models.CharField(max_length=20, blank=True)
     tmdbid = models.CharField(max_length=20, blank=True)

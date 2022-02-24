@@ -5,7 +5,7 @@ from app.utils import timed
 
 @timed
 def add_movies(apps, schema):
-    df = pd.read_csv('data/movies_clean.csv', low_memory=False)
+    df = pd.read_csv('data/movies.csv', low_memory=False)
     Movie = apps.get_model('app', 'Movie')
     for index, row in df.iterrows():
         id = row['movieId']
@@ -43,7 +43,7 @@ def removing_movies(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0005_generate_friends'),
+        ('app', '0005_add_movie_model'),
     ]
 
     operations = [

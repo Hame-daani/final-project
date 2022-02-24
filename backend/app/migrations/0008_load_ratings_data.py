@@ -2,19 +2,14 @@ from django.db import migrations, models
 import pandas as pd
 from datetime import datetime
 from app.utils import timed
-from faker import Faker
-from faker.providers import lorem
 
 
 @timed
 def add_ratings(apps, schema):
-    df = pd.read_csv('data/ratings_clean.csv', low_memory=False)
+    df = pd.read_csv('data/ratings.csv', low_memory=False)
     Review = apps.get_model('app', 'Review')
     Movie = apps.get_model('app', 'Movie')
     User = apps.get_model('app', 'User')
-    faker = Faker()
-    Faker.seed(0)
-    faker.add_provider(lorem)
     for index, row in df.iterrows():
         userid = row['userId']
         movieid = row['movieId']
@@ -23,7 +18,7 @@ def add_ratings(apps, schema):
         rating = row['rating']
         timestamp = row['timestamp']
         date = datetime.fromtimestamp(timestamp)
-        text = faker.sentence(nb_words=10)
+        text = row['text']
         Review.objects.create(
             user=user,
             movie=movie,

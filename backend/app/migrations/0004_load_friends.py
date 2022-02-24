@@ -1,34 +1,32 @@
-from random import randint
 from django.db import migrations
 from app.utils import timed
+import pandas as pd
+import ast
 
 
 @timed
 def add_friends(apps, schema):
     User = apps.get_model('app', 'User')
-    min_id = 0
-    max_id = 4999
-    for user in User.objects.all():
-        n = randint(0, 100)
-        for _ in range(n):
-            pk = randint(min_id, max_id)
-            if pk != user.id:
-                user.friends.add(User.objects.get(id=pk))
-        print(f"user {user.id} got {n} friends", end='\r')
+    df = pd.read_csv('data/users.csv', low_memory=False)
+    for index, row in df.iterrows():
+        user = User.objects.get(id=row['id'])
+        friends = ast.literal_eval(row['friends'])
+        user.friends.add(*friends)
+        print(f"user {user.id} got {len(friends)} friends", end='\r')
 
 
 @timed
 def removing_friends(apps, schema):
     User = apps.get_model('app', 'User')
     for user in User.objects.all():
-        user.friends = None
-        user.save()
+        user.friends.clear()
+        print(f"user {user.id} friends removed", end='\r')
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0004_add_friendrequest_model'),
+        ('app', '0003_add_friendrequest_model'),
     ]
 
     operations = [
