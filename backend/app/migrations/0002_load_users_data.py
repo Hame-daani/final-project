@@ -1,20 +1,7 @@
 from django.db import migrations
 from faker import Faker
 from faker.providers import address, person
-import time
-
-
-def timed(func):
-    """
-    records approximate durations of function calls
-    """
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        print(f'\n-----{func.__name__} started-----')
-        func(*args, **kwargs)
-        print(
-            f"\n-----{func.__name__} finished in {time.time() - start:.2f} seconds-----")
-    return wrapper
+from app.utils import timed
 
 
 @timed
