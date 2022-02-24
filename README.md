@@ -2,9 +2,11 @@
 
 ## Data
 
-movies: 977 (max: 999, min: 1)  
-rating: 164,715  
-users: 5,000 (max:4999, min: 1)  
+movies: 977 (max: 999, min: 1) (2 sec)
+rating: 164,715  (758 sec)
+users: 5,000 (max:4999, min: 1)  (9 sec + 42 sec friend)
+---
+total time: 811 sec: 13.5 min
 
 ## features
 
