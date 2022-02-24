@@ -1,5 +1,3 @@
-import requests
-import bs4
 import pandas as pd
 from app.utils import timed
 from faker import Faker
