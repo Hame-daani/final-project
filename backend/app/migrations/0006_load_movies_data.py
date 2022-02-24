@@ -19,7 +19,8 @@ def add_movies(apps, schema):
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
         tmdbid = f"{row['tmdbId']:.0f}"
-        poster = ''
+        poster = row['poster']
+        plot = row['plot']
         Movie.objects.create(
             id=id,
             title=title,
@@ -27,7 +28,8 @@ def add_movies(apps, schema):
             genres=genres,
             imdbid=imdbid,
             tmdbid=tmdbid,
-            poster=poster
+            poster=poster,
+            plot=plot
         )
         print(f"movie {index} added", end='\r')
 
@@ -41,7 +43,7 @@ def removing_movies(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0003_add_movie_model'),
+        ('app', '0005_generate_friends'),
     ]
 
     operations = [

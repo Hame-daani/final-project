@@ -28,7 +28,7 @@ def removing_friends(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0007_add_friendrequest_model'),
+        ('app', '0004_add_friendrequest_model'),
     ]
 
     operations = [
