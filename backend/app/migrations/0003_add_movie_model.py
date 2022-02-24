@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0004_load_friends'),
+        ('app', '0002_load_users_data'),
     ]
 
     operations = [

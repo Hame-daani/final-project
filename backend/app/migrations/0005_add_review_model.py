@@ -6,7 +6,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0006_load_movies_data'),
+        ('app', '0004_load_movies_data'),
     ]
 
     operations = [
@@ -24,5 +24,8 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
                  related_name='reviews', to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+                'unique_together': {('user', 'movie')},
+            },
         ),
     ]

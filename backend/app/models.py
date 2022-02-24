@@ -44,6 +44,9 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ['user', 'content_type', 'object_id']
+
     def __str__(self) -> str:
         return f"{self.user.first_name} liked this {self.content_type.model} {self.object_id}"
 
@@ -58,6 +61,9 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = GenericRelation(Like)
+
+    class Meta:
+        unique_together = ['user', 'movie']
 
     def __str__(self) -> str:
         return f"{self.user.first_name} [{self.movie.title}] - {self.rating}"

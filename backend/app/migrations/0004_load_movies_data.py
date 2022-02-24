@@ -51,7 +51,7 @@ def removing_movies(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0005_add_movie_model'),
+        ('app', '0003_add_movie_model'),
     ]
 
     operations = [
