@@ -51,6 +51,23 @@ class Like(models.Model):
         return f"{self.user.first_name} liked this {self.content_type.model} {self.object_id}"
 
 
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User, related_name='comments', on_delete=models.CASCADE)
+    text = models.TextField()
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
+    comments = GenericRelation("self")
+    likes = GenericRelation(Like)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.user.first_name} on this {self.content_type.model}:{self.object_id} says {self.text}"
+
+
 class Review(models.Model):
     user = models.ForeignKey(User, related_name='reviews',
                              on_delete=models.CASCADE)
@@ -61,6 +78,7 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = GenericRelation(Like)
+    comments = GenericRelation(Comment)
 
     class Meta:
         unique_together = ['user', 'movie']
@@ -85,25 +103,3 @@ class FriendRequest(models.Model):
 
     def __str__(self) -> str:
         return f"{self.from_user.get_full_name()} wants to be {self.to_user.get_full_name()} friends"
-
-
-class Comment(models.Model):
-    user = models.ForeignKey(
-        User, related_name='comments', on_delete=models.CASCADE)
-    review = models.ForeignKey(
-        Review, related_name='comments', on_delete=models.CASCADE, null=True)
-    comment = models.ForeignKey(
-        'self', related_name='comments', on_delete=models.CASCADE, null=True)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    likes = GenericRelation(Like)
-
-    def __str__(self) -> str:
-        if self.review:
-            s = f"[review {self.review.id}]"
-        elif self.comment:
-            s = f"[comment {self.comment.id}]"
-        else:
-            return "im lonely :("
-        return f"{self.user.first_name} on {s} says {self.text}"
