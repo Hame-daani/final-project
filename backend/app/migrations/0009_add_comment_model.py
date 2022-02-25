@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0008_load_friends'),
+        ('app', '0008_load_friends_data'),
     ]
 
     operations = [
