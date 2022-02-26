@@ -10,6 +10,32 @@ def get_data():
     users = []
     min_id = 0
     max_id = 4999
+    min_id_movie = 1
+    max_id_movie = 999
+    missing_ids = [
+        91,
+        221,
+        291,
+        323,
+        545,
+        557,
+        578,
+        622,
+        624,
+        646,
+        669,
+        677,
+        686,
+        689,
+        740,
+        811,
+        817,
+        863,
+        883,
+        888,
+        978,
+        995
+    ]
     faker = Faker()
     Faker.seed(0)
     faker.add_provider(address)
@@ -23,12 +49,27 @@ def get_data():
         gender = 'M' if i % 2 else 'F'
         location = faker.city()
         bio = faker.sentence(nb_words=10)
+        # friends
         n = randint(0, 100)
         friends = []
         for _ in range(n):
             pk = randint(min_id, max_id)
             if pk != i:
                 friends.append(pk)
+        # watchlist
+        n = randint(0, 100)
+        watchlist = []
+        for _ in range(n):
+            pk = randint(min_id_movie, max_id_movie)
+            if pk != i and pk not in missing_ids:
+                watchlist.append(pk)
+        # favorites
+        n = randint(0, 100)
+        favorites = []
+        for _ in range(n):
+            pk = randint(min_id_movie, max_id_movie)
+            if pk != i and pk not in missing_ids:
+                favorites.append(pk)
         users.append(
             {
                 'id': i,
@@ -39,7 +80,9 @@ def get_data():
                 'gender': gender,
                 'location': location,
                 'bio': bio,
-                'friends': friends
+                'friends': friends,
+                'favorites': favorites,
+                'watchlist': watchlist
             }
         )
         print(f"user {i} added", end='\r')
