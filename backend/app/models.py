@@ -21,6 +21,9 @@ class Movie(models.Model):
 
 
 class User(AbstractUser):
+    def avatar_upload_path(instance, filename):
+        # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
+        return f'avatars/user_avatar_{instance.id}'
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -29,7 +32,7 @@ class User(AbstractUser):
     location = models.CharField(max_length=50, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     avatar = models.ImageField(
-        upload_to='avatars', default='defautl_avatar.png')
+        upload_to=avatar_upload_path, default='avatars/default_avatar.png')
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
     favorites = models.ManyToManyField(Movie, related_name='favorites')

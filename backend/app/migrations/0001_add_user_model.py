@@ -3,6 +3,7 @@ import django.contrib.auth.models
 import django.contrib.auth.validators
 from django.db import migrations, models
 import django.utils.timezone
+import app.models
 
 
 class Migration(migrations.Migration):
@@ -44,7 +45,7 @@ class Migration(migrations.Migration):
                 ('gender', models.CharField(choices=[
                  ('M', 'Male'), ('F', 'Female')], max_length=1)),
                 ('avatar', models.ImageField(
-                    default='defautl_avatar.png', upload_to='avatars')),
+                    default='default_avatar.png', upload_to=app.models.User.avatar_upload_path)),
                 ('friends', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
                  related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
