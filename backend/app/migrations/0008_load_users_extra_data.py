@@ -16,6 +16,7 @@ def add_friends(apps, schema):
         user.watchlist.add(*watchlist)
         favorites = ast.literal_eval(row['favorites'])
         user.favorites.add(*favorites)
+        user.save()
         print(f"user {index} done", end='\r')
 
 
@@ -26,6 +27,7 @@ def removing_friends(apps, schema):
         user.friends.clear()
         user.favorites.clear()
         user.watchlist.clear()
+        user.save()
         print(f"user {user.id} extra data removed", end='\r')
 
 

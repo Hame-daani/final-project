@@ -28,18 +28,6 @@ def add_ratings(apps, schema):
             updated_at=date
         )
         print(f"rating {index} added", end='\r')
-    # reviews = [
-    #     Review(
-    #         user=User.objects.get(id=row['userId']),
-    #         movie=Movie.objects.get(id=row['movieId']),
-    #         rating=int(float(row['rating'])*2),
-    #         text=row['text'],
-    #         created_at=datetime.fromtimestamp(row['timestamp']),
-    #         updated_at=datetime.fromtimestamp(row['timestamp'])
-    #     )
-    #     for index, row in df.iterrows()
-    # ]
-    # Review.objects.bulk_create(reviews)
 
 
 @timed
