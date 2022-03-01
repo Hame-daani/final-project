@@ -1,12 +1,11 @@
-from app.models import *
+from app.models import Movie, User
 
 
 class BaseRecommender:
     def __init__(self) -> None:
-        pass
+        self.load_uu_data()
 
-    @property
-    def uu_data():
+    def load_uu_data(self):
         """
         return df loaded from csv file
         """
@@ -16,7 +15,11 @@ class BaseRecommender:
 class GlobalRecommender(BaseRecommender):
 
     def __init__(self) -> None:
+        self.load_mm_data()
         super().__init__()
+
+    def load_mm_data(self):
+        pass
 
     def get_similar_movies(self, movie):
         """
@@ -49,14 +52,32 @@ class FriendsRecommender(BaseRecommender):
     def __init__(self) -> None:
         super().__init__()
 
-    def get_estimated_rating(self, user, movie):
+    def get_estimated_rating(self, user: User, movie: Movie):
         """
         return estimated rating for a movie.
         formoula: [similariy*rating for all in myfriends] / sum(similarities)
         """
-        return 5
+        sims = self.uu_data[user.id]
+        total = 0
+        sim_sum = 0
+        for friend in user.friends.all():
+            try:
+                review = friend.reviews.get(movie=movie)
+                friend_sim = sims[friend.id]
+                sim_sum += friend_sim
+                total += friend_sim*review.rating
+            except:
+                continue
+        return round(total/sim_sum, 1)
 
-    def get_recommendation(self, user):
+    def get_recommendation(self, user: User):
         """
         return top 10 movies based on mm_data from my friends
         """
+        my_movies = user.reviews.all().values_list('movie', flat=True)
+        movies = Movie.objects.exclude(id__in=my_movies)
+        ranking = []
+        for movie in movies:
+            ranking.append(self.get_estimated_rating(movie), movie)
+
+        return ranking.sort(reverse=True)[:10]
