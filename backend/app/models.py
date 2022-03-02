@@ -6,6 +6,28 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+genres = [
+    'Adventure',
+    'Animation',
+    'Children',
+    'Comedy',
+    'Fantasy',
+    'Romance',
+    'Drama',
+    'Action',
+    'Crime',
+    'Thriller',
+    'Horror',
+    'Mystery',
+    'Sci-Fi',
+    'IMAX',
+    'Documentar',
+    'War',
+    'Musical',
+    'Western',
+    'Film-Noir'
+]
+
 
 class Movie(models.Model):
     title = models.CharField(max_length=500)
