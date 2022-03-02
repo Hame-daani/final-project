@@ -2,14 +2,21 @@ from app.models import Movie, User
 
 
 class BaseRecommender:
-    def __init__(self) -> None:
-        self.load_uu_data()
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            print('Creating the object')
+            cls._instance = super(BaseRecommender, cls).__new__(cls)
+            # Put any initialization here.
+            cls._instance.load_uu_data()
+        return cls._instance
 
     def load_uu_data(self):
         """
         return df loaded from csv file
         """
-        pass
+        self.uu_data = "uu"
 
 
 class GlobalRecommender(BaseRecommender):
@@ -19,32 +26,41 @@ class GlobalRecommender(BaseRecommender):
         super().__init__()
 
     def load_mm_data(self):
-        pass
+        self.mm_data = "mm"
 
     def get_similar_movies(self, movie):
         """
         returns top 10 most similar movies based on mm_data
         """
-        return Movie.objects.all()[:10]
+        sims = self.mm_data[movie.id]
+        sims_ids = sims.sort(reverse=True)[:10]
+        return Movie.objects.filter(id__in=sims_ids)
 
     def get_TCS(self, me, user):
         """
         returns user TCS based on my row in uu_data
         0 < TCS < 1
         """
-        return 0.5
+        return self.uu_data[me.id][user.id]
 
     def get_taste_group(self, user):
         """
         return top 10 on my row in uu_data
         """
-        return user.friends.all()[:10]
+
+        group_ids = self.uu_data[user.id].sort(reverse=True)[:10]
+        return User.objects.filter(id__in=group_ids)
 
     def get_recommendation(self, user):
         """
         return top 10 similar movies for my top 10 rated movies
         """
-        return user.reviews.all()[:10]
+        my_top_10 = user.reviews.order_by('-rating')[:10]
+        topmovies = []
+        for movieid in my_top_10:
+            topmovies.append(self.mm_data[movieid].sort(reverse=True)[:10])
+
+        return Movie.objects.filter(id__in=topmovies)
 
 
 class FriendsRecommender(BaseRecommender):
@@ -78,6 +94,10 @@ class FriendsRecommender(BaseRecommender):
         movies = Movie.objects.exclude(id__in=my_movies)
         ranking = []
         for movie in movies:
-            ranking.append(self.get_estimated_rating(movie), movie)
+            movie.estimated_rating = self.get_estimated_rating(movie)
 
-        return ranking.sort(reverse=True)[:10]
+        return ranking.order_by('-estimated_rating')[:10]
+
+
+gr = GlobalRecommender()
+fr = FriendsRecommender()
