@@ -1,1 +1,18 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
+
+class Similarity(models.Model):
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE)
+    source_id = models.PositiveIntegerField()
+    source = GenericForeignKey('content_type', 'source_id')
+
+    target_id = models.PositiveIntegerField()
+    target = GenericForeignKey('content_type', 'target_id')
+
+    score = models.SmallIntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.content_type.model}: {self.source_id} and {self.target_id} score {self.score:.2f}"

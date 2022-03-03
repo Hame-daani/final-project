@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+from recommender.models import Similarity
+
 genres = [
     'Adventure',
     'Animation',
@@ -37,6 +39,7 @@ class Movie(models.Model):
     tmdbid = models.CharField(max_length=20, blank=True)
     genres = ArrayField(models.CharField(max_length=10))
     poster = models.URLField(blank=True)
+    similarities = GenericRelation(Similarity, object_id_field='source_id')
 
     def __str__(self) -> str:
         return self.title
@@ -58,6 +61,7 @@ class User(AbstractUser):
     friends = models.ManyToManyField("self")
     watchlist = models.ManyToManyField(Movie, related_name='watchlist')
     favorites = models.ManyToManyField(Movie, related_name='favorites')
+    similarities = GenericRelation(Similarity, object_id_field='source_id')
 
 
 class Like(models.Model):
