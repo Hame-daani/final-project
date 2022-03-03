@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
@@ -132,18 +132,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # my settings
 AUTH_USER_MODEL = 'app.User'
-USE_TZ = True
-TIME_ZONE = 'Asia/Tehran'
 MEDIA_ROOT = "media/"
 
 # celery
 CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_TIMEZONE = "Asia/Tehran"
 CELERY_ENABLE_UTC = False
 CELERY_BEAT_SCHEDULE = {
     'add-every-5-seconds': {
         'task': 'app.tasks.generate_uu_data',
-        'schedule': crontab(minute="36", hour="21"),
+        'schedule': crontab(minute="49"),
     },
 }
-# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
