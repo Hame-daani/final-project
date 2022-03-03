@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.AppConfig',
+    'recommender.apps.RecommenderConfig'
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,7 @@ CELERY_TIMEZONE = "Asia/Tehran"
 CELERY_BEAT_SCHEDULE = {
     'add-every-5-seconds': {
         'task': 'app.tasks.generate_uu_data',
-        'schedule': crontab(minute="22"),
+        'schedule': crontab(minute="27"),
     },
 }
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
