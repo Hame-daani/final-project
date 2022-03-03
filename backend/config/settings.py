@@ -139,10 +139,11 @@ MEDIA_ROOT = "media/"
 # celery
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_TIMEZONE = "Asia/Tehran"
+CELERY_ENABLE_UTC = False
 CELERY_BEAT_SCHEDULE = {
     'add-every-5-seconds': {
         'task': 'app.tasks.generate_uu_data',
-        'schedule': crontab(minute="27"),
+        'schedule': crontab(minute="36", hour="21"),
     },
 }
 # CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
