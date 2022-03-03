@@ -12,7 +12,7 @@ class Similarity(models.Model):
     target_id = models.PositiveIntegerField()
     target = GenericForeignKey('content_type', 'target_id')
 
-    score = models.SmallIntegerField()
+    score = models.DecimalField(max_digits=3, decimal_places=2)
 
     def __str__(self) -> str:
         return f"{self.content_type.model}: {self.source_id} and {self.target_id} score {self.score:.2f}"
