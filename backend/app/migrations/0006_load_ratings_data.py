@@ -27,7 +27,7 @@ def add_ratings(apps, schema):
             created_at=date,
             updated_at=date
         )
-        print(f"rating {index} added", end='\r')
+        # print(f"rating {index} added", end='\r')
 
 
 @timed

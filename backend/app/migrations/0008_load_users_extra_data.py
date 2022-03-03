@@ -17,7 +17,7 @@ def add_friends(apps, schema):
         favorites = ast.literal_eval(row['favorites'])
         user.favorites.add(*favorites)
         user.save()
-        print(f"user {index} done", end='\r')
+        # print(f"user {index} done", end='\r')
 
 
 @timed
@@ -28,7 +28,7 @@ def removing_friends(apps, schema):
         user.favorites.clear()
         user.watchlist.clear()
         user.save()
-        print(f"user {user.id} extra data removed", end='\r')
+        # print(f"user {user.id} extra data removed", end='\r')
 
 
 class Migration(migrations.Migration):

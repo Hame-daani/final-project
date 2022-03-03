@@ -39,7 +39,7 @@ def add_movies(apps, schema):
             poster=poster,
             plot=plot
         )
-        print(f"movie {index} added", end='\r')
+        # print(f"movie {index} added", end='\r')
 
 
 @timed

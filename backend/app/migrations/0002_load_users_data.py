@@ -19,7 +19,7 @@ def add_users(apps, schema):
             gender=row['gender'],
             location=row['location']
         )
-        print(f"user {index} added", end='\r')
+        # print(f"user {index} added", end='\r')
 
 
 def removing_users(apps, schema):
