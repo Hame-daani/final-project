@@ -16,7 +16,7 @@ def add_movies(apps, schema):
         year = title[a+1:b]
         if not year.isdigit():
             year = ''
-        title = title[:a]
+        title = title[:a].strip()
         genres = row['genres'].split('|')
         imdbid = row['imdbId']
         if isnan(row['tmdbId']):
