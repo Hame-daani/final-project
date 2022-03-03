@@ -22,6 +22,7 @@ def add_users(apps, schema):
         # print(f"user {index} added", end='\r')
 
 
+@timed
 def removing_users(apps, schema):
     User = apps.get_model('app', 'User')
     User.objects.all().delete()

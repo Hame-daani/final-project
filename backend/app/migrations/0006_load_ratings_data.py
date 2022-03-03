@@ -1,6 +1,7 @@
 from django.db import migrations, models
 import pandas as pd
 from datetime import datetime
+from django.utils.timezone import make_aware
 from app.utils import timed
 
 
@@ -17,7 +18,7 @@ def add_ratings(apps, schema):
         movie = Movie.objects.get(id=movieid)
         rating = row['rating']
         timestamp = row['timestamp']
-        date = datetime.fromtimestamp(timestamp)
+        date = make_aware(datetime.fromtimestamp(timestamp))
         text = row['text']
         Review.objects.create(
             user=user,

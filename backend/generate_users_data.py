@@ -8,8 +8,8 @@ from random import randint
 @timed
 def get_data():
     users = []
-    min_id = 0
-    max_id = 4999
+    min_id = 1
+    max_id = 5000
     min_id_movie = 1
     max_id_movie = 999
     missing_ids = [
@@ -41,7 +41,7 @@ def get_data():
     faker.add_provider(address)
     faker.add_provider(person)
     faker.add_provider(lorem)
-    for i in range(5000):
+    for i in range(1, 5000):
         first_name = faker.first_name()
         last_name = faker.last_name()
         username = first_name+last_name+str(i)
@@ -50,21 +50,21 @@ def get_data():
         location = faker.city()
         bio = faker.sentence(nb_words=10)
         # friends
-        n = randint(0, 100)
+        n = randint(1, 100)
         friends = []
         for _ in range(n):
             pk = randint(min_id, max_id)
             if pk != i:
                 friends.append(pk)
         # watchlist
-        n = randint(0, 100)
+        n = randint(1, 100)
         watchlist = []
         for _ in range(n):
             pk = randint(min_id_movie, max_id_movie)
             if pk != i and pk not in missing_ids:
                 watchlist.append(pk)
         # favorites
-        n = randint(0, 100)
+        n = randint(1, 100)
         favorites = []
         for _ in range(n):
             pk = randint(min_id_movie, max_id_movie)
