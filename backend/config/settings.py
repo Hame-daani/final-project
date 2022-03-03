@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from celery.schedules import crontab
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app.apps.AppConfig'
+    'app.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -130,5 +131,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # my settings
 AUTH_USER_MODEL = 'app.User'
-USE_TZ = False
+USE_TZ = True
+TIME_ZONE = 'Asia/Tehran'
 MEDIA_ROOT = "media/"
+
+# celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_TIMEZONE = "Asia/Tehran"
+CELERY_BEAT_SCHEDULE = {
+    'add-every-5-seconds': {
+        'task': 'app.tasks.generate_uu_data',
+        'schedule': crontab(minute="22"),
+    },
+}
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
