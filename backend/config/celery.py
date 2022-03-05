@@ -18,22 +18,6 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     sender.add_periodic_task(
-#         crontab(hour=13, minute=13),
-#         generating_mm_data.s()
-#     )
-#     sender.add_periodic_task(
-#         crontab(hour=13, minute=13),
-#         generating_uu_data.s()
-#     )
-
-app.conf.beat_schedule = {
-    "add-every-5-seconds": {"task": "app.tasks.generating_uu_data", "schedule": 5.0}
-}
-
-
 @app.task(bind=True)
 def debug_task(self):
     print(f"Request: {self.request!r}")

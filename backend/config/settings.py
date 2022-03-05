@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from celery.schedules import crontab
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -136,9 +135,3 @@ MEDIA_ROOT = "media/"
 # celery
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ENABLE_UTC = False
-CELERY_BEAT_SCHEDULE = {
-    "add-every-5-seconds": {
-        "task": "app.tasks.generate_uu_data",
-        "schedule": crontab(minute="49"),
-    },
-}
