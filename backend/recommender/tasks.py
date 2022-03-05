@@ -1,15 +1,15 @@
-import logging
-from celery.utils.log import get_task_logger
-from celery import shared_task
-from app.models import Movie
 from datetime import datetime
+from celery import shared_task
 from config.celery import app
 from celery.schedules import crontab
 
+from django.contrib.contenttypes.models import ContentType
 
-logger = logging.getLogger(__name__)
+from recommender.module import sim_pearson
+from recommender.models import Similarity
+from app.models import User, Movie
 
-tasks_time = crontab(minute=16)
+tasks_time = crontab(minute=30)
 
 app.conf.beat_schedule = {
     "Generate_User-User_Data": {
@@ -25,17 +25,34 @@ app.conf.beat_schedule = {
 
 @shared_task
 def generate_mm_data():
-    now = datetime.now()
-    print(f"start mm_data at {now.hour}:{now.minute}")
-    for _ in range(100000000):
-        pass
-    logger.warn("task finsihed")
+    return
 
 
 @shared_task
 def generate_uu_data():
-    now = datetime.now()
-    print(f"start uu_data at {now.hour}:{now.minute}")
-    for _ in range(100000000):
-        pass
-    print("task finsihed")
+    print("deleting data")
+    Similarity.objects.filter(
+        content_type=ContentType.objects.get_for_model(User)
+    ).delete()
+    start = datetime.now()
+    print("start uu_data")
+    users = User.objects.order_by("id")[:100]
+    for user1 in users:
+        for user2 in users:
+            if user1 == user2:
+                continue
+            else:
+                try:
+                    obj = Similarity.objects.get(
+                        content_type=ContentType.objects.get_for_model(user1),
+                        source_id=user1.id,
+                        target_id=user2.id,
+                    )
+                    continue
+                except:
+                    Similarity.objects.create(
+                        source=user1, target=user2, score=sim_pearson(user1, user2)
+                    )
+        print(f"user{user1.id} done!")
+    finish = datetime.now()
+    print(f"task uu_data finsihed in {finish-start}")
