@@ -1,6 +1,5 @@
 from math import sqrt
 from app.models import User, Movie
-from numpy import sum as npsum
 
 
 def get_ratings(p1, p2):
@@ -44,3 +43,24 @@ def sim_pearson(p1, p2):
     if den == 0:
         return 0
     return num / den
+
+
+class FriendsRecommender:
+    @staticmethod
+    def get_estimated_rating(user: User, movie: Movie):
+        """
+        return estimated rating for a movie.
+        formoula: [similariy*rating for all in myfriends] / sum(similarities)
+        """
+        total = 0
+        sim_sum = 0
+        for friend in user.friends.all():
+            try:
+                review = friend.reviews.get(movie=movie)
+                friend_sim = user.similarities.get(target=friend).score
+                sim_sum += friend_sim
+                total += friend_sim * review.rating
+            except:
+                continue
+        user.similarities
+        return round(total / sim_sum, 1)

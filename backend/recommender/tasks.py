@@ -6,12 +6,13 @@ from config.celery import app
 from celery.schedules import crontab
 
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count
 
 from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-tasks_time = crontab(minute=36)
+tasks_time = crontab(hour=23, minute=6)
 
 app.conf.beat_schedule = {
     "Generate_User-User_Data": {
@@ -27,13 +28,18 @@ app.conf.beat_schedule = {
 
 @shared_task
 def generate_mm_data():
-    logging.error("deleting data")
     ct = ContentType.objects.get_for_model(Movie)
-    Similarity.objects.filter(content_type=ct).delete()
     start = datetime.now()
     logging.error("start mm_data")
-    movies = Movie.objects.order_by("id")[:100]
-    for movie1 in movies:
+    movies = Movie.objects.annotate(rcount=Count("reviews__id"))
+    # 331 movies
+    movies = movies.filter(rcount__gt=100)
+    n = len(movies)
+    logging.error(f"calculating for {n} movies")
+    for i, movie1 in enumerate(movies):
+        if movie1.similarities.count() == (n - 1):
+            logging.error(f"movie {movie1.id} already done!")
+            continue
         for movie2 in movies:
             if movie1 == movie2:
                 continue
@@ -49,20 +55,25 @@ def generate_mm_data():
                     Similarity.objects.create(
                         source=movie1, target=movie2, score=sim_pearson(movie1, movie2)
                     )
-        logging.error(f"movie{movie1.id} done!")
+        logging.error(f"movie {i} done!")
     finish = datetime.now()
     logging.error(f"task mm_data finsihed in {finish-start}")
 
 
 @shared_task
 def generate_uu_data():
-    logging.warning("deleting data")
     ct = ContentType.objects.get_for_model(User)
-    Similarity.objects.filter(content_type=ct).delete()
     start = datetime.now()
     logging.warning("start uu_data")
-    users = User.objects.order_by("id")[:100]
-    for user1 in users:
+    users = User.objects.annotate(rcount=Count("reviews__id"))
+    # 320 users
+    users = users.filter(rcount__gt=100)
+    n = len(users)
+    logging.warning(f"calculating for {n} users")
+    for i, user1 in enumerate(users):
+        if user1.similarities.count() == (n - 1):
+            logging.warning(f"user {user1.id} already done!")
+            continue
         for user2 in users:
             if user1 == user2:
                 continue
@@ -78,6 +89,6 @@ def generate_uu_data():
                     Similarity.objects.create(
                         source=user1, target=user2, score=sim_pearson(user1, user2)
                     )
-        logging.warning(f"user{user1.id} done!")
+        logging.warning(f"user {i} done!")
     finish = datetime.now()
     logging.warning(f"task uu_data finsihed in {finish-start}")
