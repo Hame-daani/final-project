@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
                  primary_key=True, serialize=False, verbose_name='ID')),
                 ('object_id', models.PositiveIntegerField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
                 ('content_type', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE, to='contenttypes.contenttype')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
