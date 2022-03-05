@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ),
                 ("source_id", models.PositiveIntegerField()),
                 ("target_id", models.PositiveIntegerField()),
-                ("score", models.DecimalField(decimal_places=2, max_digits=3)),
+                ("score", models.DecimalField(decimal_places=3, max_digits=4)),
                 (
                     "content_type",
                     models.ForeignKey(

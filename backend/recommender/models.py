@@ -4,9 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Similarity(models.Model):
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE, related_name="similarities"
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     source_id = models.PositiveIntegerField()
     source = GenericForeignKey("content_type", "source_id")
 
