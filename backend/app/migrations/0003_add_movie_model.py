@@ -8,35 +8,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_load_users_data'),
+        ("app", "0002_load_users_data"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Movie',
+            name="Movie",
             fields=[
-                ('id', models.BigAutoField(auto_created=True,
-                 primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=500)),
-                ('plot', models.TextField(blank=True)),
-                ('year', models.CharField(default='1900', max_length=4)),
-                ('imdbid', models.CharField(blank=True, max_length=20)),
-                ('tmdbid', models.CharField(blank=True, max_length=20)),
-                ('poster', models.URLField(blank=True)),
-                ('genres', django.contrib.postgres.fields.ArrayField(
-                    base_field=models.CharField(max_length=10), size=None)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=500)),
+                ("plot", models.TextField(blank=True)),
+                ("year", models.CharField(default="1900", max_length=4)),
+                ("imdbid", models.CharField(blank=True, max_length=20)),
+                ("tmdbid", models.CharField(blank=True, max_length=20)),
+                ("poster", models.URLField(blank=True)),
+                (
+                    "genres",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(max_length=10), size=None
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='user',
-            name='favorites',
-            field=models.ManyToManyField(
-                related_name='favorites', to='app.Movie'),
+            model_name="user",
+            name="favorites",
+            field=models.ManyToManyField(related_name="favorites", to="app.Movie"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='watchlist',
-            field=models.ManyToManyField(
-                related_name='watchlist', to='app.Movie'),
+            model_name="user",
+            name="watchlist",
+            field=models.ManyToManyField(related_name="watchlist", to="app.Movie"),
         ),
     ]

@@ -6,15 +6,15 @@ import ast
 
 @timed
 def add_friends(apps, schema):
-    User = apps.get_model('app', 'User')
-    df = pd.read_csv('data/users.csv', low_memory=False)
+    User = apps.get_model("app", "User")
+    df = pd.read_csv("data/users.csv", low_memory=False)
     for index, row in df.iterrows():
-        user = User.objects.get(id=row['id'])
-        friends = ast.literal_eval(row['friends'])
+        user = User.objects.get(id=row["id"])
+        friends = ast.literal_eval(row["friends"])
         user.friends.add(*friends)
-        watchlist = ast.literal_eval(row['watchlist'])
+        watchlist = ast.literal_eval(row["watchlist"])
         user.watchlist.add(*watchlist)
-        favorites = ast.literal_eval(row['favorites'])
+        favorites = ast.literal_eval(row["favorites"])
         user.favorites.add(*favorites)
         user.save()
         # print(f"user {index} done", end='\r')
@@ -22,7 +22,7 @@ def add_friends(apps, schema):
 
 @timed
 def removing_friends(apps, schema):
-    User = apps.get_model('app', 'User')
+    User = apps.get_model("app", "User")
     for user in User.objects.all():
         user.friends.clear()
         user.favorites.clear()
@@ -34,7 +34,7 @@ def removing_friends(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0007_add_friendrequest_model'),
+        ("app", "0007_add_friendrequest_model"),
     ]
 
     operations = [

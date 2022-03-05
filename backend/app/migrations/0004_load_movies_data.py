@@ -6,29 +6,29 @@ from math import isnan
 
 @timed
 def add_movies(apps, schema):
-    df = pd.read_csv('data/movies.csv', low_memory=False)
-    Movie = apps.get_model('app', 'Movie')
+    df = pd.read_csv("data/movies.csv", low_memory=False)
+    Movie = apps.get_model("app", "Movie")
     for index, row in df.iterrows():
-        id = row['movieId']
-        title = row['title']
-        a = title.rfind('(')
-        b = title.rfind(')')
-        year = title[a+1:b]
+        id = row["movieId"]
+        title = row["title"]
+        a = title.rfind("(")
+        b = title.rfind(")")
+        year = title[a + 1 : b]
         if not year.isdigit():
-            year = ''
+            year = ""
         title = title[:a].strip()
-        genres = row['genres'].split('|')
-        imdbid = row['imdbId']
-        if isnan(row['tmdbId']):
-            tmdbid = ''
+        genres = row["genres"].split("|")
+        imdbid = row["imdbId"]
+        if isnan(row["tmdbId"]):
+            tmdbid = ""
         else:
             tmdbid = f"{row['tmdbId']:.0f}"
-        poster = row['poster']
+        poster = row["poster"]
         if type(poster) != str:
-            poster = ''
-        plot = row['plot']
+            poster = ""
+        plot = row["plot"]
         if type(plot) != str:
-            plot = ''
+            plot = ""
         Movie.objects.create(
             id=id,
             title=title,
@@ -37,21 +37,21 @@ def add_movies(apps, schema):
             imdbid=imdbid,
             tmdbid=tmdbid,
             poster=poster,
-            plot=plot
+            plot=plot,
         )
         # print(f"movie {index} added", end='\r')
 
 
 @timed
 def removing_movies(apps, schema):
-    Movie = apps.get_model('app', 'Movie')
+    Movie = apps.get_model("app", "Movie")
     Movie.objects.all().delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0003_add_movie_model'),
+        ("app", "0003_add_movie_model"),
     ]
 
     operations = [

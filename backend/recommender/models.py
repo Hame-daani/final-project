@@ -4,13 +4,12 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Similarity(models.Model):
-    content_type = models.ForeignKey(
-        ContentType, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     source_id = models.PositiveIntegerField()
-    source = GenericForeignKey('content_type', 'source_id')
+    source = GenericForeignKey("content_type", "source_id")
 
     target_id = models.PositiveIntegerField()
-    target = GenericForeignKey('content_type', 'target_id')
+    target = GenericForeignKey("content_type", "target_id")
 
     score = models.DecimalField(max_digits=3, decimal_places=2)
 

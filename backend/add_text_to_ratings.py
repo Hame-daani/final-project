@@ -12,13 +12,13 @@ def get_data():
     faker.add_provider(lorem)
     for i in range(n):
         texts.append(faker.sentence(nb_words=10))
-        print(f"text {i} added", end='\r')
+        print(f"text {i} added", end="\r")
     return texts
 
 
-if __name__ == '__main__':
-    df = pd.read_csv('data/ratings.csv', low_memory=False)
+if __name__ == "__main__":
+    df = pd.read_csv("data/ratings.csv", low_memory=False)
     n = len(df)
     texts = get_data()
-    df['text'] = texts
-    df.to_csv('data/ratings.csv', index=False)
+    df["text"] = texts
+    df.to_csv("data/ratings.csv", index=False)

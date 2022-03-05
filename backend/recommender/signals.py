@@ -13,13 +13,14 @@ def create_reverse(sender, instance, created, **kwargs):
             content_type=ContentType.objects.get_for_model(instance.source),
             source_id=instance.target_id,
             target_id=instance.source_id,
-            score=instance.score
+            score=instance.score,
         )
     else:
-        sender.objects.filter(content_type=ContentType.objects.get_for_model(instance.source),
-                              source_id=instance.target_id,
-                              target_id=instance.source_id,
-                              ).update(score=instance.score)
+        sender.objects.filter(
+            content_type=ContentType.objects.get_for_model(instance.source),
+            source_id=instance.target_id,
+            target_id=instance.source_id,
+        ).update(score=instance.score)
 
 
 @receiver(post_delete, sender=Similarity)

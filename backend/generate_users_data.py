@@ -44,9 +44,9 @@ def get_data():
     for i in range(min_id, max_id + 1):
         first_name = faker.first_name()
         last_name = faker.last_name()
-        username = first_name+last_name+str(i)
+        username = first_name + last_name + str(i)
         email = f"{username}@this.com"
-        gender = 'M' if i % 2 else 'F'
+        gender = "M" if i % 2 else "F"
         location = faker.city()
         bio = faker.sentence(nb_words=10)
         # friends
@@ -72,24 +72,24 @@ def get_data():
                 favorites.append(pk)
         users.append(
             {
-                'id': i,
-                'first_name': first_name,
-                'last_name': last_name,
-                'username': username,
-                'email': email,
-                'gender': gender,
-                'location': location,
-                'bio': bio,
-                'friends': friends,
-                'favorites': favorites,
-                'watchlist': watchlist
+                "id": i,
+                "first_name": first_name,
+                "last_name": last_name,
+                "username": username,
+                "email": email,
+                "gender": gender,
+                "location": location,
+                "bio": bio,
+                "friends": friends,
+                "favorites": favorites,
+                "watchlist": watchlist,
             }
         )
-        print(f"user {i} added", end='\r')
+        print(f"user {i} added", end="\r")
     return users
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     users = get_data()
     df = pd.DataFrame(users)
-    df.to_csv('data/users.csv', index=False)
+    df.to_csv("data/users.csv", index=False)
