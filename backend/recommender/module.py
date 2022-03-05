@@ -1,5 +1,6 @@
 from math import sqrt
 from app.models import User, Movie
+from numpy import sum as npsum
 
 
 def get_ratings(p1, p2):
@@ -8,19 +9,21 @@ def get_ratings(p1, p2):
     if type_p1 != type_p2:
         raise Exception("got two diffrent thing!")
     if type_p1 == Movie:
-        p1_reviews = p1.reviews.all()
-        p1_user_ids = p1_reviews.values_list("user", flat=True)
-        p2_reviews = p2.reviews.filter(user__id__in=p1_user_ids)
-        p2_user_ids = p2_reviews.values_list("user", flat=True)
-        p1_reviews = p1_reviews.filter(user__id__in=p2_user_ids)
+        p2_reviews = p2.reviews.filter(
+            user__id__in=p1.reviews.values_list("user", flat=True)
+        )
+        p1_reviews = p1.reviews.filter(
+            user__id__in=p2_reviews.values_list("user", flat=True)
+        )
         p1_ratings = p1_reviews.order_by("user").values_list("rating", flat=True)
         p2_ratings = p2_reviews.order_by("user").values_list("rating", flat=True)
     if type_p1 == User:
-        p1_reviews = p1.reviews.all()
-        p1_movie_ids = p1_reviews.values_list("movie", flat=True)
-        p2_reviews = p2.reviews.filter(movie__id__in=p1_movie_ids)
-        p2_movie_ids = p2_reviews.values_list("movie", flat=True)
-        p1_reviews = p1_reviews.filter(movie__id__in=p2_movie_ids)
+        p2_reviews = p2.reviews.filter(
+            movie__id__in=p1.reviews.values_list("movie", flat=True)
+        )
+        p1_reviews = p1.reviews.filter(
+            movie__id__in=p2_reviews.values_list("movie", flat=True)
+        )
         p1_ratings = p1_reviews.order_by("movie").values_list("rating", flat=True)
         p2_ratings = p2_reviews.order_by("movie").values_list("rating", flat=True)
     return p1_ratings, p2_ratings
