@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import connection, models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
@@ -15,3 +15,8 @@ class Similarity(models.Model):
 
     def __str__(self) -> str:
         return f"{self.content_type.model}: {self.source_id} and {self.target_id} score {self.score:.3f}"
+
+    @classmethod
+    def truncate(cls):
+        with connection.cursor() as cursor:
+            cursor.execute("TRUNCATE TABLE {} CASCADE".format(cls._meta.db_table))
