@@ -7,16 +7,22 @@ from django.contrib.contenttypes.models import ContentType
 
 @receiver(post_save, sender=Similarity)
 def create_reverse(sender, instance, created, **kwargs):
+    try:
+        getattr(instance, "skip_signal")
+    except:
+        instance.skip_signal = False
     if created:
+        if instance.skip_signal:
+            return
         obj = sender(
             content_type=ContentType.objects.get_for_model(instance.source),
             source_id=instance.target_id,
             target_id=instance.source_id,
             score=instance.score,
         )
-        obj._meta.auto_created = True
+        obj.skip_signal = True
         obj.save()
-        obj._meta.auto_created = False
+        obj.skip_signal = False
     else:
         sender.objects.filter(
             content_type=ContentType.objects.get_for_model(instance.source),
