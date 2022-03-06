@@ -1,7 +1,7 @@
 from datetime import datetime
 import logging
 import threading
-import multiprocessing
+from enum import Enum
 
 from celery import shared_task
 from config.celery import app
@@ -15,18 +15,24 @@ from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-tasks_time = crontab(hour=23, minute=6)
+tasks_time = crontab(hour=20, minute=58)
 
 app.conf.beat_schedule = {
     "Generate_User-User_Data": {
         "task": "recommender.tasks.generate_uu_data",
         "schedule": tasks_time,
     },
-    "Generate_Movie-Movie_data": {
-        "task": "recommender.tasks.generate_mm_data",
-        "schedule": tasks_time,
-    },
+    # "Generate_Movie-Movie_data": {
+    #     "task": "recommender.tasks.generate_mm_data",
+    #     "schedule": tasks_time,
+    # },
 }
+
+
+class Ttype(Enum):
+    odd_odd = 1
+    even_even = 2
+    odd_even = 3
 
 
 @shared_task
@@ -47,9 +53,6 @@ def generate_mm_data():
     t1 = threading.Thread(target=calculating, args=(ct, movie_ids, data, 1))
     t2 = threading.Thread(target=calculating, args=(ct, movie_ids, data, 2))
     t3 = threading.Thread(target=calculating, args=(ct, movie_ids, data, 3))
-    # t1 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 1))
-    # t2 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 2))
-    # t3 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 3))
     t1.start()
     t2.start()
     t3.start()
@@ -77,12 +80,11 @@ def generate_uu_data():
     logging.warning(f"start uu_data {Similarity.objects.count()}")
     start = datetime.now()
     logging.warning(f"calculating for {n} users")
-    t1 = threading.Thread(target=calculating, args=(ct, user_ids, data, 1))
-    t2 = threading.Thread(target=calculating, args=(ct, user_ids, data, 2))
-    t3 = threading.Thread(target=calculating, args=(ct, user_ids, data, 3))
-    # t1 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 1))
-    # t2 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 2))
-    # t3 = multiprocessing.Process(target=calculating, args=(ct, user_ids, data, 3))
+    t1 = threading.Thread(target=calculating, args=(ct, user_ids, data, Ttype.odd_odd))
+    t2 = threading.Thread(target=calculating, args=(ct, user_ids, data, Ttype.odd_even))
+    t3 = threading.Thread(
+        target=calculating, args=(ct, user_ids, data, Ttype.even_even)
+    )
     t1.start()
     t2.start()
     t3.start()
@@ -95,34 +97,29 @@ def generate_uu_data():
     )
 
 
-def calculating(ct, ids, data, t_type=1):
+def calculating(ct, ids, data, ttype=1):
     connection.connect()
     for i, t1 in enumerate(ids):
         # if user1.similarities.count() == (n - 1):
         #     logging.warning(f"user {user1.id} already done!")
         #     continue
-        for j, t2 in enumerate(ids):
-            # o-o
-            if t_type == 1:
-                if i >= j:
+        if ttype == Ttype.odd_odd:
+            if i % 2 == 0:
+                continue
+        if ttype == Ttype.even_even:
+            if i % 2 != 0:
+                continue
+        for j, t2 in enumerate(reversed(ids)):
+            if i == j:
+                break
+            if ttype == Ttype.odd_odd and j % 2 == 0:
+                continue
+            if ttype == Ttype.even_even and j % 2 != 0:
+                continue
+            if ttype == Ttype.odd_even:
+                if i % 2 != 0 and j % 2 != 0:
                     continue
-                if i % 2 == 0:
-                    break
-                if j % 2 == 0:
-                    continue
-            # e-e
-            if t_type == 2:
-                if i >= j:
-                    continue
-                if i % 2 != 0:
-                    break
-                if j % 2 != 0:
-                    continue
-            # o-e
-            if t_type == 3:
-                if i % 2 == 0:
-                    break
-                if j % 2 != 0:
+                if i % 2 == 0 and j % 2 == 0:
                     continue
             Similarity.objects.create(
                 content_type=ct,
@@ -130,4 +127,4 @@ def calculating(ct, ids, data, t_type=1):
                 target_id=t2,
                 score=sim_pearson(t1, t2, data),
             )
-        print(f"worker:{t_type} {ct.model}-{i} done!")
+        print(f"worker:{ttype.name} {ct.model}-{i} done!")
