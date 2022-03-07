@@ -14,8 +14,8 @@ from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-movies_time = crontab(hour=17, minute=13)
-users_time = crontab(hour=17, minute=19)
+movies_time = crontab(hour="*", minute=4)
+users_time = crontab(hour="*", minute=4)
 
 app.conf.beat_schedule = {
     "Generate_User-User_Data": {
@@ -27,6 +27,8 @@ app.conf.beat_schedule = {
         "schedule": movies_time,
     },
 }
+
+target_num = 100
 
 
 class Ttype(Enum):
@@ -45,11 +47,11 @@ def iseven(n):
 
 @shared_task
 def generate_mm_data():
-    # Similarity.truncate()
+    Similarity.truncate()
     ct = ContentType.objects.get_for_model(Movie)
     movies = Movie.objects.annotate(rcount=Count("reviews__id"))
-    # 450 movies
-    movies = movies.filter(rcount__gt=50)
+    # 702 movies
+    movies = movies.filter(rcount__gt=10)[:target_num]
     data = {
         movie.id: list(movie.reviews.values_list("user", "rating")) for movie in movies
     }
@@ -81,11 +83,11 @@ def generate_mm_data():
 
 @shared_task
 def generate_uu_data():
-    # Similarity.truncate()
+    Similarity.truncate()
     ct = ContentType.objects.get_for_model(User)
     users = User.objects.annotate(rcount=Count("reviews__id"))
-    # 1014 users
-    users = users.filter(rcount__gt=50)
+    # 3303 users
+    users = users.filter(rcount__gt=10)[:target_num]
     data = {
         user.id: list(user.reviews.values_list("movie", "rating")) for user in users
     }
@@ -119,12 +121,10 @@ def calculating(ct, ids, data, ttype=1):
     for i, t1 in enumerate(ids):
         if i % 100 == 0:
             logging.info(f"worker:{ct.model}:{ttype.value} - reached {i}")
-        if ttype == Ttype.odd_odd:
-            if iseven(i):
-                continue
-        if ttype == Ttype.even_even:
-            if isodd(i):
-                continue
+        if iseven(i) and ttype == Ttype.odd_odd:
+            continue
+        if isodd(i) and ttype == Ttype.even_even:
+            continue
         for j, t2 in enumerate(reversed(ids)):
             if t1 == t2:
                 break
@@ -137,17 +137,24 @@ def calculating(ct, ids, data, ttype=1):
                     continue
                 if iseven(i) and iseven(j):
                     continue
-            counter += 1
+            counter += 2
+            score = sim_pearson(data[t1], data[t2])
             objs.append(
                 Similarity(
                     content_type=ct,
                     source_id=t1,
                     target_id=t2,
-                    score=sim_pearson(data[t1], data[t2]),
+                    score=score,
+                )
+            )
+            objs.append(
+                Similarity(
+                    content_type=ct,
+                    source_id=t2,
+                    target_id=t1,
+                    score=score,
                 )
             )
     logging.warning(f"worker:{ct.model}:{ttype.value} - creating objs")
-    n, m = Similarity.bulk_update_create(objs)
-    logging.warning(
-        f"worker:{ct.model}:{ttype.value} - finished {n} created, {m} updated"
-    )
+    Similarity.objects.bulk_create(objs)
+    logging.warning(f"worker:{ct.model}:{ttype.value} - finished {counter} created")
