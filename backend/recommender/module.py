@@ -2,15 +2,10 @@ from math import sqrt
 from app.models import User, Movie
 
 
-def get_ratings(p1, p2, data):
-    similars = list(set([t for t, r in data[p1]]) & set([t for t, r in data[p2]]))
-    p1_ratings = [r for t, r in data[p1] if t in similars]
-    p2_ratings = [r for t, r in data[p2] if t in similars]
-    return p1_ratings, p2_ratings
-
-
-def sim_pearson(p1, p2, data):
-    p1_ratings, p2_ratings = get_ratings(p1, p2, data)
+def sim_pearson(data1, data2):
+    similars = list(set([t for t, r in data1]) & set([t for t, r in data2]))
+    p1_ratings = [r for t, r in data1 if t in similars]
+    p2_ratings = [r for t, r in data2 if t in similars]
     n = len(p1_ratings)
     if n == 0:
         return 0

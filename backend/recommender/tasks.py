@@ -15,17 +15,17 @@ from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-tasks_time = crontab(hour=20, minute=58)
+tasks_time = crontab(hour=13, minute=4)
 
 app.conf.beat_schedule = {
-    "Generate_User-User_Data": {
-        "task": "recommender.tasks.generate_uu_data",
-        "schedule": tasks_time,
-    },
-    # "Generate_Movie-Movie_data": {
-    #     "task": "recommender.tasks.generate_mm_data",
+    # "Generate_User-User_Data": {
+    #     "task": "recommender.tasks.generate_uu_data",
     #     "schedule": tasks_time,
     # },
+    "Generate_Movie-Movie_data": {
+        "task": "recommender.tasks.generate_mm_data",
+        "schedule": tasks_time,
+    },
 }
 
 
@@ -45,7 +45,7 @@ def iseven(n):
 
 @shared_task
 def generate_mm_data():
-    Similarity.truncate()
+    # Similarity.truncate()
     ct = ContentType.objects.get_for_model(Movie)
     movies = Movie.objects.annotate(rcount=Count("reviews__id"))
     # 450 movies
@@ -81,11 +81,11 @@ def generate_mm_data():
 
 @shared_task
 def generate_uu_data():
-    Similarity.truncate()
+    # Similarity.truncate()
     ct = ContentType.objects.get_for_model(User)
     users = User.objects.annotate(rcount=Count("reviews__id"))
     # 1014 users
-    users = users.filter(rcount__gt=10)[:100]
+    users = users.filter(rcount__gt=50)
     data = {
         user.id: list(user.reviews.values_list("movie", "rating")) for user in users
     }
@@ -108,17 +108,18 @@ def generate_uu_data():
     t2.join()
     t3.join()
     finish = datetime.now()
-    logging.warning(
+    logging.error(
         f"finished uu_data in {finish-start} with {Similarity.objects.filter(content_type=ct).count()}"
     )
 
 
 def calculating(ct, ids, data, ttype=1):
-    # connection.connect()
-    c = 0
+    counter = 0
     for i, t1 in enumerate(ids):
+        if i % 100 == 0:
+            logging.info(f"worker:{ttype.name} for:{ct.model} - has reached {i}")
         # if user1.similarities.count() == (n - 1):
-        #     logging.warning(f"user {user1.id} already done!")
+        #     logging.info(f"user {user1.id} already done!")
         #     continue
         if ttype in [Ttype.odd_odd, Ttype.odd_even]:
             if iseven(i):
@@ -133,12 +134,11 @@ def calculating(ct, ids, data, ttype=1):
                 continue
             if isodd(j) and ttype in [Ttype.even_even, Ttype.odd_even]:
                 continue
-            c += 1
+            counter += 1
             Similarity.objects.create(
                 content_type=ct,
                 source_id=t1,
                 target_id=t2,
-                score=sim_pearson(t1, t2, data),
+                score=sim_pearson(data[t1], data[t2]),
             )
-        # print(f"worker:{ttype.name} {ct.model}-{i} done!")
-    print(f"worker:{ttype.name} counter: {c}")
+    logging.warning(f"worker:{ttype.name} for:{ct.model} - counter: {counter}")
