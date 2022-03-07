@@ -14,18 +14,20 @@ from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-movies_time = crontab(hour="*", minute=4)
-users_time = crontab(hour="*", minute=4)
+# movies_time = crontab(hour="*", minute=4)
+# users_time = crontab(hour="*", minute=4)
+
+tasks_time = crontab(hour="*", minute=50)
 
 app.conf.beat_schedule = {
     "Generate_User-User_Data": {
         "task": "recommender.tasks.generate_uu_data",
-        "schedule": users_time,
+        "schedule": tasks_time,
     },
-    "Generate_Movie-Movie_data": {
-        "task": "recommender.tasks.generate_mm_data",
-        "schedule": movies_time,
-    },
+    #     "Generate_Movie-Movie_data": {
+    #         "task": "recommender.tasks.generate_mm_data",
+    #         "schedule": tasks_time,
+    #     },
 }
 
 target_num = 100
@@ -117,7 +119,6 @@ def generate_uu_data():
 
 def calculating(ct, ids, data, ttype=1):
     counter = 0
-    objs = []
     for i, t1 in enumerate(ids):
         if i % 100 == 0:
             logging.info(f"worker:{ct.model}:{ttype.value} - reached {i}")
@@ -137,24 +138,11 @@ def calculating(ct, ids, data, ttype=1):
                     continue
                 if iseven(i) and iseven(j):
                     continue
-            counter += 2
-            score = sim_pearson(data[t1], data[t2])
-            objs.append(
-                Similarity(
-                    content_type=ct,
-                    source_id=t1,
-                    target_id=t2,
-                    score=score,
-                )
+            counter += 1
+            Similarity.objects.create(
+                content_type=ct,
+                source_id=t1,
+                target_id=t2,
+                score=sim_pearson(data[t1], data[t2]),
             )
-            objs.append(
-                Similarity(
-                    content_type=ct,
-                    source_id=t2,
-                    target_id=t1,
-                    score=score,
-                )
-            )
-    logging.warning(f"worker:{ct.model}:{ttype.value} - creating objs")
-    Similarity.objects.bulk_create(objs)
     logging.warning(f"worker:{ct.model}:{ttype.value} - finished {counter} created")
