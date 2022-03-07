@@ -9,22 +9,22 @@ from celery.schedules import crontab
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
-from django.db import connection
 
 from recommender.module import sim_pearson
 from recommender.models import Similarity
 from app.models import User, Movie
 
-tasks_time = crontab(hour=13, minute=4)
+movies_time = crontab(hour=17, minute=13)
+users_time = crontab(hour=17, minute=19)
 
 app.conf.beat_schedule = {
-    # "Generate_User-User_Data": {
-    #     "task": "recommender.tasks.generate_uu_data",
-    #     "schedule": tasks_time,
-    # },
+    "Generate_User-User_Data": {
+        "task": "recommender.tasks.generate_uu_data",
+        "schedule": users_time,
+    },
     "Generate_Movie-Movie_data": {
         "task": "recommender.tasks.generate_mm_data",
-        "schedule": tasks_time,
+        "schedule": movies_time,
     },
 }
 
@@ -115,30 +115,39 @@ def generate_uu_data():
 
 def calculating(ct, ids, data, ttype=1):
     counter = 0
+    objs = []
     for i, t1 in enumerate(ids):
         if i % 100 == 0:
-            logging.info(f"worker:{ttype.name} for:{ct.model} - has reached {i}")
-        # if user1.similarities.count() == (n - 1):
-        #     logging.info(f"user {user1.id} already done!")
-        #     continue
-        if ttype in [Ttype.odd_odd, Ttype.odd_even]:
+            logging.info(f"worker:{ct.model}:{ttype.value} - reached {i}")
+        if ttype == Ttype.odd_odd:
             if iseven(i):
                 continue
         if ttype == Ttype.even_even:
             if isodd(i):
                 continue
         for j, t2 in enumerate(reversed(ids)):
-            if i == j and ttype in [Ttype.odd_odd, Ttype.even_even]:
+            if t1 == t2:
                 break
             if iseven(j) and ttype == Ttype.odd_odd:
                 continue
-            if isodd(j) and ttype in [Ttype.even_even, Ttype.odd_even]:
+            if isodd(j) and ttype == Ttype.even_even:
                 continue
+            if ttype == Ttype.odd_even:
+                if isodd(i) and isodd(j):
+                    continue
+                if iseven(i) and iseven(j):
+                    continue
             counter += 1
-            Similarity.objects.create(
-                content_type=ct,
-                source_id=t1,
-                target_id=t2,
-                score=sim_pearson(data[t1], data[t2]),
+            objs.append(
+                Similarity(
+                    content_type=ct,
+                    source_id=t1,
+                    target_id=t2,
+                    score=sim_pearson(data[t1], data[t2]),
+                )
             )
-    logging.warning(f"worker:{ttype.name} for:{ct.model} - counter: {counter}")
+    logging.warning(f"worker:{ct.model}:{ttype.value} - creating objs")
+    n, m = Similarity.bulk_update_create(objs)
+    logging.warning(
+        f"worker:{ct.model}:{ttype.value} - finished {n} created, {m} updated"
+    )
