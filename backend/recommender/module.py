@@ -110,3 +110,25 @@ class GlobalRecommender:
             .annotate(sim=F("similarities__score"))
             .order_by("-sim")[:10]
         )
+
+    @staticmethod
+    def get_recommendation(user: User):
+        movies = (
+            Movie.objects.exclude(reviews__user=user)
+            .filter()
+            .annotate(sim_sum=Sum(F("reviews__movie__similarities__score")))
+            .annotate(
+                total=Sum(
+                    F("reviews__movie__similarities__score") * F("reviews__rating")
+                )
+            )
+            .annotate(
+                er=Case(
+                    When(sim_sum=0, then=0),
+                    default=F("total") / F("sim_sum"),
+                    output_field=FloatField(),
+                )
+            )
+        )
+
+        return movies.order_by("-er")[:10]
