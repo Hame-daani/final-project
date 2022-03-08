@@ -94,3 +94,11 @@ class GlobalRecommender:
             return float(me.similarities.get(target_id=user.id).score)
         except:
             return 0
+
+    @staticmethod
+    def get_taste_group(user):
+        return (
+            User.objects.filter(similarities__target_id=user.id)
+            .annotate(sim=F("similarities__score"))
+            .order_by("-sim")[:100]
+        )
