@@ -85,3 +85,12 @@ class FriendsRecommender:
         )
 
         return movies.order_by("-er")[:10]
+
+
+class GlobalRecommender:
+    @staticmethod
+    def get_TCS(me, user):
+        try:
+            return float(me.similarities.get(target_id=user.id).score)
+        except:
+            return 0
