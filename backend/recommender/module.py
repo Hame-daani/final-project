@@ -113,15 +113,16 @@ class GlobalRecommender:
 
     @staticmethod
     def get_recommendation(user: User):
+        """
+        return top 10 movies calculated from user rated movies
+        Ex.time: 7.33 ms
+        """
+        mymovies = user.reviews.values_list("movie", flat=True)
         movies = (
             Movie.objects.exclude(reviews__user=user)
-            .filter()
-            .annotate(sim_sum=Sum(F("reviews__movie__similarities__score")))
-            .annotate(
-                total=Sum(
-                    F("reviews__movie__similarities__score") * F("reviews__rating")
-                )
-            )
+            .filter(similarities__target_id__in=mymovies)
+            .annotate(sim_sum=Sum(F("similarities__score")))
+            .annotate(total=Sum(F("similarities__score") * F("reviews__rating")))
             .annotate(
                 er=Case(
                     When(sim_sum=0, then=0),
