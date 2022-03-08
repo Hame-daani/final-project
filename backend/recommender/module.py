@@ -28,16 +28,30 @@ class FriendsRecommender:
         """
         return estimated rating for a movie.
         formoula: [similariy*rating for all in myfriends] / sum(similarities)
-        Ex.time: 1.5 s
+        Ex.time: 800 ms
         """
-        reviews = (
+
+        myfriends = user.friends.all()
+        results = (
             Review.objects.filter(movie=movie)
-            .filter(user__in=user.friends.all())
+            .filter(user__in=myfriends)
             .filter(user__similarities__target_id=user.id)
-            .annotate(sim=F("user__similarities__score"))
+            .aggregate(
+                sim_sum=Sum("user__similarities__score"),
+                total=Sum(F("user__similarities__score") * F("rating")),
+            )
         )
-        sim_sum = reviews.aggregate(sum=Sum("sim"))["sum"]
-        total = reviews.aggregate(total=Sum(F("sim") * F("rating")))["total"]
+        sim_sum, total = results["sim_sum"], results["total"]
+        # total = 0
+        # sim_sum = 0
+        # for friend in user.friends.all():
+        #     try:
+        #         r = friend.reviews.get(movie=movie)
+        #         fs = user.similarities.get(target_id=friend.id).score
+        #         sim_sum += fs
+        #         total += fs * r.rating
+        #     except:
+        #         continue
         if not sim_sum or not total:
             return 0
         return {"rating": int(total // sim_sum), "sim": float(sim_sum)}
