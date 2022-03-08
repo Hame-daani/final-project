@@ -102,3 +102,11 @@ class GlobalRecommender:
             .annotate(sim=F("similarities__score"))
             .order_by("-sim")[:100]
         )
+
+    @staticmethod
+    def get_similar_movies(movie):
+        return (
+            Movie.objects.filter(similarities__target_id=movie.id)
+            .annotate(sim=F("similarities__score"))
+            .order_by("-sim")[:10]
+        )
