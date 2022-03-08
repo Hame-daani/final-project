@@ -1,6 +1,6 @@
 from math import sqrt
-from app.models import User, Movie
-from django.db.models import F, Sum
+from app.models import Review, User, Movie
+from django.db.models import F, Sum, Count, Func
 
 
 def sim_pearson(data1, data2):
@@ -28,10 +28,16 @@ class FriendsRecommender:
         """
         return estimated rating for a movie.
         formoula: [similariy*rating for all in myfriends] / sum(similarities)
+        Ex.time: 1.5 s
         """
-        friends = user.friends.filter(
-            reviews__movie=movie, similarities__target_id=user.id
-        ).annotate(rating=F("reviews__rating"), sim=F("similarities__score"))
-        sim_sum = friends.aggregate(sum=Sum("sim"))["sum"]
-        total = friends.aggregate(total=Sum(F("sim") * F("rating")))["total"]
+        reviews = (
+            Review.objects.filter(movie=movie)
+            .filter(user__in=user.friends.all())
+            .filter(user__similarities__target_id=user.id)
+            .annotate(sim=F("user__similarities__score"))
+        )
+        sim_sum = reviews.aggregate(sum=Sum("sim"))["sum"]
+        total = reviews.aggregate(total=Sum(F("sim") * F("rating")))["total"]
+        if not sim_sum or not total:
+            return 0
         return {"rating": int(total // sim_sum), "sim": float(sim_sum)}
