@@ -1,6 +1,6 @@
 from math import sqrt
 from app.models import Review, User, Movie
-from django.db.models import F, Sum, Count, Func
+from django.db.models import F, Sum, Case, When, FloatField
 
 
 def sim_pearson(data1, data2):
@@ -41,3 +41,33 @@ class FriendsRecommender:
         if not sim_sum or not total:
             return 0
         return {"rating": int(total // sim_sum), "sim": float(sim_sum)}
+
+    @staticmethod
+    def get_recommendation(user: User):
+        """
+        return top 10 movies calculated from friends
+        Ex.time: 4.13 ms
+        """
+        myfriends = user.friends.all()
+        movies = (
+            Movie.objects.exclude(reviews__user=user)
+            .filter(
+                reviews__user__in=myfriends,
+                reviews__user__similarities__target_id=user.id,
+            )
+            .annotate(sim_sum=Sum(F("reviews__user__similarities__score")))
+            .annotate(
+                total=Sum(
+                    F("reviews__user__similarities__score") * F("reviews__rating")
+                )
+            )
+            .annotate(
+                er=Case(
+                    When(sim_sum=0, then=0),
+                    default=F("total") / F("sim_sum"),
+                    output_field=FloatField(),
+                )
+            )
+        )
+
+        return movies.order_by("-er")[:10]
