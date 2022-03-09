@@ -15,18 +15,20 @@ from recommender.models import Similarity
 from app.models import User, Movie
 
 
-tasks_time = crontab(hour="*", minute=8)
+tasks_time = crontab(hour=0, minute=0)
 
-app.conf.beat_schedule = {
-    "Generate_User-User_Data": {
-        "task": "recommender.tasks.generate_uu_data",
-        "schedule": tasks_time,
-    },
-    "Generate_Movie-Movie_data": {
-        "task": "recommender.tasks.generate_mm_data",
-        "schedule": tasks_time,
-    },
-}
+app.conf.beat_schedule.update(
+    {
+        "Generate_User-User_Data": {
+            "task": "recommender.tasks.generate_uu_data",
+            "schedule": tasks_time,
+        },
+        "Generate_Movie-Movie_data": {
+            "task": "recommender.tasks.generate_mm_data",
+            "schedule": tasks_time,
+        },
+    }
+)
 
 target_num = 500
 cache_size = 1000
