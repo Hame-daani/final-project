@@ -84,7 +84,7 @@ class FriendsRecommender:
             )
         )
 
-        return movies.order_by("-er")[:10]
+        return movies.order_by("-er")[:100]
 
 
 class GlobalRecommender:
@@ -132,4 +132,4 @@ class GlobalRecommender:
             )
         )
 
-        return movies.order_by("-er")[:10]
+        return movies.order_by("-er")[:100]
