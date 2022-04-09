@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "app.apps.AppConfig",
     "recommender.apps.RecommenderConfig",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,12 @@ MEDIA_ROOT = "media/"
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
