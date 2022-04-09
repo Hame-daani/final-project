@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
-# Create your views here.
+from .serializers import UserSerializer
 
 
 class LogoutAPIView(GenericAPIView):
@@ -13,3 +15,8 @@ class LogoutAPIView(GenericAPIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(data={"message": f"Bye {request.user.username}!"})
+
+
+class UserRegistration(CreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
