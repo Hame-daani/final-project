@@ -11,6 +11,9 @@ def add_ratings(apps, schema):
     Review = apps.get_model("app", "Review")
     Movie = apps.get_model("app", "Movie")
     User = apps.get_model("app", "User")
+    cache = []
+    counter = 0
+    print(f"{df.shape[0]} rating will be added")
     for index, row in df.iterrows():
         userid = row["userId"]
         movieid = row["movieId"]
@@ -20,15 +23,22 @@ def add_ratings(apps, schema):
         timestamp = row["timestamp"]
         date = make_aware(datetime.fromtimestamp(timestamp))
         text = row["text"]
-        Review.objects.create(
-            user=user,
-            movie=movie,
-            text=text,
-            rating=int(float(rating) * 2),
-            created_at=date,
-            updated_at=date,
+        cache.append(
+            Review(
+                user=user,
+                movie=movie,
+                text=text,
+                rating=int(float(rating) * 2),
+                created_at=date,
+                updated_at=date,
+            )
         )
-        # print(f"rating {index} added", end='\r')
+        counter += 1
+        if counter % 1000 == 0:
+            Review.objects.bulk_create(cache)
+            cache = []
+            print(f"{counter} ratings added", end="\r")
+    Review.objects.bulk_create(cache)
 
 
 @timed
@@ -44,10 +54,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(
-            add_ratings,
-            reverse_code=removing_ratings,
-        ),
+        # migrations.RunPython(
+        #     add_ratings,
+        #     reverse_code=removing_ratings,
+        # ),
         migrations.operations.AlterField(
             model_name="review",
             name="created_at",

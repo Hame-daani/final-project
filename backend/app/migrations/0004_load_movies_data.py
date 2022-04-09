@@ -6,40 +6,38 @@ from math import isnan
 
 @timed
 def add_movies(apps, schema):
-    df = pd.read_csv("data/movies.csv", low_memory=False)
+    df = pd.read_csv("data/postgresql/movies.csv", low_memory=False, delimiter="|")
     Movie = apps.get_model("app", "Movie")
+    movies = []
     for index, row in df.iterrows():
-        id = row["movieId"]
+        id = row["id"]
         title = row["title"]
-        a = title.rfind("(")
-        b = title.rfind(")")
-        year = title[a + 1 : b]
-        if not year.isdigit():
-            year = ""
-        title = title[:a].strip()
-        genres = row["genres"].split("|")
-        imdbid = row["imdbId"]
-        if isnan(row["tmdbId"]):
+        year = row["year"]
+        genres = row["genres"][1:-1].split(",")
+        imdbid = row["imdbid"]
+        if isnan(row["tmdbid"]):
             tmdbid = ""
         else:
-            tmdbid = f"{row['tmdbId']:.0f}"
+            tmdbid = f"{row['tmdbid']:.0f}"
         poster = row["poster"]
         if type(poster) != str:
             poster = ""
         plot = row["plot"]
         if type(plot) != str:
             plot = ""
-        Movie.objects.create(
-            id=id,
-            title=title,
-            year=year,
-            genres=genres,
-            imdbid=imdbid,
-            tmdbid=tmdbid,
-            poster=poster,
-            plot=plot,
+        movies.append(
+            Movie(
+                id=id,
+                title=title,
+                year=year,
+                genres=genres,
+                imdbid=imdbid,
+                tmdbid=tmdbid,
+                poster=poster,
+                plot=plot,
+            )
         )
-        # print(f"movie {index} added", end='\r')
+    Movie.objects.bulk_create(movies)
 
 
 @timed

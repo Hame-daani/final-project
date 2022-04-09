@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(
-            add_friends,
-            reverse_code=removing_friends,
-        ),
+        # migrations.RunPython(
+        #     add_friends,
+        #     reverse_code=removing_friends,
+        # ),
     ]
