@@ -50,14 +50,14 @@ def removing_ratings(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0005_add_review_model"),
+        ("app", "0009_load_users_extra_data"),
     ]
 
     operations = [
-        # migrations.RunPython(
-        #     add_ratings,
-        #     reverse_code=removing_ratings,
-        # ),
+        migrations.RunPython(
+            add_ratings,
+            reverse_code=removing_ratings,
+        ),
         migrations.operations.AlterField(
             model_name="review",
             name="created_at",

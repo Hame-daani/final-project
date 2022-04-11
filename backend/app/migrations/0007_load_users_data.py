@@ -36,7 +36,7 @@ def removing_users(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0001_add_user_model"),
+        ("app", "0006_add_like_model"),
     ]
 
     operations = [
