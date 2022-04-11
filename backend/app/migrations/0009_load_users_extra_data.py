@@ -2,12 +2,25 @@ from django.db import migrations
 from app.utils import timed
 import pandas as pd
 import ast
+import threading
 
 
 @timed
 def add_friends(apps, schema):
-    User = apps.get_model("app", "User")
     df = pd.read_csv("data/users.csv", low_memory=False)
+    #     d = len(df) // 3
+    #     t1 = threading.Thread(target=adder_child, args=(apps, schema, df[:d]))
+    #     t2 = threading.Thread(target=adder_child, args=(apps, schema, df[d : d * 2]))
+    #     t3 = threading.Thread(target=adder_child, args=(apps, schema, df[d * 2 :]))
+    #     t1.start()
+    #     t2.start()
+    #     t3.start()
+    #     t1.join()
+    #     t2.join()
+    #     t3.join()
+
+    # def adder_child(apps, schema, df):
+    User = apps.get_model("app", "User")
     for index, row in df.iterrows():
         user = User.objects.get(id=row["id"])
         friends = ast.literal_eval(row["friends"])
