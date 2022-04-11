@@ -11,7 +11,11 @@ class MovieViewSet(ReadOnlyModelViewSet):
 
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
     filterset_class = MovieFilter
     search_fields = ["^title"]
     ordering_fields = ["year"]
