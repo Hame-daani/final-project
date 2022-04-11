@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Review, User, Movie
+from .models import Comment, Review, User, Movie
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,3 +39,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = "__all__"
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+    def get_fields(self):
+        fields = super(CommentSerializer, self).get_fields()
+        fields["comments"] = CommentSerializer(many=True)
+        return fields

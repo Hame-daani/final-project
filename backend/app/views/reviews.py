@@ -8,9 +8,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from app.models import Review
 from app.serializers import ReviewSerializer
 from app.permissions import isOwner
+from app.mixins import Commentable
 
 
-class ReviewViewSet(ModelViewSet):
+class ReviewViewSet(ModelViewSet, Commentable):
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
