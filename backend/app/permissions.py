@@ -1,19 +1,17 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import (
+    BasePermission,
+    SAFE_METHODS,
+    IsAuthenticatedOrReadOnly,
+)
 
 
-class isOwner(BasePermission):
-    def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-        return request.user.is_authenticated
-
-    # object permission
+class isOwner(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
         if request.method == "POST":
             return request.user.is_authenticated
-        return request.user.is_authenticated and obj.user == request.user
+        return obj.user == request.user
 
 
 class isSelf(BasePermission):
