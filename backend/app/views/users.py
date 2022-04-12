@@ -5,12 +5,20 @@ from rest_framework import status
 from app.models import User
 from app.permissions import isSelf
 from app.serializers import UserSerializer
+from recommender.module import GlobalRecommender
 
 
 class ProfileView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = (isSelf,)
     queryset = User.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.is_authenticated:
+            instance.sim = GlobalRecommender.get_TCS(request.user, instance)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class FriendsView(ListAPIView):
