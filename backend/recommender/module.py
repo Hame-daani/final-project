@@ -24,7 +24,7 @@ def sim_pearson(data1, data2):
 
 class FriendsRecommender:
     @staticmethod
-    def get_estimated_rating(user: User, movie: Movie):
+    def get_estimated_rating(user: User, movieid):
         """
         return estimated rating for a movie.
         formoula: [similariy*rating for all in myfriends] / sum(similarities)
@@ -33,7 +33,7 @@ class FriendsRecommender:
 
         myfriends = user.friends.all()
         results = (
-            Review.objects.filter(movie=movie)
+            Review.objects.filter(movie=movieid)
             .filter(user__in=myfriends)
             .filter(user__similarities__target_id=user.id)
             .aggregate(
@@ -84,7 +84,7 @@ class FriendsRecommender:
             )
         )
 
-        return movies.order_by("-er")[:100]
+        return movies.order_by("-er")
 
 
 class GlobalRecommender:
@@ -100,15 +100,15 @@ class GlobalRecommender:
         return (
             User.objects.filter(similarities__target_id=user.id)
             .annotate(sim=F("similarities__score"))
-            .order_by("-sim")[:100]
+            .order_by("-sim")
         )
 
     @staticmethod
-    def get_similar_movies(movie):
+    def get_similar_movies(movieid):
         return (
-            Movie.objects.filter(similarities__target_id=movie.id)
+            Movie.objects.filter(similarities__target_id=movieid)
             .annotate(sim=F("similarities__score"))
-            .order_by("-sim")[:10]
+            .order_by("-sim")
         )
 
     @staticmethod
@@ -132,4 +132,4 @@ class GlobalRecommender:
             )
         )
 
-        return movies.order_by("-er")[:100]
+        return movies.order_by("-er")
