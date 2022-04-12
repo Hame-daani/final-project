@@ -5,14 +5,14 @@ from .models import Comment, FriendRequest, Like, Review, User, Movie
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    sim = serializers.FloatField(required=False)
+    similarity = serializers.FloatField(required=False, source="sim")
 
     class Meta:
         model = User
         fields = (
             "id",
             "username",
-            "sim",
+            "similarity",
             "password",
             "gender",
             "first_name",
@@ -29,7 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    sim = serializers.FloatField(required=False)
+    similarity = serializers.FloatField(required=False, source="sim")
+    estimated_rating = serializers.FloatField(required=False, source="er")
 
     class Meta:
         model = Movie

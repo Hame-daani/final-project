@@ -20,3 +20,12 @@ class suView(ListAPIView):
     def get_queryset(self):
         u = self.request.user
         return GlobalRecommender.get_taste_group(u)
+
+
+class recommendationView(ListAPIView):
+    serializer_class = MovieSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        u = self.request.user
+        return GlobalRecommender.get_recommendation(u)
