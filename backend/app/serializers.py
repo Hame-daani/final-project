@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Comment, Like, Review, User, Movie
+from .models import Comment, FriendRequest, Like, Review, User, Movie
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,4 +78,13 @@ class LikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Like
+        fields = "__all__"
+
+
+class FrSerializer(serializers.ModelSerializer):
+    from_user = UserSerializer(read_only=True)
+    to_user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = FriendRequest
         fields = "__all__"
