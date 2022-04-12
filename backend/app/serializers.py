@@ -27,6 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
+    sim = serializers.FloatField(required=False)
+
     class Meta:
         model = Movie
         fields = "__all__"

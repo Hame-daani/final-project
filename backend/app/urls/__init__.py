@@ -9,4 +9,5 @@ urlpatterns = [
     path("comments/", include("app.urls.comments")),
     path("likes/", include("app.urls.likes")),
     path("fr/", include("app.urls.friendrequest")),
+    path("rc/", include("recommender.urls")),
 ]
