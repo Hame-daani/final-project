@@ -7,4 +7,5 @@ urlpatterns = [
     path("movies/", include("app.urls.movies")),
     path("reviews/", include("app.urls.reviews")),
     path("comments/", include("app.urls.comments")),
+    path("likes/", include("app.urls.likes")),
 ]
