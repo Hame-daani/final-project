@@ -131,7 +131,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+#
 # my settings
+#
 AUTH_USER_MODEL = "app.User"
 MEDIA_ROOT = "media/"
 
@@ -140,12 +142,14 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
+# drf
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
-        # "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
