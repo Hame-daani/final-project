@@ -5,12 +5,14 @@ from .models import Comment, FriendRequest, Like, Review, User, Movie
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    sim = serializers.FloatField(required=False)
 
     class Meta:
         model = User
         fields = (
             "id",
             "username",
+            "sim",
             "password",
             "gender",
             "first_name",
