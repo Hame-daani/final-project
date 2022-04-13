@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     similarity = serializers.FloatField(required=False, source="sim")
     estimated_rating = serializers.FloatField(required=False, source="er")
+    avg_rating = serializers.FloatField(required=False)
 
     class Meta:
         model = Movie

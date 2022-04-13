@@ -31,6 +31,13 @@ genres = [
 ]
 
 
+class Median(models.Aggregate):
+    function = "PERCENTILE_CONT"
+    name = "median"
+    output_field = models.FloatField()
+    template = "%(function)s(0.5) WITHIN GROUP (ORDER BY %(expressions)s)"
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=500)
     plot = models.TextField(blank=True)
@@ -40,6 +47,20 @@ class Movie(models.Model):
     genres = ArrayField(models.CharField(max_length=10))
     poster = models.URLField(blank=True)
     similarities = GenericRelation(Similarity, object_id_field="source_id")
+
+    @property
+    def avg_rating(self):
+        movie_ratings = Movie.objects.annotate(rcount=models.Count("reviews"))
+        c = Review.objects.aggregate(avg=models.Avg("rating"))["avg"]
+        m = movie_ratings.aggregate(m=Median("rcount"))["m"]
+        v = movie_ratings.get(id=self.id).rcount
+        r = Review.objects.filter(movie=self.id).aggregate(avg=models.Avg("rating"))[
+            "avg"
+        ]
+        try:
+            return (v / (v + m) * r) + (m / (m + v) * c)
+        except:
+            return 0
 
     def __str__(self) -> str:
         return self.title
