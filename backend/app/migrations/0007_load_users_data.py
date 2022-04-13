@@ -4,6 +4,8 @@ from app.utils import timed
 
 from django.contrib.auth.hashers import make_password
 
+from tqdm import tqdm
+
 
 @timed
 def add_users(apps, schema):
@@ -11,7 +13,7 @@ def add_users(apps, schema):
     User = apps.get_model("app", "User")
     users = []
     pw = make_password("12345678")
-    for index, row in df.iterrows():
+    for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         users.append(
             User(
                 username=row["username"],

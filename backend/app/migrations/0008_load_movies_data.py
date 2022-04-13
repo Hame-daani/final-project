@@ -2,6 +2,7 @@ from django.db import migrations
 import pandas as pd
 from app.utils import timed
 from math import isnan
+from tqdm import tqdm
 
 
 @timed
@@ -9,7 +10,7 @@ def add_movies(apps, schema):
     df = pd.read_csv("data/postgresql/movies.csv", low_memory=False, delimiter="|")
     Movie = apps.get_model("app", "Movie")
     movies = []
-    for index, row in df.iterrows():
+    for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         id = row["id"]
         title = row["title"]
         year = row["year"]

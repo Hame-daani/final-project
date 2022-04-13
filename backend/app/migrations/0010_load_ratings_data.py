@@ -3,32 +3,19 @@ import pandas as pd
 from datetime import datetime
 from django.utils.timezone import make_aware
 from app.utils import timed
-import threading
+from tqdm import tqdm
 
 
 @timed
 def add_ratings(apps, schema):
     df = pd.read_csv("data/ratings.csv", low_memory=False)
-    d = len(df) // 3
-    t1 = threading.Thread(target=adder_child, args=(apps, schema, df[:d]))
-    t2 = threading.Thread(target=adder_child, args=(apps, schema, df[d : d * 2]))
-    t3 = threading.Thread(target=adder_child, args=(apps, schema, df[d * 2 :]))
-    t1.start()
-    t2.start()
-    t3.start()
-    t1.join()
-    t2.join()
-    t3.join()
-
-
-def adder_child(apps, schema, df):
     Review = apps.get_model("app", "Review")
     Movie = apps.get_model("app", "Movie")
     User = apps.get_model("app", "User")
     cache = []
     counter = 0
-    print(f"{df.shape[0]} rating will be added")
-    for index, row in df.iterrows():
+    # print(f"{df.shape[0]} rating will be added")
+    for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         userid = row["userId"]
         movieid = row["movieId"]
         user = User.objects.get(id=userid)
@@ -51,7 +38,7 @@ def adder_child(apps, schema, df):
         if counter % 1000 == 0:
             Review.objects.bulk_create(cache)
             cache = []
-            print(f"{counter} ratings added")
+            # print(f"{counter} ratings added")
     Review.objects.bulk_create(cache)
 
 
