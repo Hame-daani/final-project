@@ -10,24 +10,21 @@ from tqdm import tqdm
 def add_ratings(apps, schema):
     df = pd.read_csv("data/ratings.csv", low_memory=False)
     Review = apps.get_model("app", "Review")
-    Movie = apps.get_model("app", "Movie")
-    User = apps.get_model("app", "User")
+
     cache = []
+    cache_size = 1000
     counter = 0
-    # print(f"{df.shape[0]} rating will be added")
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         userid = row["userId"]
         movieid = row["movieId"]
-        user = User.objects.get(id=userid)
-        movie = Movie.objects.get(id=movieid)
         rating = row["rating"]
         timestamp = row["timestamp"]
         date = make_aware(datetime.fromtimestamp(timestamp))
         text = row["text"]
         cache.append(
             Review(
-                user=user,
-                movie=movie,
+                user_id=userid,
+                movie_id=movieid,
                 text=text,
                 rating=int(float(rating) * 2),
                 created_at=date,
@@ -35,10 +32,10 @@ def add_ratings(apps, schema):
             )
         )
         counter += 1
-        if counter % 1000 == 0:
+        if counter % cache_size == 0:
             Review.objects.bulk_create(cache)
+            del cache
             cache = []
-            # print(f"{counter} ratings added")
     Review.objects.bulk_create(cache)
 
 
