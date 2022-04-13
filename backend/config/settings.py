@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "app.apps.AppConfig",
     "recommender.apps.RecommenderConfig",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -128,7 +131,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+#
 # my settings
+#
 AUTH_USER_MODEL = "app.User"
 MEDIA_ROOT = "media/"
 
@@ -136,3 +141,15 @@ MEDIA_ROOT = "media/"
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ENABLE_UTC = False
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+# drf
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PAGINATION_CLASS": "app.pagination.MyPagination",
+    "PAGE_SIZE": 10,
+}
+
+CORS_ORIGIN_ALLOW_ALL = True

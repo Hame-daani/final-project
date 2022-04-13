@@ -3,32 +3,40 @@ import pandas as pd
 from datetime import datetime
 from django.utils.timezone import make_aware
 from app.utils import timed
+from tqdm import tqdm
 
 
 @timed
 def add_ratings(apps, schema):
     df = pd.read_csv("data/ratings.csv", low_memory=False)
     Review = apps.get_model("app", "Review")
-    Movie = apps.get_model("app", "Movie")
-    User = apps.get_model("app", "User")
-    for index, row in df.iterrows():
+
+    cache = []
+    cache_size = 1000
+    counter = 0
+    for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         userid = row["userId"]
         movieid = row["movieId"]
-        user = User.objects.get(id=userid)
-        movie = Movie.objects.get(id=movieid)
         rating = row["rating"]
         timestamp = row["timestamp"]
         date = make_aware(datetime.fromtimestamp(timestamp))
         text = row["text"]
-        Review.objects.create(
-            user=user,
-            movie=movie,
-            text=text,
-            rating=int(float(rating) * 2),
-            created_at=date,
-            updated_at=date,
+        cache.append(
+            Review(
+                user_id=userid,
+                movie_id=movieid,
+                text=text,
+                rating=int(float(rating) * 2),
+                created_at=date,
+                updated_at=date,
+            )
         )
-        # print(f"rating {index} added", end='\r')
+        counter += 1
+        if counter % cache_size == 0:
+            Review.objects.bulk_create(cache)
+            del cache
+            cache = []
+    Review.objects.bulk_create(cache)
 
 
 @timed
@@ -40,7 +48,7 @@ def removing_ratings(apps, schema):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("app", "0005_add_review_model"),
+        ("app", "0009_load_users_extra_data"),
     ]
 
     operations = [
