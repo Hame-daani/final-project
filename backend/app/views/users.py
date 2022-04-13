@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 
 from app.models import User
 from app.permissions import isSelf
-from app.serializers import UserSerializer
+from app.serializers import MovieSerializer, UserSerializer
 from recommender.module import GlobalRecommender
 
 
@@ -32,5 +32,21 @@ class UserViewSet(ModelViewSet):
         try:
             obj = self.get_object()
             return Response(UserSerializer(obj.friends.all(), many=True).data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def watchlist(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            return Response(MovieSerializer(obj.watchlist.all(), many=True).data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def favorites(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            return Response(MovieSerializer(obj.favorites.all(), many=True).data)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
