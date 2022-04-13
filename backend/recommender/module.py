@@ -24,7 +24,7 @@ def sim_pearson(data1, data2):
 
 class FriendsRecommender:
     @staticmethod
-    def get_estimated_rating(user: User, movieid):
+    def get_estimated_rating(user: User, movie):
         """
         return estimated rating for a movie.
         formoula: [similariy*rating for all in myfriends] / sum(similarities)
@@ -33,7 +33,7 @@ class FriendsRecommender:
 
         myfriends = user.friends.all()
         results = (
-            Review.objects.filter(movie=movieid)
+            Review.objects.filter(movie=movie)
             .filter(user__in=myfriends)
             .filter(user__similarities__target_id=user.id)
             .aggregate(
@@ -83,7 +83,6 @@ class FriendsRecommender:
                 )
             )
         )
-
         return movies.order_by("-er")
 
 
