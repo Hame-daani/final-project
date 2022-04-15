@@ -27,7 +27,7 @@
       </v-col>
 
       <v-col class="mb-5" cols="12">
-        <h2 class="headline font-weight-bold mb-3">Ecosystem</h2>
+        <h2 class="headline font-weight-bold mb-3">{{ query }}</h2>
 
         <v-row justify="center">
           <a
@@ -47,6 +47,9 @@
 
 <script>
 export default {
+  props: {
+    query: { type: String },
+  },
   data() {
     return {
       ecosystem: [
