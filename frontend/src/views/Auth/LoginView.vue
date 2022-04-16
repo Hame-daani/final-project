@@ -13,9 +13,8 @@
     </div>
   </div>
 </template>
-<script>
-import AuthService from "@/services/AuthService.js";
 
+<script>
 export default {
   data() {
     return {
@@ -26,21 +25,14 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        const credentials = {
-          username: this.username,
-          password: this.password,
-        };
-        const response = await AuthService.login(credentials);
-        const token = response.token;
-        const user = response.user;
-
-        this.$store.dispatch("auth/login", { token, user });
-
-        this.$router.push("/");
-      } catch (error) {
-        this.errors = error.response.data;
-      }
+      const payload = {
+        username: this.username,
+        password: this.password,
+      };
+      return this.$store
+        .dispatch("auth/login", payload)
+        .then(() => this.$router.push("/"))
+        .catch((err) => (this.errors = err.response.data));
     },
   },
 };

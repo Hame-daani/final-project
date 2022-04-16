@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import AuthService from '@/services/AuthService';
 
 const getDefaultState = () => {
     return {
@@ -29,12 +30,14 @@ export default {
         }
     },
     actions: {
-        login: ({ commit }, { token, user }) => {
-            console.log("login")
-            commit('SET_TOKEN', token);
-            commit('SET_USER', user);
-            // set auth header
-            Axios.defaults.headers.common['AUTHORIZATION'] = `token ${token}`;
+        async login({ commit }, payload) {
+            return AuthService.login(payload)
+                .then(result => {
+                    commit('SET_TOKEN', result.token);
+                    commit('SET_USER', result.user);
+                    // set auth header
+                    Axios.defaults.headers.common['AUTHORIZATION'] = `token ${result.token}`;
+                })
         },
         logout: ({ commit }) => {
             commit('RESET', '');

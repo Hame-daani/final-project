@@ -5,14 +5,14 @@ import axios from 'axios';
 const url = 'http://localhost:8000/api/auth/';
 
 export default {
-    async login(credentials) {
+    async login(payload) {
         return axios
-            .post(url + 'login/', credentials)
+            .post(url + 'login/', payload)
             .then(response => response.data);
     },
-    async signUp(credentials) {
+    async signUp(payload) {
         return axios
-            .post(url + 'register/', credentials)
+            .post(url + 'register/', payload)
             .then(response => response.data);
     },
 };
