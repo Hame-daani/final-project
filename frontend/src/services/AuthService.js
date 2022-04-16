@@ -2,17 +2,17 @@
 
 import axios from 'axios';
 
-const url = 'http://localhost:8000/api/auth/';
+const base = 'auth/';
 
 export default {
     async login(payload) {
         return axios
-            .post(url + 'login/', payload)
+            .post(base + 'login/', payload)
             .then(response => response.data);
     },
     async signUp(payload) {
         return axios
-            .post(url + 'register/', payload)
+            .post(base + 'register/', payload)
             .then(response => response.data);
     },
 };

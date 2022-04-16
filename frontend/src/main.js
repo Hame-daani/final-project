@@ -8,6 +8,7 @@ import Axios from 'axios';
 Vue.config.productionTip = false
 // set auth header
 Axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+Axios.defaults.baseURL = "http://localhost:8000/api/"
 
 new Vue({
   vuetify,
