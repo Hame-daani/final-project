@@ -1,8 +1,12 @@
 <template>
   <v-app>
     <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link
+        v-for="route in $router.options.routes"
+        :key="route.path"
+        :to="route.path"
+        >{{ route.name }} |
+      </router-link>
     </nav>
     <v-main>
       <router-view />
@@ -15,7 +19,7 @@ export default {
   name: "App",
 
   data() {
-    //
+    return {};
   },
 };
 </script>
