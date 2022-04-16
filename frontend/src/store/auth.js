@@ -39,8 +39,9 @@ export default {
                     Axios.defaults.headers.common['AUTHORIZATION'] = `token ${result.token}`;
                 })
         },
-        logout: ({ commit }) => {
-            commit('RESET', '');
+        async logout({ commit }) {
+            return AuthService.logout()
+                .then(() => commit('RESET', ''))
         }
     },
 }

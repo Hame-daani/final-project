@@ -15,4 +15,9 @@ export default {
             .post(base + 'register/', payload)
             .then(response => response.data);
     },
+    async logout() {
+        return axios
+            .post(base + "logout/")
+            .then(response => response.data);
+    },
 };
