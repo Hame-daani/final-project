@@ -32,7 +32,7 @@ export default {
       return this.$store
         .dispatch("auth/login", payload)
         .then(() => this.$router.push("/"))
-        .catch((err) => (this.errors = err.response.data));
+        .catch((err) => alert(err.response.data.non_field_errors));
     },
   },
 };

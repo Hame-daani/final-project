@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from "@/store"
 
 Vue.use(VueRouter)
 
@@ -13,28 +14,38 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: loadView("HomeView")
+    component: loadView("HomeView"),
   },
   {
-    path: '/about',
-    name: 'about',
-    component: loadView("AboutView"),
-    props: route => ({ query: route.query })
+    path: '/dashboard',
+    name: 'dashboard',
+    component: loadView("Auth/DashboardView"),
+    meta: { requiresAuth: true }
   },
   {
     path: "/sign-up",
     name: "sign-up",
-    component: loadView("Auth/SignUpView")
+    component: loadView("Auth/SignUpView"),
   },
   {
     path: "/login",
     name: "login",
-    component: loadView("Auth/LoginView")
+    component: loadView("Auth/LoginView"),
   },
 ]
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  let isLoggedIn = store.getters["auth/isLoggedIn"]
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next("login/", { query: { redirect: to.fullPath } })
+  }
+  else {
+    next()
+  }
 })
 
 export default router
