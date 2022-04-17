@@ -27,7 +27,7 @@ export default {
     this.loadMovies(this.page);
   },
   methods: {
-    loadMovies() {
+    async loadMovies() {
       this.loading = true;
       this.movies = [];
       const payload = {
