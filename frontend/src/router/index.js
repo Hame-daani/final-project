@@ -48,9 +48,19 @@ const routes = [
     }
   },
   {
+    path: "/movies/",
+    name: "movies",
+    component: loadView("MoviesView"),
+    props: true,
+    mata: {
+      nav: false,
+      requiresAuth: false,
+    }
+  },
+  {
     path: "/movies/:id",
     name: "movie",
-    component: loadView("MovieView"),
+    component: loadView("MovieDetailView"),
     props: true,
     mata: {
       nav: false,

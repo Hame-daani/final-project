@@ -63,7 +63,7 @@ export default {
   data() {
     return {
       // TODO: why the fuck meta does not work??
-      activeRoutes: this.$router.getRoutes(),
+      activeRoutes: this.$router.options.routes,
     };
   },
   computed: {

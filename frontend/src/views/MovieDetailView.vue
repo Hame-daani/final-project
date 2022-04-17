@@ -8,6 +8,7 @@
     <v-card>
       <v-card-title>{{ movie.title }}</v-card-title>
       <v-card-subtitle>{{ movie.year }}</v-card-subtitle>
+      <v-img :src="movie.poster" />
       <v-card-text>{{ movie.plot }}</v-card-text>
     </v-card>
   </v-container>
