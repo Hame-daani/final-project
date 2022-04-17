@@ -9,4 +9,7 @@ export default {
             .get(base, payload)
             .then(response => response.data);
     },
+    async getMovie(id) {
+        return axios.get(base + id + "/").then(response => response.data)
+    }
 };

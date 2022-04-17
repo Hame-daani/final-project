@@ -1,10 +1,13 @@
 <template>
   <v-container>
-    <v-card v-if="loading">loading...</v-card>
+    <v-progress-circular
+      indeterminate
+      color="red"
+      v-if="loading"
+    ></v-progress-circular>
     <v-card v-for="movie in movies" :key="movie.id" :to="'movies/' + movie.id">
       <v-card-title>{{ movie.title }}</v-card-title>
       <v-card-subtitle>{{ movie.year }}</v-card-subtitle>
-      <v-card-text>{{ movie.plot }}</v-card-text>
     </v-card>
     <v-pagination v-model="page" class="my-4" :length="total_pages">
       ></v-pagination
