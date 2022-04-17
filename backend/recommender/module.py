@@ -83,7 +83,7 @@ class FriendsRecommender:
                 )
             )
         )
-        return movies.order_by("-er")
+        return movies.order_by("-er")[:10]
 
 
 class GlobalRecommender:
@@ -99,7 +99,7 @@ class GlobalRecommender:
         return (
             User.objects.filter(similarities__target_id=user.id)
             .annotate(sim=F("similarities__score"))
-            .order_by("-sim")
+            .order_by("-sim")[:100]
         )
 
     @staticmethod
@@ -107,7 +107,7 @@ class GlobalRecommender:
         return (
             Movie.objects.filter(similarities__target_id=movieid)
             .annotate(sim=F("similarities__score"))
-            .order_by("-sim")
+            .order_by("-sim")[:10]
         )
 
     @staticmethod
@@ -131,4 +131,4 @@ class GlobalRecommender:
             )
         )
 
-        return movies.order_by("-er")
+        return movies.order_by("-er")[:10]
