@@ -28,7 +28,7 @@
 
       <v-list nav dense>
         <v-list-item
-          v-for="route in $router.options.routes"
+          v-for="route in activeRoutes"
           :key="route.path"
           :to="route.path"
         >
@@ -61,7 +61,10 @@ export default {
   name: "App",
 
   data() {
-    return {};
+    return {
+      // TODO: why the fuck meta does not work??
+      activeRoutes: this.$router.getRoutes(),
+    };
   },
   computed: {
     ...mapGetters("auth", { user: "getUser", isLoggedIn: "isLoggedIn" }),
@@ -70,24 +73,4 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

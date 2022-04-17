@@ -15,23 +15,48 @@ const routes = [
     path: '/',
     name: 'home',
     component: loadView("HomeView"),
+    mata: {
+      requiresAuth: false,
+      nav: true
+    }
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     component: loadView("Auth/DashboardView"),
-    meta: { requiresAuth: true }
+    meta: {
+      nav: true,
+      requiresAuth: true,
+    }
   },
   {
     path: "/sign-up",
     name: "sign-up",
     component: loadView("Auth/SignUpView"),
+    mata: {
+      nav: true,
+      requiresAuth: false,
+    }
   },
   {
     path: "/login",
     name: "login",
     component: loadView("Auth/LoginView"),
+    mata: {
+      nav: true,
+      requiresAuth: false,
+    }
   },
+  {
+    path: "/movies/:id",
+    name: "movie",
+    component: loadView("MovieView"),
+    props: true,
+    mata: {
+      nav: false,
+      requiresAuth: false,
+    }
+  }
 ]
 
 const router = new VueRouter({
