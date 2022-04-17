@@ -9,5 +9,8 @@ export default {
     },
     async getRecent() {
         return axios.get(base + "recent/").then(response => response.data)
+    },
+    async getFriendsRecent() {
+        return axios.get(base + "friends/").then(response => response.data)
     }
 };
