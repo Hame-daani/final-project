@@ -1,5 +1,12 @@
 <template>
   <v-container>
+    <v-toolbar dense>
+      <v-text-field hide-details single-line v-model="search"></v-text-field>
+    </v-toolbar>
+
+    <v-btn icon @click="loadMovies">
+      <v-icon>mdi-magnify</v-icon>
+    </v-btn>
     <v-progress-circular
       indeterminate
       color="red"
@@ -21,7 +28,15 @@ import MoviesService from "@/services/MoviesService";
 export default {
   components: {},
   data() {
-    return { loading: false, page: 1, total_pages: 1, movies: [] };
+    return {
+      loading: false,
+      movies: [],
+      page: 1,
+      total_pages: 1,
+      search: "",
+      genres: [],
+      year: "",
+    };
   },
   created() {
     this.loadMovies(this.page);
@@ -33,6 +48,7 @@ export default {
       const payload = {
         params: {
           page: this.page,
+          search: encodeURIComponent(this.search.trim()),
         },
       };
       return MoviesService.getAll(payload)
