@@ -14,7 +14,12 @@
         <span class="text-caption mr-2">
           ({{ movie.avg_rating | decimalPlace }})
         </span>
-        <v-rating v-model="movie.avg_rating" length="10" readonly></v-rating>
+        <v-rating
+          v-model="movie.avg_rating"
+          length="10"
+          readonly
+          half-increments
+        ></v-rating>
       </v-container>
       <v-container v-show="isLoggedIn">
         <label for="">Estimated Rating</label>
@@ -25,6 +30,7 @@
           v-model="movie.estimated_rating"
           length="10"
           readonly
+          half-increments
         ></v-rating>
       </v-container>
       <v-card-text>{{ movie.plot }}</v-card-text>
