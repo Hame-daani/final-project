@@ -12,5 +12,8 @@ export default {
     },
     async getFriendsRecent() {
         return axios.get(base + "friends/").then(response => response.data)
+    },
+    async getReviews(payload) {
+        return axios.get(base, payload).then(response => response.data)
     }
 };

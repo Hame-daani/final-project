@@ -24,7 +24,6 @@ export default {
   data() {
     return { watchlist: [], favorites: [] };
   },
-  created: {},
   computed: { ...mapGetters("auth", { me: "getUser" }) },
   methods: {
     async logout() {
