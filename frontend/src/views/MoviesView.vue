@@ -2,7 +2,7 @@
   <v-container>
     <v-toolbar dense>
       <v-text-field hide-details single-line v-model="search"></v-text-field>
-      <v-btn icon @click="loadMovies">
+      <v-btn icon @click="doSearch">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-toolbar>
@@ -25,27 +25,24 @@
         :disabled="!toggle_year"
       ></v-slider>
     </v-toolbar>
-    <v-progress-circular
-      indeterminate
-      color="red"
-      v-if="loading"
-    ></v-progress-circular>
-    <v-card v-for="movie in movies" :key="movie.id" :to="`${movie.id}`">
-      <v-card-title>{{ movie.title }}</v-card-title>
-      <v-card-subtitle>{{ movie.year }}</v-card-subtitle>
-      <v-card-text>{{ movie.genres }}</v-card-text>
-    </v-card>
-    <v-pagination v-model="page" class="my-4" :length="total_pages">
-      ></v-pagination
-    >
+    <loading-circular :flag="loading" />
+    <movie-preview v-for="movie in movies" :movie="movie" :key="movie.id" />
+    <v-pagination
+      v-model="page"
+      class="my-4"
+      :length="total_pages"
+      @input="loadMovies"
+    />
   </v-container>
 </template>
 
 <script>
 import MoviesService from "@/services/MoviesService";
+import MoviePreview from "@/components/MoviePreview.vue";
+import LoadingCircular from "@/components/LoadingCircular.vue";
 
 export default {
-  components: {},
+  components: { MoviePreview, LoadingCircular },
   data() {
     return {
       loading: false,
@@ -83,6 +80,10 @@ export default {
     this.loadMovies(this.page);
   },
   methods: {
+    doSearch() {
+      this.page = 1;
+      return this.loadMovies();
+    },
     async loadMovies() {
       this.loading = true;
       this.movies = [];
@@ -103,11 +104,6 @@ export default {
           this.loading = false;
         })
         .catch((err) => alert(err.response.data));
-    },
-  },
-  watch: {
-    page: function () {
-      this.loadMovies();
     },
   },
 };

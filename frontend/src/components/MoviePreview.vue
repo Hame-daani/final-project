@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card :to="{ name: 'movie', params: { id: me.id } }">
     <v-card-title>{{ me.title }}</v-card-title>
     <v-card-subtitle>{{ me.year }}</v-card-subtitle>
     <v-container>
@@ -16,7 +16,7 @@
       </span>
       <v-rating v-model="me.estimated_rating" length="10" readonly></v-rating>
     </v-container>
-    <v-card-text>{{ me.plot }}</v-card-text>
+    <v-card-text>{{ me.genres }}</v-card-text>
   </v-card>
 </template>
 
