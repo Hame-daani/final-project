@@ -6,22 +6,25 @@
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-combobox
+    <v-select
       v-model="selected_genres"
       :items="genres"
       label="Genres"
-      multiple
       chips
       deletable-chips
       clearable
-    ></v-combobox>
-    <v-slider
-      v-model="year"
-      label="year"
-      thumb-label="always"
-      min="1900"
-      max="2022"
-    ></v-slider>
+    ></v-select>
+    <v-toolbar dense>
+      <v-checkbox v-model="toggle_year"> </v-checkbox>
+      <v-slider
+        v-model="year"
+        label="year"
+        thumb-label="always"
+        min="1900"
+        max="2022"
+        :disabled="!toggle_year"
+      ></v-slider>
+    </v-toolbar>
     <v-progress-circular
       indeterminate
       color="red"
@@ -46,6 +49,7 @@ export default {
   data() {
     return {
       loading: false,
+      toggle_year: false,
       movies: [],
       page: 1,
       total_pages: 1,
@@ -86,7 +90,7 @@ export default {
         params: {
           page: this.page,
           genres: this.selected_genres,
-          year: this.year,
+          year: this.toggle_year ? this.year : "",
           search: encodeURIComponent(this.search.trim()),
         },
       };
