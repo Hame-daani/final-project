@@ -21,6 +21,17 @@
         />
       </v-card>
     </v-container>
+    <v-container>
+      <v-card>
+        <v-card-title>Similar Movies</v-card-title>
+        <loading-circular :flag="similarMoviesLoading" />
+        <movie-preview
+          v-for="movie in similarMovies"
+          :key="movie.id"
+          :movie="movie"
+        />
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 
@@ -30,6 +41,8 @@ import ReviewPreview from "@/components/ReviewPreview.vue";
 import { mapGetters } from "vuex";
 import ReviewsService from "@/services/ReviewsService";
 import LoadingCircular from "@/components/LoadingCircular.vue";
+import RecommenderService from "@/services/RecommenderService";
+import MoviePreview from "@/components/MoviePreview.vue";
 
 export default {
   props: { id: { required: true } },
@@ -37,23 +50,27 @@ export default {
     MovieDetails,
     ReviewPreview,
     LoadingCircular,
+    MoviePreview,
   },
   data() {
     return {
       myReview: {},
       otherReviews: [],
+      similarMovies: [],
       myReviewsLoading: false,
       otherReviewsLoading: false,
+      similarMoviesLoading: false,
     };
   },
   computed: {
     ...mapGetters("auth", { isLoggedIn: "isLoggedIn", user: "getUser" }),
   },
-  created() {
+  async created() {
     if (this.isLoggedIn) {
-      this.loadMyReview();
+      await this.loadMyReview();
     }
-    this.loadOtherReviews();
+    await this.loadOtherReviews();
+    await this.loadSimilarMovies();
   },
   methods: {
     async loadMyReview() {
@@ -83,6 +100,13 @@ export default {
         .then(() => {
           this.otherReviewsLoading = false;
         })
+        .catch((err) => alert(err.response.data));
+    },
+    async loadSimilarMovies() {
+      this.similarMoviesLoading = true;
+      return RecommenderService.getSimilarMovies(this.id)
+        .then((data) => (this.similarMovies = data.results))
+        .then(() => (this.similarMoviesLoading = false))
         .catch((err) => alert(err.response.data));
     },
   },

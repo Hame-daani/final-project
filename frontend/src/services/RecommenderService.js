@@ -10,5 +10,8 @@ export default {
     async getFriendsRecommendation() {
         return axios.get(base + "friends/recommend/").then(response => response.data)
     },
+    async getSimilarMovies(id) {
+        return axios.get(base + "global/similar-movies/" + id + "/").then(response => response.data)
+    },
 
 };
