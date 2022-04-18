@@ -33,7 +33,7 @@ export default {
       };
       return this.$store
         .dispatch("auth/login", payload)
-        .then(() => this.$router.push("/"))
+        .then(() => this.$router.push({ name: "dashboard" }))
         .catch((err) => alert(err.response.data.non_field_errors));
     },
   },
