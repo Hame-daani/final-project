@@ -1,11 +1,26 @@
 <template>
   <v-container>
-    <movie-details :id="id" />
-    <v-card>
-      <v-card-title>My Review</v-card-title>
-      <loading-circular :flag="myReviewsLoading" />
-      <review-preview v-if="myReview && myReview.id" :review="myReview" />
-    </v-card>
+    <v-container>
+      <movie-details :id="id" />
+    </v-container>
+    <v-container>
+      <v-card>
+        <v-card-title>My Review</v-card-title>
+        <loading-circular :flag="myReviewsLoading" />
+        <review-preview v-if="myReview && myReview.id" :review="myReview" />
+      </v-card>
+    </v-container>
+    <v-container>
+      <v-card>
+        <v-card-title>Others Reviews</v-card-title>
+        <loading-circular :flag="otherReviewsLoading" />
+        <review-preview
+          v-for="review in otherReviews"
+          :key="review.id"
+          :review="review"
+        />
+      </v-card>
+    </v-container>
   </v-container>
 </template>
 
@@ -56,7 +71,20 @@ export default {
         })
         .catch((err) => alert(err.response.data));
     },
-    async loadOtherReviews() {},
+    async loadOtherReviews() {
+      this.otherReviewsLoading = true;
+      const payload = {
+        params: {
+          movie: this.id,
+        },
+      };
+      return ReviewsService.getReviews(payload)
+        .then((data) => (this.otherReviews = data.results))
+        .then(() => {
+          this.otherReviewsLoading = false;
+        })
+        .catch((err) => alert(err.response.data));
+    },
   },
 };
 </script>
