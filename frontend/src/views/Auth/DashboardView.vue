@@ -7,7 +7,11 @@
     </v-tabs>
     <v-card flat>
       <v-card-text>
-        <component v-bind:is="items[tab].content" :key="tab"></component>
+        <component
+          v-bind:is="items[tab].content"
+          :key="tab"
+          :user="me"
+        ></component>
       </v-card-text>
     </v-card>
   </v-container>
