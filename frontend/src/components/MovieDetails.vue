@@ -1,5 +1,5 @@
 <template>
-  <v-card v-show="!loading">
+  <v-card>
     <loading-circular :flag="loading" />
     <v-card-title>{{ movie.title }}</v-card-title>
     <v-card-subtitle>{{ movie.year }}</v-card-subtitle>

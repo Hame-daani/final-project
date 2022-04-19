@@ -76,7 +76,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   let isLoggedIn = store.getters["auth/isLoggedIn"]
   if (to.meta.requiresAuth && !isLoggedIn) {
-    next("login/", { query: { redirect: to.fullPath } })
+    next({ name: "login" }, { query: { redirect: to.fullPath } })
   }
   else {
     next()

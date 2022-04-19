@@ -3,11 +3,18 @@
     <v-container>
       <movie-details :id="id" />
     </v-container>
-    <v-container>
+    <v-container v-if="isLoggedIn">
       <v-card>
         <v-card-title>My Review</v-card-title>
         <loading-circular :flag="myReviewsLoading" />
-        <review-preview v-if="myReview && myReview.id" :review="myReview" />
+        <review-preview
+          v-if="!myReviewsLoading && myReview"
+          :review="myReview"
+        />
+        <review-form
+          v-if="!myReviewsLoading && !myReview"
+          @review-submited="submitReview($event)"
+        />
       </v-card>
     </v-container>
     <v-container>
@@ -43,6 +50,7 @@ import ReviewsService from "@/services/ReviewsService";
 import LoadingCircular from "@/components/LoadingCircular.vue";
 import RecommenderService from "@/services/RecommenderService";
 import MoviePreview from "@/components/MoviePreview.vue";
+import ReviewForm from "@/components/ReviewForm.vue";
 
 export default {
   props: { id: { required: true } },
@@ -51,6 +59,7 @@ export default {
     ReviewPreview,
     LoadingCircular,
     MoviePreview,
+    ReviewForm,
   },
   data() {
     return {
@@ -108,6 +117,18 @@ export default {
         .then((data) => (this.similarMovies = data.results))
         .then(() => (this.similarMoviesLoading = false))
         .catch((err) => alert(err.response.data));
+    },
+    async submitReview(review) {
+      const payload = {
+        movie: this.id,
+        text: review.text,
+        rating: Number(review.rating),
+      };
+      return ReviewsService.create(payload)
+        .then((data) => (this.myReview = data))
+        .catch((err) => {
+          console.log(err.response.data);
+        });
     },
   },
 };

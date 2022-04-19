@@ -15,5 +15,8 @@ export default {
     },
     async getReviews(payload) {
         return axios.get(base, payload).then(response => response.data)
+    },
+    async create(payload) {
+        return axios.post(base, payload).then(response => response.data)
     }
 };
