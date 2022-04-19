@@ -13,5 +13,8 @@ export default {
     async getSimilarMovies(id) {
         return axios.get(base + "global/similar-movies/" + id + "/").then(response => response.data)
     },
+    async getTasteGroup(payload) {
+        return axios.get(base + "global/similar-users/", payload).then(response => response.data)
+    }
 
 };
