@@ -27,6 +27,7 @@ class MovieViewSet(ReadOnlyModelViewSet):
         instance = self.get_object()
         if request.user.is_authenticated:
             r = FriendsRecommender.get_estimated_rating(request.user, instance)
-            instance.er = r["rating"]
+            if r:
+                instance.er = r["rating"]
         serializer = self.get_serializer(instance)
         return Response(serializer.data)

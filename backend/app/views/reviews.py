@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from app.models import Review
+from app.models import Movie, Review
 from app.serializers import ReviewSerializer
 from app.permissions import isOwner
 from app.mixins import Commentable, Likeable
@@ -22,7 +22,9 @@ class ReviewViewSet(ModelViewSet, Commentable, Likeable):
     ordering_fields = ["created_at"]
 
     def create(self, request, *args, **kwargs):
-        obj = Review(user=request.user)
+        movie_id = request.data["movie"]
+        movie = Movie.objects.get(id=movie_id)
+        obj = Review(user=request.user, movie=movie)
         serializer = self.serializer_class(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
