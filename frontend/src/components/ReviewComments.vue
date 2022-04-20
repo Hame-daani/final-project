@@ -54,12 +54,12 @@ export default {
       const payload = {
         text: text,
       };
-      console.log(payload);
       return ReviewsService.addComment(this.review_id, payload)
         .then((data) => this.comments.push(data))
         .catch((err) => console.log(err.response.data));
     },
     async loadComments() {
+      this.comments = [];
       this.loading = true;
       const payload = {
         params: {

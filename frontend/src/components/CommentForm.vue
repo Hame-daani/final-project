@@ -14,6 +14,7 @@
       ></v-text-field>
       <v-card-actions>
         <v-btn @click="submit"> Submit </v-btn>
+        <v-btn @click="cancel" v-if="editing"> Cancel </v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -47,6 +48,10 @@ export default {
         this.$emit("comment-submitted", this.me.text);
         this.$refs.form.reset();
       }
+    },
+    cancel() {
+      this.$emit("cancel-editing");
+      this.$refs.form.reset();
     },
   },
 };
