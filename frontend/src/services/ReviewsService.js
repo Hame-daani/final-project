@@ -21,5 +21,8 @@ export default {
     },
     async update(payload) {
         return axios.patch(base + payload.id + "/", payload).then((res) => res.data)
+    },
+    async delete(id) {
+        return axios.delete(base + id + "/").then((res) => res.data)
     }
 };

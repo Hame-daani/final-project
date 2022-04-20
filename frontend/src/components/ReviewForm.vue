@@ -29,7 +29,12 @@
 <script>
 export default {
   props: {
-    review_data: { required: false, default: { text: "", rating: 0 } },
+    review_data: {
+      required: false,
+      default() {
+        return { text: "", rating: 0 };
+      },
+    },
   },
   data() {
     return {

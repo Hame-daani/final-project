@@ -7,7 +7,7 @@
       <v-card-subtitle
         >created at: {{ me.created_at | getDate }}</v-card-subtitle
       >
-      <v-card-subtitle v-if="me.created_at != me.updated_at"
+      <v-card-subtitle v-if="isUpdated"
         >updated at: {{ me.updated_at | getDate }}</v-card-subtitle
       >
       <v-container>
@@ -23,12 +23,29 @@
         ></v-rating>
       </v-container>
       <v-card-text>{{ me.text }}</v-card-text>
-      <v-btn
-        color="info"
-        v-if="isLoggedIn && me.user.id == getUser.id"
-        @click="enableEditing"
-        >Edit</v-btn
-      >
+      <v-card-actions v-if="isLoggedIn && me.user.id == getUser.id">
+        <v-btn color="info" @click="enableEditing">Edit</v-btn>
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="warning" dark v-bind="attrs" v-on="on">
+              Delete
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="text-h5"> Deleting this review </v-card-title>
+            <v-card-text>Are you sure?</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialog = false">
+                Cancel
+              </v-btn>
+              <v-btn color="green darken-1" text @click="deleteReview">
+                Yes
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-card-actions>
     </template>
     <template v-if="editing">
       <v-card-title>{{ me.movie.title }}</v-card-title>
@@ -53,10 +70,18 @@ export default {
       me: {},
       loading: false,
       editing: false,
+      dialog: false,
     };
   },
   computed: {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
+    isUpdated() {
+      const a = new Date(this.me.created_at);
+      const b = new Date(this.me.updated_at);
+      console.log(a);
+      console.log(b);
+      return a.getTime() !== b.getTime();
+    },
   },
   async created() {
     await this.loadReview();
@@ -90,6 +115,14 @@ export default {
     },
     cancelEditing() {
       this.editing = false;
+    },
+    async deleteReview() {
+      this.dialog = false;
+      return ReviewsService.delete(this.id)
+        .then(() =>
+          this.$router.push({ name: "movie", params: { id: this.me.movie.id } })
+        )
+        .catch((err) => console.log(err.response.data));
     },
   },
   filters: {
