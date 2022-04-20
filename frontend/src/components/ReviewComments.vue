@@ -1,32 +1,42 @@
 <template>
-  <v-card :loading="loading">
+  <v-card>
+    <v-container>
+      <comment-form v-if="isLoggedIn" @comment-submitted="addComment($event)" />
+    </v-container>
     <v-card-title> Comments </v-card-title>
-    <v-card-text>
-      <comment-card
-        v-for="comment in comments"
-        :key="comment.id"
-        :comment="comment"
+    <v-card :loading="loading">
+      <v-card-text>
+        <comment-card
+          v-for="comment in comments"
+          :key="comment.id"
+          :comment="comment"
+        />
+      </v-card-text>
+      <v-pagination
+        v-model="page"
+        class="my-4"
+        :length="total_pages"
+        @input="loadComments"
       />
-    </v-card-text>
-    <v-pagination
-      v-model="page"
-      class="my-4"
-      :length="total_pages"
-      @input="loadComments"
-    />
+    </v-card>
   </v-card>
 </template>
 
 <script>
 import ReviewsService from "@/services/ReviewsService";
 import CommentCard from "@/components/CommentsCard.vue";
-
+import CommentForm from "@/components/CommentForm.vue";
+import { mapGetters } from "vuex";
 export default {
   components: {
     CommentCard,
+    CommentForm,
   },
   props: {
     review_id: { required: true },
+  },
+  computed: {
+    ...mapGetters("auth", ["isLoggedIn", "getUser"]),
   },
   data() {
     return {
@@ -40,6 +50,15 @@ export default {
     return this.loadComments();
   },
   methods: {
+    async addComment(text) {
+      const payload = {
+        text: text,
+      };
+      console.log(payload);
+      return ReviewsService.addComment(this.review_id, payload)
+        .then((data) => this.comments.push(data))
+        .catch((err) => console.log(err.response.data));
+    },
     async loadComments() {
       this.loading = true;
       const payload = {
