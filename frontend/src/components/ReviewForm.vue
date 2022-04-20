@@ -7,6 +7,7 @@
           v-model="review.text"
           :rules="rules"
           hide-details="auto"
+          multi-line
           clearable
           required
         ></v-text-field>
@@ -28,11 +29,11 @@
 <script>
 export default {
   props: {
-    review_data: { required: false },
+    review_data: { required: false, default: { text: "", rating: 0 } },
   },
   data() {
     return {
-      review: this.review || { text: "", rating: 0 },
+      review: { ...this.review_data },
       rules: [
         (value) => !!value || "Required.",
         // (value) => (value && value.length >= 3) || "Min 3 characters",

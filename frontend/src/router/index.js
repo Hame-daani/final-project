@@ -66,6 +66,16 @@ const routes = [
       nav: false,
       requiresAuth: false,
     }
+  },
+  {
+    path: "/reviews/:id",
+    name: "review",
+    component: loadView("ReviewDetailView"),
+    props: true,
+    mata: {
+      nav: false,
+      requiresAuth: false,
+    }
   }
 ]
 

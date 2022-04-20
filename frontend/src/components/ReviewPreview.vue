@@ -1,5 +1,5 @@
 <template>
-  <v-card :to="`reviews/${me.id}`">
+  <v-card :to="{ name: 'review', params: { id: me.id } }">
     <template v-if="showMovie">
       <v-card-title>{{ me.movie.title }}</v-card-title>
       <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>

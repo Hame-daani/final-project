@@ -18,5 +18,8 @@ export default {
     },
     async create(payload) {
         return axios.post(base, payload).then(response => response.data)
+    },
+    async update(payload) {
+        return axios.patch(base + payload.id + "/", payload).then((res) => res.data)
     }
 };
