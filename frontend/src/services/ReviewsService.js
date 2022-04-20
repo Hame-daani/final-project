@@ -24,5 +24,8 @@ export default {
     },
     async delete(id) {
         return axios.delete(base + id + "/").then((res) => res.data)
+    },
+    async addComment(id, payload) {
+        return axios.post(base + id + "/comments/", payload).then((res) => res.data)
     }
 };
