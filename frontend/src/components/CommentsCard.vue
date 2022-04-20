@@ -9,13 +9,26 @@
     <v-card-text>
       {{ me.text }}
     </v-card-text>
-    <v-card-actions>
-      <v-btn
-        color="info"
-        v-if="isLoggedIn && getUser.id === me.user.id"
-        @click="enableEditing"
-        >Edit</v-btn
-      >
+    <v-card-actions v-if="isLoggedIn && getUser.id === me.user.id">
+      <v-btn color="info" @click="enableEditing">Edit</v-btn>
+      <v-dialog v-model="dialog" persistent max-width="300">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="warning" dark v-bind="attrs" v-on="on"> Delete </v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="text-h5"> Deleting this comment </v-card-title>
+          <v-card-text>Are you sure?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialog = false">
+              Cancel
+            </v-btn>
+            <v-btn color="green darken-1" text @click="deleteComment">
+              Yes
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-actions>
   </v-card>
   <comment-form
@@ -45,6 +58,7 @@ export default {
     return {
       me: { ...this.comment },
       editing: false,
+      dialog: false,
     };
   },
   methods: {
@@ -62,6 +76,12 @@ export default {
         .then((data) => (this.me = data))
         .then(() => (this.editing = false))
         .catch((err) => console.log(err.reponse.data));
+    },
+    async deleteComment() {
+      this.dialog = false;
+      return CommentsService.delete(this.me.id)
+        .then(() => this.$emit("comment-deleted", this.me.id))
+        .catch((err) => console.log(err.response.data));
     },
   },
   filters: {

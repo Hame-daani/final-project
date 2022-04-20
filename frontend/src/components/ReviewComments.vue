@@ -10,6 +10,7 @@
           v-for="comment in comments"
           :key="comment.id"
           :comment="comment"
+          @comment-deleted="deleteComment($event)"
         />
       </v-card-text>
       <v-pagination
@@ -73,6 +74,9 @@ export default {
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));
+    },
+    deleteComment(id) {
+      this.comments = this.comments.filter((obj) => obj.id !== id);
     },
   },
 };
