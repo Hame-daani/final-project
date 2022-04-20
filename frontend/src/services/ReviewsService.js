@@ -27,5 +27,8 @@ export default {
     },
     async addComment(id, payload) {
         return axios.post(base + id + "/comments/", payload).then((res) => res.data)
+    },
+    async getComments(id, payload) {
+        return axios.get(base + id + "/comments/", payload).then((res) => res.data)
     }
 };

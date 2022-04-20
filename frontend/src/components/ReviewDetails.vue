@@ -78,8 +78,6 @@ export default {
     isUpdated() {
       const a = new Date(this.me.created_at);
       const b = new Date(this.me.updated_at);
-      console.log(a);
-      console.log(b);
       return a.getTime() !== b.getTime();
     },
   },
@@ -93,7 +91,6 @@ export default {
         .then((data) => (this.me = data))
         .then(() => {
           this.loading = false;
-          console.log(typeof this.me.created_at);
         })
         .catch((err) => alert(err.response.data));
     },
