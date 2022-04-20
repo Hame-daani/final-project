@@ -10,6 +10,7 @@
         <review-preview
           v-if="!myReviewsLoading && myReview"
           :review="myReview"
+          :showMovie="false"
         />
         <review-form
           v-if="!myReviewsLoading && !myReview"
@@ -25,6 +26,7 @@
           v-for="review in otherReviews"
           :key="review.id"
           :review="review"
+          :showMovie="false"
         />
       </v-card>
     </v-container>

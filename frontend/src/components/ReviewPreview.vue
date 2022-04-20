@@ -1,8 +1,13 @@
 <template>
   <v-card :to="`reviews/${me.id}`">
-    <v-card-title>{{ me.movie.title }}</v-card-title>
+    <template v-if="showMovie">
+      <v-card-title>{{ me.movie.title }}</v-card-title>
+      <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
+    </template>
+    <template v-else>
+      <v-card-title>{{ me.user.username }}</v-card-title>
+    </template>
     <v-card-subtitle>{{ me.created_at }}</v-card-subtitle>
-    <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
     <v-rating v-model="me.rating" length="10" readonly></v-rating>
     <v-card-text>
       {{ me.text }}
@@ -14,6 +19,7 @@
 export default {
   props: {
     review: { required: true },
+    showMovie: { type: Boolean, default: true },
   },
   data() {
     return { me: this.review };
