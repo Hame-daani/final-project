@@ -14,7 +14,7 @@
       ></v-text-field>
       <v-card-actions>
         <v-btn @click="submit"> Submit </v-btn>
-        <v-btn @click="cancel" v-if="editing"> Cancel </v-btn>
+        <v-btn @click="cancel" v-if="editing || replying"> Cancel </v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -31,11 +31,18 @@ export default {
         };
       },
     },
+    replying: {
+      type: Boolean,
+      default: false,
+    },
+    editing: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       me: { ...this.comment },
-      editing: this.comment.text,
       rules: [
         (value) => !!value || "Required.",
         // (value) => (value && value.length >= 3) || "Min 3 characters",
@@ -50,7 +57,7 @@ export default {
       }
     },
     cancel() {
-      this.$emit("cancel-editing");
+      this.$emit("cancel");
       this.$refs.form.reset();
     },
   },
