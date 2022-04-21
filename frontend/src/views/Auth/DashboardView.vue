@@ -24,6 +24,9 @@ import MyProfile from "@/components/MyProfile.vue";
 import MyReqs from "@/components/MyReqs.vue";
 import MyReviews from "@/components/MyReviews.vue";
 import TasteGroup from "@/components/TasteGroup.vue";
+import MyWatchlist from "@/components/MyWatchlist.vue";
+import MyFavorites from "@/components/MyFavorites.vue";
+
 export default {
   components: {
     MyComments,
@@ -31,6 +34,8 @@ export default {
     MyReqs,
     MyReviews,
     TasteGroup,
+    MyWatchlist,
+    MyFavorites,
   },
   data() {
     return {
@@ -39,6 +44,8 @@ export default {
         { tab: "Profile", content: MyProfile },
         { tab: "Comments", content: MyComments },
         { tab: "Reviews", content: MyReviews },
+        { tab: "Watchlist", content: MyWatchlist },
+        { tab: "Favorites", content: MyFavorites },
         { tab: "Friends Requests", content: MyReqs },
         { tab: "Taste Group", content: TasteGroup },
       ],
