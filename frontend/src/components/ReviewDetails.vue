@@ -10,6 +10,7 @@
       <v-card-subtitle v-if="isUpdated"
         >updated at: {{ me.updated_at | getDate }}</v-card-subtitle
       >
+      <v-card-subtitle> Num Likes: {{ this.likes.length }} </v-card-subtitle>
       <v-container>
         <label for="">Rating</label>
         <span class="text-caption mr-2">
@@ -23,28 +24,34 @@
         ></v-rating>
       </v-container>
       <v-card-text>{{ me.text }}</v-card-text>
-      <v-card-actions v-if="isLoggedIn && me.user.id == getUser.id">
-        <v-btn color="info" @click="enableEditing">Edit</v-btn>
-        <v-dialog v-model="dialog" persistent max-width="290">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="warning" dark v-bind="attrs" v-on="on">
-              Delete
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="text-h5"> Deleting this review </v-card-title>
-            <v-card-text>Are you sure?</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="green darken-1" text @click="dialog = false">
-                Cancel
+      <v-card-actions v-if="isLoggedIn">
+        <v-btn v-if="!isLiked" color="info" @click="like">Like</v-btn>
+        <v-btn v-if="isLiked" color="info" @click="unlike">Unlike</v-btn>
+        <template v-if="me.user.id == getUser.id">
+          <v-btn color="info" @click="enableEditing">Edit</v-btn>
+          <v-dialog v-model="dialog" persistent max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="warning" dark v-bind="attrs" v-on="on">
+                Delete
               </v-btn>
-              <v-btn color="green darken-1" text @click="deleteReview">
-                Yes
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+            </template>
+            <v-card>
+              <v-card-title class="text-h5">
+                Deleting this review
+              </v-card-title>
+              <v-card-text>Are you sure?</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="dialog = false">
+                  Cancel
+                </v-btn>
+                <v-btn color="green darken-1" text @click="deleteReview">
+                  Yes
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
       </v-card-actions>
     </template>
     <template v-if="editing">
@@ -60,6 +67,7 @@
 import LoadingCircular from "@/components/LoadingCircular.vue";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewsService from "@/services/ReviewsService";
+import LikesService from "@/services/LikesService";
 import { mapGetters } from "vuex";
 
 export default {
@@ -68,6 +76,7 @@ export default {
   data() {
     return {
       me: {},
+      likes: [],
       loading: false,
       editing: false,
       dialog: false,
@@ -80,9 +89,13 @@ export default {
       const b = new Date(this.me.updated_at);
       return a.getTime() !== b.getTime();
     },
+    isLiked() {
+      return this.likes.filter((obj) => obj.user.id === this.getUser.id).length;
+    },
   },
   async created() {
     await this.loadReview();
+    this.loadLikes();
   },
   methods: {
     async loadReview() {
@@ -120,6 +133,21 @@ export default {
           this.$router.push({ name: "movie", params: { id: this.me.movie.id } })
         )
         .catch((err) => console.log(err.response.data));
+    },
+    async loadLikes() {
+      return LikesService.getLikes("reviews/", this.me.id)
+        .then((data) => (this.likes = data))
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async like() {
+      return LikesService.addLike("reviews/", this.me.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async unlike() {
+      return LikesService.deleteLike("reviews/", this.me.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
     },
   },
   filters: {
