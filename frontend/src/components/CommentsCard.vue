@@ -34,7 +34,7 @@
                 >
                   Cancel
                 </v-btn>
-                <v-btn color="green darken-1" text @click="deleteComment">
+                <v-btn color="green darken-1" text @click="deleteMe">
                   Yes
                 </v-btn>
               </v-card-actions>
@@ -56,6 +56,19 @@
       @cancel="replying = false"
       @comment-submitted="reply($event)"
     />
+    <v-expansion-panels>
+      <v-expansion-panel v-if="this.me.comments.length">
+        <v-expansion-panel-header> Replies </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <comments-card
+            v-for="comment in me.comments"
+            :key="comment.id"
+            :comment="comment"
+            @comment-deleted="deleteComment($event)"
+          />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </v-container>
 </template>
 
@@ -65,6 +78,7 @@ import CommentForm from "./CommentForm.vue";
 import CommentsService from "@/services/CommentsService";
 
 export default {
+  name: "CommentsCard",
   components: { CommentForm },
   props: {
     comment: {
@@ -92,7 +106,7 @@ export default {
         .then(() => (this.editing = false))
         .catch((err) => console.log(err.reponse.data));
     },
-    async deleteComment() {
+    async deleteMe() {
       this.deleteDialog = false;
       return CommentsService.delete(this.me.id)
         .then(() => this.$emit("comment-deleted", this.me.id))
@@ -106,6 +120,9 @@ export default {
         .then((data) => this.me.comments.push(data))
         .then(() => (this.replying = false))
         .catch((err) => console.log(err.response.data));
+    },
+    deleteComment(id) {
+      this.me.comments = this.me.comments.filter((obj) => obj.id !== id);
     },
   },
   filters: {
