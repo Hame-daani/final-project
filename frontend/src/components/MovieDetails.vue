@@ -3,6 +3,7 @@
     <loading-circular :flag="loading" />
     <v-card-title>{{ movie.title }}</v-card-title>
     <v-card-subtitle>{{ movie.year }}</v-card-subtitle>
+    <v-card-subtitle> Num Likes: {{ this.likes.length }} </v-card-subtitle>
     <v-img aspect-ratio="1.7" :src="movie.poster" contain />
     <v-container>
       <label for="">Average Rating</label>
@@ -28,6 +29,8 @@
         half-increments
       ></v-rating>
     </v-container>
+    <v-btn v-if="!isLiked" color="info" @click="like">Like</v-btn>
+    <v-btn v-if="isLiked" color="info" @click="unlike">Unlike</v-btn>
     <v-card-text>{{ movie.plot }}</v-card-text>
   </v-card>
 </template>
@@ -36,19 +39,28 @@
 import MoviesService from "@/services/MoviesService";
 import { mapGetters } from "vuex";
 import LoadingCircular from "@/components/LoadingCircular.vue";
+import LikesService from "@/services/LikesService";
 
 export default {
   name: "MovieView",
   components: { LoadingCircular },
   props: { id: { required: true } },
   data() {
-    return { movie: {}, loading: false };
+    return {
+      movie: {},
+      likes: [],
+      loading: false,
+    };
   },
   computed: {
-    ...mapGetters("auth", ["isLoggedIn"]),
+    ...mapGetters("auth", ["isLoggedIn", "getUser"]),
+    isLiked() {
+      return this.likes.filter((obj) => obj.user.id === this.getUser.id).length;
+    },
   },
   async created() {
     await this.loadMovie();
+    this.loadLikes();
   },
   methods: {
     async loadMovie() {
@@ -57,6 +69,21 @@ export default {
         .then((data) => (this.movie = data))
         .then(() => (this.loading = false))
         .catch((err) => alert(err.response.data));
+    },
+    async loadLikes() {
+      return LikesService.getLikes("movies/", this.movie.id)
+        .then((data) => (this.likes = data))
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async like() {
+      return LikesService.addLike("movies/", this.movie.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async unlike() {
+      return LikesService.deleteLike("movies/", this.movie.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
     },
   },
   filters: {
