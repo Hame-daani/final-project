@@ -79,6 +79,7 @@
 import { mapGetters } from "vuex";
 import CommentForm from "./CommentForm.vue";
 import CommentsService from "@/services/CommentsService";
+import LikesService from "@/services/LikesService";
 
 export default {
   name: "CommentCard",
@@ -108,7 +109,7 @@ export default {
   },
   methods: {
     async loadLikes() {
-      return CommentsService.getLikes(this.me.id)
+      return LikesService.getLikes("comments/", this.me.id)
         .then((data) => (this.likes = data))
         .catch((err) => console.log(err.reponse.data));
     },
@@ -140,12 +141,12 @@ export default {
       this.me.comments = this.me.comments.filter((obj) => obj.id !== id);
     },
     async likeComment() {
-      return CommentsService.addLike(this.me.id)
+      return LikesService.addLike("comments/", this.me.id)
         .then(() => this.loadLikes())
         .catch((err) => console.log(err.reponse.data));
     },
     async unlikeComment() {
-      return CommentsService.deleteLike(this.me.id)
+      return LikesService.deleteLike("comments/", this.me.id)
         .then(() => this.loadLikes())
         .catch((err) => console.log(err.reponse.data));
     },
