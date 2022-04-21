@@ -22,6 +22,11 @@ class Commentable:
                 )
         if request.method == "GET":
             obj = self.get_object()
+            queryset = obj.comments.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = CommentSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
             return Response(
                 CommentSerializer(obj.comments.all(), many=True).data,
                 status=status.HTTP_200_OK,
