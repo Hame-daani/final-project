@@ -19,4 +19,13 @@ export default {
     async getMyComments(payload) {
         return axios.get(base, payload).then((res) => res.data)
     },
+    async getLikes(id) {
+        return axios.get(base + id + "/likes/").then((res) => res.data)
+    },
+    async addLike(id) {
+        return axios.post(base + id + "/likes/").then((res) => res.data)
+    },
+    async deleteLike(id) {
+        return axios.delete(base + id + "/likes/").then((res) => res.data)
+    },
 };

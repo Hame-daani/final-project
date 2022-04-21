@@ -7,10 +7,13 @@
       <v-card-subtitle>
         {{ me.created_at | getDate }}
       </v-card-subtitle>
+      <v-card-subtitle> Num Likes: {{ this.likes.length }} </v-card-subtitle>
       <v-card-text>
         {{ me.text }}
       </v-card-text>
       <v-card-actions v-if="isLoggedIn">
+        <v-btn v-if="!isLiked" color="info" @click="likeComment">Like</v-btn>
+        <v-btn v-if="isLiked" color="info" @click="unlikeComment">Unlike</v-btn>
         <v-btn color="info" @click="replying = true">Reply</v-btn>
         <template v-if="getUser.id === me.user.id">
           <v-btn color="info" @click="editing = true">Edit</v-btn>
@@ -87,16 +90,28 @@ export default {
   },
   computed: {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
+    isLiked() {
+      return this.likes.filter((obj) => obj.user.id === this.getUser.id).length;
+    },
+  },
+  async created() {
+    this.loadLikes();
   },
   data() {
     return {
       me: { ...this.comment },
+      likes: [],
       editing: false,
       replying: false,
       deleteDialog: false,
     };
   },
   methods: {
+    async loadLikes() {
+      return CommentsService.getLikes(this.me.id)
+        .then((data) => (this.likes = data))
+        .catch((err) => console.log(err.reponse.data));
+    },
     async update(text) {
       const payload = {
         text: text,
@@ -123,6 +138,16 @@ export default {
     },
     deleteComment(id) {
       this.me.comments = this.me.comments.filter((obj) => obj.id !== id);
+    },
+    async likeComment() {
+      return CommentsService.addLike(this.me.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async unlikeComment() {
+      return CommentsService.deleteLike(this.me.id)
+        .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
     },
   },
   filters: {
