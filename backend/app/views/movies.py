@@ -8,9 +8,10 @@ from app.models import Movie
 from app.serializers import MovieSerializer
 from app.filters import MovieFilter
 from recommender.module import FriendsRecommender
+from app.mixins import Likeable
 
 
-class MovieViewSet(ReadOnlyModelViewSet):
+class MovieViewSet(ReadOnlyModelViewSet, Likeable):
 
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer

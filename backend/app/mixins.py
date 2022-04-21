@@ -1,6 +1,10 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from app.serializers import CommentSerializer, LikeSerializer
+from app.serializers import (
+    CommentSerializer,
+    LikeSerializer,
+    MovieSerializer,
+)
 from rest_framework import status
 
 
@@ -34,7 +38,7 @@ class Commentable:
 
 
 class Likeable:
-    @action(detail=True, methods=["POST", "GET"])
+    @action(detail=True, methods=["POST", "GET", "DELETE"])
     def likes(self, request, pk=None):
         if request.method == "POST":
             try:
@@ -49,7 +53,21 @@ class Likeable:
                 )
         if request.method == "GET":
             obj = self.get_object()
+            # q = User.objects.filter(
+            #     pk__in=obj.likes.all().values_list("user", flat=True)
+            # )
+            q = obj.likes.all()
             return Response(
-                LikeSerializer(obj.likes.all(), many=True).data,
+                LikeSerializer(q, many=True).data,
                 status=status.HTTP_200_OK,
             )
+        if request.method == "DELETE":
+            try:
+                obj = self.get_object()
+                obj.likes.filter(user=request.user).delete()
+                return Response(status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )

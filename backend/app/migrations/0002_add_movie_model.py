@@ -36,16 +36,12 @@ class Migration(migrations.Migration):
                         base_field=models.CharField(max_length=10), size=None
                     ),
                 ),
+                (
+                    "watchlist",
+                    models.ManyToManyField(
+                        related_name="watchlist", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
             ],
-        ),
-        migrations.AddField(
-            model_name="user",
-            name="favorites",
-            field=models.ManyToManyField(related_name="favorites", to="app.Movie"),
-        ),
-        migrations.AddField(
-            model_name="user",
-            name="watchlist",
-            field=models.ManyToManyField(related_name="watchlist", to="app.Movie"),
         ),
     ]

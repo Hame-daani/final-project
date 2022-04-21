@@ -13,10 +13,10 @@ def add_friends(apps, schema):
         user = User.objects.get(id=row["id"])
         friends = ast.literal_eval(row["friends"])
         user.friends.add(*friends)
-        watchlist = ast.literal_eval(row["watchlist"])
-        user.watchlist.add(*watchlist)
-        favorites = ast.literal_eval(row["favorites"])
-        user.favorites.add(*favorites)
+        # watchlist = ast.literal_eval(row["watchlist"])
+        # user.watchlist.add(*watchlist)
+        # favorites = ast.literal_eval(row["favorites"])
+        # user.favorites.add(*favorites)
         user.save()
 
 
