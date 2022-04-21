@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from app.serializers import (
     CommentSerializer,
     LikeSerializer,
-    MovieSerializer,
 )
 from rest_framework import status
 
@@ -65,7 +64,7 @@ class Likeable:
             try:
                 obj = self.get_object()
                 obj.likes.filter(user=request.user).delete()
-                return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_204_NO_CONTENT)
             except Exception as e:
                 return Response(
                     {"error": str(e)},
