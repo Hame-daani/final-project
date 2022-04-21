@@ -4,6 +4,9 @@
     <v-card-title>{{ movie.title }}</v-card-title>
     <v-card-subtitle>{{ movie.year }}</v-card-subtitle>
     <v-card-subtitle> Num Likes: {{ this.likes.length }} </v-card-subtitle>
+    <v-card-subtitle>
+      Num wathclist: {{ this.watchlist.length }}
+    </v-card-subtitle>
     <v-img aspect-ratio="1.7" :src="movie.poster" contain />
     <v-container>
       <label for="">Average Rating</label>
@@ -29,8 +32,16 @@
         half-increments
       ></v-rating>
     </v-container>
-    <v-btn v-if="!isLiked" color="info" @click="like">Like</v-btn>
-    <v-btn v-if="isLiked" color="info" @click="unlike">Unlike</v-btn>
+    <v-card-actions>
+      <v-btn v-if="!isLiked" color="info" @click="like">Like</v-btn>
+      <v-btn v-if="isLiked" color="info" @click="unlike">Unlike</v-btn>
+      <v-btn v-if="!isWathclisted" color="info" @click="addWatchlist"
+        >Add to Watchlist</v-btn
+      >
+      <v-btn v-if="isWathclisted" color="info" @click="removeWatchlist"
+        >Remove from Watchlist</v-btn
+      >
+    </v-card-actions>
     <v-card-text>{{ movie.plot }}</v-card-text>
   </v-card>
 </template>
@@ -49,6 +60,7 @@ export default {
     return {
       movie: {},
       likes: [],
+      watchlist: [],
       loading: false,
     };
   },
@@ -57,10 +69,14 @@ export default {
     isLiked() {
       return this.likes.filter((obj) => obj.user.id === this.getUser.id).length;
     },
+    isWathclisted() {
+      return this.watchlist.filter((obj) => obj.id === this.getUser.id).length;
+    },
   },
   async created() {
     await this.loadMovie();
     this.loadLikes();
+    this.loadWatchlists();
   },
   methods: {
     async loadMovie() {
@@ -83,6 +99,21 @@ export default {
     async unlike() {
       return LikesService.deleteLike("movies/", this.movie.id)
         .then(() => this.loadLikes())
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async loadWatchlists() {
+      return MoviesService.getWatchlists(this.movie.id)
+        .then((data) => (this.watchlist = data))
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async addWatchlist() {
+      return MoviesService.addToWatchlist(this.movie.id)
+        .then(() => this.loadWatchlists())
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async removeWatchlist() {
+      return MoviesService.removeFromWatchlist(this.movie.id)
+        .then(() => this.loadWatchlists())
         .catch((err) => console.log(err.reponse.data));
     },
   },
