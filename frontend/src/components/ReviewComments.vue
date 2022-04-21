@@ -25,7 +25,7 @@
 
 <script>
 import ReviewsService from "@/services/ReviewsService";
-import CommentCard from "@/components/CommentsCard.vue";
+import CommentCard from "@/components/CommentCard.vue";
 import CommentForm from "@/components/CommentForm.vue";
 import { mapGetters } from "vuex";
 export default {

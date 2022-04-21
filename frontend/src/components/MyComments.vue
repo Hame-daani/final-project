@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title> My Comments </v-card-title>
       <loading-circular :flag="loading" />
-      <comments-card
+      <comment-card
         v-for="comment in comments"
         :key="comment.id"
         :comment="comment"
@@ -22,12 +22,12 @@
 <script>
 import CommentsService from "@/services/CommentsService";
 import LoadingCircular from "@/components/LoadingCircular.vue";
-import CommentsCard from "@/components/CommentsCard.vue";
+import CommentCard from "@/components/CommentCard.vue";
 
 export default {
   components: {
     LoadingCircular,
-    CommentsCard,
+    CommentCard,
   },
   props: {
     user: { required: true },

@@ -60,7 +60,7 @@
       <v-expansion-panel v-if="this.me.comments.length">
         <v-expansion-panel-header> Replies </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <comments-card
+          <comment-card
             v-for="comment in me.comments"
             :key="comment.id"
             :comment="comment"
@@ -78,7 +78,7 @@ import CommentForm from "./CommentForm.vue";
 import CommentsService from "@/services/CommentsService";
 
 export default {
-  name: "CommentsCard",
+  name: "CommentCard",
   components: { CommentForm },
   props: {
     comment: {
