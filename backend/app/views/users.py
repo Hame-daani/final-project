@@ -39,7 +39,15 @@ class UserViewSet(ModelViewSet):
     def watchlist(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(MovieSerializer(obj.watchlist.all(), many=True).data)
+            queryset = obj.watchlist.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = MovieSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                MovieSerializer(obj.watchlist.all(), many=True).data,
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
