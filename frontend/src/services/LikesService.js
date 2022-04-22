@@ -9,7 +9,7 @@ export default {
     async addLike(base, id) {
         return axios.post(base + id + "/likes/").then((res) => res.data)
     },
-    async deleteLike(base, id) {
-        return axios.delete(base + id + "/likes/").then((res) => res.data)
+    async deleteLike(id) {
+        return axios.delete("likes/" + id + "/").then((res) => res.data)
     },
 };

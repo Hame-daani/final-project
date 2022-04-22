@@ -90,7 +90,7 @@ export default {
       return a.getTime() !== b.getTime();
     },
     isLiked() {
-      return this.likes.filter((obj) => obj.user.id === this.getUser.id).length;
+      return this.likes.find((obj) => obj.user.id === this.getUser.id);
     },
   },
   async created() {
@@ -145,7 +145,7 @@ export default {
         .catch((err) => console.log(err.reponse.data));
     },
     async unlike() {
-      return LikesService.deleteLike("reviews/", this.me.id)
+      return LikesService.deleteLike(this.isLiked.id)
         .then(() => this.loadLikes())
         .catch((err) => console.log(err.reponse.data));
     },
