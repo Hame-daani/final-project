@@ -24,6 +24,7 @@ import MyProfile from "@/components/MyProfile.vue";
 import MyReviews from "@/components/MyReviews.vue";
 import MyWatchlist from "@/components/MyWatchlist.vue";
 import MyFavorites from "@/components/MyFavorites.vue";
+import MyFriends from "@/components/MyFriends.vue";
 import TasteGroup from "@/components/TasteGroup.vue";
 import MyReqs from "@/components/MyReqs.vue";
 import UsersService from "@/services/UsersService";
@@ -35,6 +36,7 @@ export default {
     MyReviews,
     MyWatchlist,
     MyFavorites,
+    MyFriends,
     TasteGroup,
     MyReqs,
   },
@@ -46,6 +48,7 @@ export default {
       tab: 0,
       tabs: [
         { tab: "Profile", content: MyProfile, private: false },
+        { tab: "Friends", content: MyFriends, private: false },
         { tab: "Comments", content: MyComments, private: false },
         { tab: "Reviews", content: MyReviews, private: false },
         { tab: "Watchlist", content: MyWatchlist, private: false },
@@ -64,7 +67,6 @@ export default {
   computed: {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
     items() {
-      console.log(this.id, this.getUser.id);
       if (this.isLoggedIn && (this.getUser.id === this.id || !this.id)) {
         return this.tabs;
       } else return this.tabs.filter((obj) => obj.private == false);

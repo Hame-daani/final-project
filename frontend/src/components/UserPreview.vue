@@ -1,5 +1,5 @@
 <template>
-  <v-card :to="`users/${me.id}`">
+  <v-card :to="{ name: 'profile', params: { id: me.id } }">
     <v-card-title>{{ me.username }}</v-card-title>
     <v-card-subtitle>{{ me.similarity }}</v-card-subtitle>
     <v-card-text> {{ me.first_name }} {{ me.last_name }} </v-card-text>

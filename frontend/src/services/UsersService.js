@@ -15,5 +15,8 @@ export default {
     },
     async getUser(id) {
         return axios.get(base + id + "/").then((res) => res.data)
+    },
+    async getFriends(id, payload) {
+        return axios.get(base + id + "/friends/", payload).then((res) => res.data)
     }
 };
