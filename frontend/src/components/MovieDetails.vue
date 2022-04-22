@@ -8,6 +8,16 @@
       Num wathclist: {{ this.watchlist.length }}
     </v-card-subtitle>
     <v-img aspect-ratio="1.7" :src="movie.poster" contain />
+    <iframe
+      src="https://www.imdb.com/video/imdb/vi2959588889/imdb/embed?autoplay=false&amp;width=640"
+      allowfullscreen="true"
+      mozallowfullscreen="true"
+      webkitallowfullscreen="true"
+      scrolling="no"
+      width="640"
+      height="360"
+      frameborder="no"
+    ></iframe>
     <v-container>
       <label for="">Average Rating</label>
       <span class="text-caption mr-2">
