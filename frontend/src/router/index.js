@@ -68,6 +68,16 @@ const routes = [
     }
   },
   {
+    path: '/profile/:id',
+    name: 'profile',
+    component: loadView("ProfileView"),
+    props: true,
+    meta: {
+      nav: false,
+      requiresAuth: false,
+    }
+  },
+  {
     path: "/reviews/:id",
     name: "review",
     component: loadView("ReviewDetailView"),

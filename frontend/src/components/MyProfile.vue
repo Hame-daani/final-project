@@ -6,7 +6,9 @@
     </v-card-text>
     <v-card-text> Email: {{ user.email }} </v-card-text>
     <v-card-text> Gender: {{ user.gender }} </v-card-text>
-    <v-btn color="info" @click="enableEditing">Edit</v-btn>
+    <v-card-actions v-if="isLoggedIn && getUser.id === this.user.id">
+      <v-btn color="info" @click="enableEditing">Edit</v-btn>
+    </v-card-actions>
   </v-card>
   <v-card v-else>
     <v-card-title> Editing Your Info </v-card-title>
@@ -39,14 +41,13 @@
 
 <script>
 import UsersService from "@/services/UsersService";
+import { mapGetters } from "vuex";
 
 export default {
   props: {
     user: { required: true },
   },
-  created() {
-    this.signal();
-  },
+  computed: { ...mapGetters("auth", ["isLoggedIn", "getUser"]) },
   data() {
     return {
       me: {
@@ -59,9 +60,6 @@ export default {
     };
   },
   methods: {
-    signal() {
-      console.log("my profile");
-    },
     enableEditing() {
       this.editing = true;
     },

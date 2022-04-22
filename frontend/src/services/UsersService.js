@@ -12,5 +12,8 @@ export default {
     },
     async getFavorites(id, payload) {
         return axios.get(base + id + "/favorites/", payload).then((res) => res.data)
+    },
+    async getUser(id) {
+        return axios.get(base + id + "/").then((res) => res.data)
     }
 };
