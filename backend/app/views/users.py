@@ -4,10 +4,12 @@ from rest_framework import status
 from rest_framework import filters
 from rest_framework.decorators import action
 
-from app.models import User
+from app.models import Movie, User
 from app.permissions import isSelf
-from app.serializers import MovieSerializer, UserSerializer
+from app.serializers import LikeSerializer, MovieSerializer, UserSerializer
 from recommender.module import GlobalRecommender
+
+from django.contrib.contenttypes.models import ContentType
 
 
 class UserViewSet(ModelViewSet):
@@ -55,6 +57,12 @@ class UserViewSet(ModelViewSet):
     def favorites(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(MovieSerializer(obj.favorites.all(), many=True).data)
+            ct = ContentType.objects.get_for_model(Movie)
+            q = obj.likes.filter(content_type=ct).values_list("object_id", flat=True)
+            queryset = Movie.objects.filter(id__in=q)
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = MovieSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
