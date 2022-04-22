@@ -23,7 +23,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: loadView("Auth/DashboardView"),
+    component: loadView("ProfileView"),
     meta: {
       nav: true,
       requiresAuth: true,
