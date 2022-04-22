@@ -29,10 +29,9 @@ export default {
     ReviewPreview,
   },
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   async created() {
-    console.log("my reviews");
     return this.loadReviews();
   },
   data() {
@@ -49,7 +48,7 @@ export default {
       this.reviews = [];
       const payload = {
         params: {
-          user: this.user.id,
+          user: this.id,
           page: this.page,
         },
       };

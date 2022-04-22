@@ -25,10 +25,9 @@ export default {
     UserPreview,
   },
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   async created() {
-    console.log("my taste group");
     return this.loadUsers();
   },
   data() {

@@ -10,7 +10,7 @@
         <component
           v-bind:is="items[tab].content"
           :key="tab"
-          :user="user"
+          :id="user_id"
         ></component>
       </v-card-text>
     </v-card>
@@ -27,7 +27,6 @@ import MyFavorites from "@/components/MyFavorites.vue";
 import MyFriends from "@/components/MyFriends.vue";
 import TasteGroup from "@/components/TasteGroup.vue";
 import MyReqs from "@/components/MyReqs.vue";
-import UsersService from "@/services/UsersService";
 
 export default {
   components: {
@@ -56,14 +55,9 @@ export default {
         { tab: "Friend Requests", content: MyReqs, private: true },
         { tab: "Taste Group", content: TasteGroup, private: true },
       ],
-      user: {},
     };
   },
-  async created() {
-    if (this.id) this.loadData();
-    else if (this.isLoggedIn) this.user = this.getUser;
-    else this.$router.push({ name: "login" });
-  },
+  async created() {},
   computed: {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
     items() {
@@ -71,19 +65,10 @@ export default {
         return this.tabs;
       } else return this.tabs.filter((obj) => obj.private == false);
     },
-  },
-  methods: {
-    async loadData() {
-      return UsersService.getUser(this.id)
-        .then((data) => (this.user = data))
-        .catch((err) => console.log(err.response.data));
-    },
-    async logout() {
-      return this.$store
-        .dispatch("auth/logout")
-        .then(() => this.$router.push({ name: "login" }))
-        .catch((err) => alert(err.response.data));
+    user_id() {
+      return this.id || this.getUser.id;
     },
   },
+  methods: {},
 };
 </script>

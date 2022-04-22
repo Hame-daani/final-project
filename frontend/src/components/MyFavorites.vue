@@ -29,7 +29,7 @@ export default {
     MoviePreview,
   },
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   async created() {
     return this.loadData();
@@ -51,7 +51,7 @@ export default {
           page: this.page,
         },
       };
-      return UsersService.getFavorites(this.user.id, payload)
+      return UsersService.getFavorites(this.id, payload)
         .then((data) => {
           this.favorites = data.results;
           this.total_pages = data.total_pages;

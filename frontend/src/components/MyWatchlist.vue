@@ -28,7 +28,7 @@ export default {
     MoviePreview,
   },
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   async created() {
     return this.loadData();
@@ -50,7 +50,7 @@ export default {
           page: this.page,
         },
       };
-      return UsersService.getWatchlist(this.user.id, payload)
+      return UsersService.getWatchlist(this.id, payload)
         .then((data) => {
           this.watchlist = data.results;
           this.total_pages = data.total_pages;

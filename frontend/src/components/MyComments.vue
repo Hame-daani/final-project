@@ -30,7 +30,7 @@ export default {
     CommentCard,
   },
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   async created() {
     return this.loadComments();
@@ -49,7 +49,7 @@ export default {
       this.comments = [];
       const payload = {
         params: {
-          user: this.user.id,
+          user: this.id,
           page: this.page,
         },
       };
