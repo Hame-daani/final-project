@@ -9,5 +9,8 @@ export default {
     },
     async getWatchlist(id, payload) {
         return axios.get(base + id + "/watchlist/", payload).then((res) => res.data)
+    },
+    async getFavorites(id, payload) {
+        return axios.get(base + id + "/favorites/", payload).then((res) => res.data)
     }
 };
