@@ -44,8 +44,8 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
-        <!-- <router-view :key="$route.fullPath"></router-view> -->
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
+        <!-- <router-view></router-view> -->
       </v-container>
     </v-main>
 
