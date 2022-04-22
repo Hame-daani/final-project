@@ -33,7 +33,14 @@ class UserViewSet(ModelViewSet):
     def friends(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(UserSerializer(obj.friends.all(), many=True).data)
+            queryset = obj.friends.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                UserSerializer(queryset, many=True).data, status=status.HTTP_200_OK
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -47,7 +54,7 @@ class UserViewSet(ModelViewSet):
                 serializer = MovieSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
             return Response(
-                MovieSerializer(obj.watchlist.all(), many=True).data,
+                MovieSerializer(queryset, many=True).data,
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
@@ -64,5 +71,9 @@ class UserViewSet(ModelViewSet):
             if page is not None:
                 serializer = MovieSerializer(page, many=True)
                 return self.get_paginated_response(serializer.data)
+            return Response(
+                MovieSerializer(queryset, many=True).data,
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
