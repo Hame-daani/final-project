@@ -1,13 +1,15 @@
 <template>
   <v-card v-if="!editing">
-    <v-card-title> {{ user.username }} </v-card-title>
-    <v-card-text>
-      Name: {{ user.first_name }} {{ user.last_name }}
-    </v-card-text>
-    <v-card-text> Email: {{ user.email }} </v-card-text>
-    <v-card-text> Gender: {{ user.gender }} </v-card-text>
-    <v-card-actions v-if="isLoggedIn && getUser.id === this.user.id">
-      <v-btn color="info" @click="enableEditing">Edit</v-btn>
+    <v-card-title> {{ me.username }} </v-card-title>
+    <v-card-text> Name: {{ me.first_name }} {{ me.last_name }} </v-card-text>
+    <v-card-text> Email: {{ me.email }} </v-card-text>
+    <v-card-text> Gender: {{ me.gender }} </v-card-text>
+    <v-card-actions v-if="isLoggedIn">
+      <v-btn v-if="getUser.id === this.id" color="info" @click="enableEditing"
+        >Edit</v-btn
+      >
+      <v-btn v-if="isFriend" color="info">UnFollow</v-btn>
+      <v-btn v-if="!isFriend" color="info">Follow</v-btn>
     </v-card-actions>
   </v-card>
   <v-card v-else>
@@ -45,21 +47,34 @@ import { mapGetters } from "vuex";
 
 export default {
   props: {
-    user: { required: true },
+    id: { required: true },
   },
   computed: { ...mapGetters("auth", ["isLoggedIn", "getUser"]) },
   data() {
     return {
-      me: {
-        id: this.user.id,
-        first_name: this.user.first_name,
-        last_name: this.user.last_name,
-        email: this.user.email,
-      },
+      me: {},
       editing: false,
+      isFriend: false,
     };
   },
+  async created() {
+    if (!this.id || this.id === this.getUser.id) this.me = this.getUser;
+    else await this.loadData();
+    if (this.isLoggedIn && this.id !== this.getUser.id) this.loadFriendship();
+  },
   methods: {
+    async loadData() {
+      return UsersService.getUser(this.id)
+        .then((data) => (this.me = data))
+        .catch((err) => console.log(err.reponse.data));
+    },
+    async loadFriendship() {
+      return UsersService.getFriendship(this.me.id)
+        .then((data) => {
+          this.isFriend = data.isFriend;
+        })
+        .catch((err) => console.log(err.reponse.data));
+    },
     enableEditing() {
       this.editing = true;
     },
