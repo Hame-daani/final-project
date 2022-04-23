@@ -4,6 +4,9 @@
     <v-card-text> Name: {{ me.first_name }} {{ me.last_name }} </v-card-text>
     <v-card-text> Email: {{ me.email }} </v-card-text>
     <v-card-text> Gender: {{ me.gender }} </v-card-text>
+    <v-chip class="ma-2" color="blue" text-color="white" v-if="me.similarity">
+      Similarity: {{ me.similarity }}
+    </v-chip>
     <v-card-actions v-if="isLoggedIn">
       <v-btn v-if="isThisMe" color="info" @click="enableEditing">Edit</v-btn>
       <template v-else>

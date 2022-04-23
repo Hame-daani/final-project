@@ -7,6 +7,7 @@
         v-for="comment in comments"
         :key="comment.id"
         :comment="comment"
+        :preview="true"
         @comment-deleted="deleteComment($event)"
       />
     </v-card>

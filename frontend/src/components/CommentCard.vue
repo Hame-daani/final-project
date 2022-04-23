@@ -14,7 +14,9 @@
       <v-card-actions v-if="isLoggedIn">
         <v-btn v-if="!isLiked" color="info" @click="likeComment">Like</v-btn>
         <v-btn v-if="isLiked" color="info" @click="unlikeComment">Unlike</v-btn>
-        <v-btn color="info" @click="replying = true">Reply</v-btn>
+        <v-btn v-if="!preview" color="info" @click="replying = true"
+          >Reply</v-btn
+        >
         <template v-if="getUser.id === me.user.id">
           <v-btn color="info" @click="editing = true">Edit</v-btn>
           <v-dialog v-model="deleteDialog" persistent max-width="300">
@@ -88,6 +90,7 @@ export default {
     comment: {
       required: true,
     },
+    preview: { required: false, default: false },
   },
   computed: {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
