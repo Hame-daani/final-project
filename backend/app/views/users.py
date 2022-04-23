@@ -30,10 +30,10 @@ class UserViewSet(ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=["GET"])
-    def friends(self, request, pk=None):
+    def following(self, request, pk=None):
         try:
             obj = self.get_object()
-            queryset = obj.friends.all()
+            queryset = obj.following.all()
             page = self.paginate_queryset(queryset)
             if page is not None:
                 serializer = UserSerializer(page, many=True)
@@ -45,15 +45,42 @@ class UserViewSet(ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["GET"])
-    def isFriend(self, request, pk=None):
+    def followers(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            queryset = obj.followers.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                UserSerializer(queryset, many=True).data, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def isfollowing(self, request, pk=None):
         try:
             obj = self.get_object()
             user = request.user
-            friends = user.friends.all()
-            if obj in friends:
-                return Response({"isFriend": True})
+            if obj in user.following.all():
+                return Response({"result": True})
             else:
-                return Response({"isFriend": False})
+                return Response({"result": False})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def isfollows(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if obj in user.followers.all():
+                return Response({"result": True})
+            else:
+                return Response({"result": False})
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

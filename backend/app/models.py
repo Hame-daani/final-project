@@ -53,7 +53,9 @@ class User(AbstractUser):
     avatar = models.ImageField(
         upload_to=avatar_upload_path, default="avatars/default_avatar.png"
     )
-    friends = models.ManyToManyField("self")
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followers"
+    )
     similarities = GenericRelation(Similarity, object_id_field="source_id")
 
 

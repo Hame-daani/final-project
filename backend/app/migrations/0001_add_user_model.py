@@ -112,7 +112,12 @@ class Migration(migrations.Migration):
                         upload_to=app.models.User.avatar_upload_path,
                     ),
                 ),
-                ("friends", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "following",
+                    models.ManyToManyField(
+                        related_name="followers", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
                 (
                     "groups",
                     models.ManyToManyField(

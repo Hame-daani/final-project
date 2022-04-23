@@ -13,9 +13,9 @@ def add_friends(apps, schema):
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         user = User.objects.get(id=row["id"])
         friends = ast.literal_eval(row["friends"])
-        user.friends.add(*friends)
-        watchlist = ast.literal_eval(row["watchlist"])
-        user.watchlist.add(*watchlist)
+        user.following.add(*friends)
+        # watchlist = ast.literal_eval(row["watchlist"])
+        # user.watchlist.add(*watchlist)
         # favorites = ast.literal_eval(row["favorites"])
         # user.favorites.add(*favorites)
 
@@ -24,7 +24,7 @@ def add_friends(apps, schema):
 def removing_friends(apps, schema):
     User = apps.get_model("app", "User")
     for user in tqdm(User.objects.all()):
-        user.friends.clear()
+        user.following.clear()
         # user.favorites.clear()
         user.watchlist.clear()
 
