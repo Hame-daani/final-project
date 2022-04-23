@@ -28,5 +28,11 @@ export default {
     async isfollows(id) {
         return axios.get(base + id + "/isfollows/").then((res) => res.data)
     },
+    async follow(id) {
+        return axios.post(base + id + "/follow/").then((res) => res.data)
+    },
+    async unfollow(id) {
+        return axios.post(base + id + "/unfollow/").then((res) => res.data)
+    },
 
 };

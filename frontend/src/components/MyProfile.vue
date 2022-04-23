@@ -106,10 +106,14 @@ export default {
       this.editing = false;
     },
     async follow() {
-      // send request
+      return UsersService.follow(this.me.id)
+        .then(() => this.loadFriendship())
+        .catch((err) => console.log(err.reponse.data));
     },
     async unfollow() {
-      // send delete friendship request
+      return UsersService.unfollow(this.me.id)
+        .then(() => this.loadFriendship())
+        .catch((err) => console.log(err.reponse.data));
     },
   },
 };
