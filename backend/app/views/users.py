@@ -45,6 +45,20 @@ class UserViewSet(ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["GET"])
+    def isFriend(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            friends = user.friends.all()
+            if obj in friends:
+                return Response({"isFriend": True})
+            else:
+                return Response({"isFriend": False})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
     def watchlist(self, request, pk=None):
         try:
             obj = self.get_object()
