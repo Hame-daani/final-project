@@ -4,10 +4,12 @@ from rest_framework import status
 from rest_framework import filters
 from rest_framework.decorators import action
 
-from app.models import User
+from app.models import Movie, User
 from app.permissions import isSelf
-from app.serializers import MovieSerializer, UserSerializer
+from app.serializers import LikeSerializer, MovieSerializer, UserSerializer
 from recommender.module import GlobalRecommender
+
+from django.contrib.contenttypes.models import ContentType
 
 
 class UserViewSet(ModelViewSet):
@@ -28,10 +30,90 @@ class UserViewSet(ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=["GET"])
-    def friends(self, request, pk=None):
+    def following(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(UserSerializer(obj.friends.all(), many=True).data)
+            queryset = obj.following.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                UserSerializer(queryset, many=True).data, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def followers(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            queryset = obj.followers.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = UserSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                UserSerializer(queryset, many=True).data, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def isfollowing(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if obj in user.following.all():
+                return Response({"result": True})
+            else:
+                return Response({"result": False})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def isfollows(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if obj in user.followers.all():
+                return Response({"result": True})
+            else:
+                return Response({"result": False})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["POST"])
+    def follow(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if user in obj.followers.all():
+                return Response(
+                    {"error": "you are already their friend"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                obj.followers.add(user)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["POST"])
+    def unfollow(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if user not in obj.followers.all():
+                return Response(
+                    {"error": "you are not their friend"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                obj.followers.remove(user)
+                return Response(status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -39,7 +121,15 @@ class UserViewSet(ModelViewSet):
     def watchlist(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(MovieSerializer(obj.watchlist.all(), many=True).data)
+            queryset = obj.watchlist.all()
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = MovieSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                MovieSerializer(queryset, many=True).data,
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -47,6 +137,16 @@ class UserViewSet(ModelViewSet):
     def favorites(self, request, pk=None):
         try:
             obj = self.get_object()
-            return Response(MovieSerializer(obj.favorites.all(), many=True).data)
+            ct = ContentType.objects.get_for_model(Movie)
+            q = obj.likes.filter(content_type=ct).values_list("object_id", flat=True)
+            queryset = Movie.objects.filter(id__in=q)
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = MovieSerializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            return Response(
+                MovieSerializer(queryset, many=True).data,
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -38,6 +38,41 @@ class Median(models.Aggregate):
     template = "%(function)s(0.5) WITHIN GROUP (ORDER BY %(expressions)s)"
 
 
+class User(AbstractUser):
+    def avatar_upload_path(instance, filename):
+        # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
+        return f"avatars/user_avatar_{instance.id}"
+
+    GENDER_CHOICES = (
+        ("M", "Male"),
+        ("F", "Female"),
+    )
+    bio = models.CharField(max_length=500, blank=True)
+    location = models.CharField(max_length=50, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    avatar = models.ImageField(
+        upload_to=avatar_upload_path, default="avatars/default_avatar.png"
+    )
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="followers"
+    )
+    similarities = GenericRelation(Similarity, object_id_field="source_id")
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, related_name="likes", on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ["user", "content_type", "object_id"]
+
+    def __str__(self) -> str:
+        return f"{self.user.first_name} liked this {self.content_type.model} {self.object_id}"
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=500)
     plot = models.TextField(blank=True)
@@ -47,6 +82,8 @@ class Movie(models.Model):
     genres = ArrayField(models.CharField(max_length=10))
     poster = models.URLField(blank=True)
     similarities = GenericRelation(Similarity, object_id_field="source_id")
+    watchlist = models.ManyToManyField(User, related_name="watchlist")
+    likes = GenericRelation(Like)
 
     @property
     def avg_rating(self):
@@ -64,41 +101,6 @@ class Movie(models.Model):
 
     def __str__(self) -> str:
         return self.title
-
-
-class User(AbstractUser):
-    def avatar_upload_path(instance, filename):
-        # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
-        return f"avatars/user_avatar_{instance.id}"
-
-    GENDER_CHOICES = (
-        ("M", "Male"),
-        ("F", "Female"),
-    )
-    bio = models.CharField(max_length=500, blank=True)
-    location = models.CharField(max_length=50, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    avatar = models.ImageField(
-        upload_to=avatar_upload_path, default="avatars/default_avatar.png"
-    )
-    friends = models.ManyToManyField("self")
-    watchlist = models.ManyToManyField(Movie, related_name="watchlist")
-    favorites = models.ManyToManyField(Movie, related_name="favorites")
-    similarities = GenericRelation(Similarity, object_id_field="source_id")
-
-
-class Like(models.Model):
-    user = models.ForeignKey(User, related_name="likes", on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ["user", "content_type", "object_id"]
-
-    def __str__(self) -> str:
-        return f"{self.user.first_name} liked this {self.content_type.model} {self.object_id}"
 
 
 class Comment(models.Model):
