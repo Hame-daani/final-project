@@ -41,10 +41,10 @@ class ReviewViewSet(ModelViewSet, Commentable, Likeable):
     def friends(self, request):
         user = request.user
         if user.is_authenticated:
-            friends = user.friends.all()
-            queryset = Review.objects.filter(user__in=friends).order_by("-created_at")[
-                :10
-            ]
+            following = user.following.all()
+            queryset = Review.objects.filter(user__in=following).order_by(
+                "-created_at"
+            )[:10]
             serializer = self.serializer_class(queryset, many=True)
             return Response(serializer.data)
         else:

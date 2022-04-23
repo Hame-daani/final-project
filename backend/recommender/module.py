@@ -31,7 +31,7 @@ class FriendsRecommender:
         Ex.time: 800 ms
         """
 
-        myfriends = user.friends.all()
+        myfriends = user.following.all()
         results = (
             Review.objects.filter(movie=movie)
             .filter(user__in=myfriends)
@@ -62,7 +62,7 @@ class FriendsRecommender:
         return top 10 movies calculated from friends
         Ex.time: 4.13 ms
         """
-        myfriends = user.friends.all()
+        myfriends = user.following.all()
         movies = (
             Movie.objects.exclude(reviews__user=user)
             .filter(
