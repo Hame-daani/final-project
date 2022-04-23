@@ -85,6 +85,38 @@ class UserViewSet(ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=["POST"])
+    def follow(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if user in obj.followers.all():
+                return Response(
+                    {"error": "you are already their friend"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                obj.followers.add(user)
+                return Response(status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["POST"])
+    def unfollow(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            user = request.user
+            if user not in obj.followers.all():
+                return Response(
+                    {"error": "you are not their friend"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                obj.followers.remove(user)
+                return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=True, methods=["GET"])
     def watchlist(self, request, pk=None):
         try:
