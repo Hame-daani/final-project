@@ -16,11 +16,17 @@ export default {
     async getUser(id) {
         return axios.get(base + id + "/").then((res) => res.data)
     },
-    async getFriends(id, payload) {
-        return axios.get(base + id + "/friends/", payload).then((res) => res.data)
+    async getfollowing(id, payload) {
+        return axios.get(base + id + "/following/", payload).then((res) => res.data)
     },
-    async getFriendship(id) {
-        return axios.get(base + id + "/isFriend/").then((res) => res.data)
-    }
+    async getfollowers(id, payload) {
+        return axios.get(base + id + "/followers/", payload).then((res) => res.data)
+    },
+    async isfollowing(id) {
+        return axios.get(base + id + "/isfollowing/").then((res) => res.data)
+    },
+    async isfollows(id) {
+        return axios.get(base + id + "/isfollows/").then((res) => res.data)
+    },
 
 };

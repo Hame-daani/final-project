@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title> My Friends </v-card-title>
+      <v-card-title> My Following </v-card-title>
       <loading-circular :flag="loading" />
-      <user-preview v-for="user in friends" :key="user.id" :user="user" />
+      <user-preview v-for="user in following" :key="user.id" :user="user" />
     </v-card>
     <v-pagination
       v-model="page"
@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      friends: [],
+      following: [],
       page: 1,
       total_pages: 1,
       loading: false,
@@ -41,15 +41,15 @@ export default {
   methods: {
     async loadData() {
       this.loading = true;
-      this.friends = [];
+      this.following = [];
       const payload = {
         params: {
           page: this.page,
         },
       };
-      return UsersService.getFriends(this.id, payload)
+      return UsersService.getfollowing(this.id, payload)
         .then((data) => {
-          this.friends = data.results;
+          this.following = data.results;
           this.total_pages = data.total_pages;
         })
         .then(() => (this.loading = false))

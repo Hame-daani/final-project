@@ -24,9 +24,9 @@ import MyProfile from "@/components/MyProfile.vue";
 import MyReviews from "@/components/MyReviews.vue";
 import MyWatchlist from "@/components/MyWatchlist.vue";
 import MyFavorites from "@/components/MyFavorites.vue";
-import MyFriends from "@/components/MyFriends.vue";
+import MyFollowing from "@/components/MyFollowing.vue";
+import MyFollowers from "@/components/MyFollowers.vue";
 import TasteGroup from "@/components/TasteGroup.vue";
-import MyReqs from "@/components/MyReqs.vue";
 
 export default {
   components: {
@@ -35,9 +35,9 @@ export default {
     MyReviews,
     MyWatchlist,
     MyFavorites,
-    MyFriends,
+    MyFollowing,
+    MyFollowers,
     TasteGroup,
-    MyReqs,
   },
   props: {
     id: { required: false },
@@ -47,12 +47,12 @@ export default {
       tab: 0,
       tabs: [
         { tab: "Profile", content: MyProfile, private: false },
-        { tab: "Friends", content: MyFriends, private: false },
+        { tab: "Following", content: MyFollowing, private: false },
+        { tab: "Followers", content: MyFollowers, private: false },
         { tab: "Comments", content: MyComments, private: false },
         { tab: "Reviews", content: MyReviews, private: false },
         { tab: "Watchlist", content: MyWatchlist, private: false },
         { tab: "Favorites", content: MyFavorites, private: false },
-        { tab: "Friend Requests", content: MyReqs, private: true },
         { tab: "Taste Group", content: TasteGroup, private: true },
       ],
     };

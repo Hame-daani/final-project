@@ -5,11 +5,16 @@
     <v-card-text> Email: {{ me.email }} </v-card-text>
     <v-card-text> Gender: {{ me.gender }} </v-card-text>
     <v-card-actions v-if="isLoggedIn">
-      <v-btn v-if="getUser.id === this.id" color="info" @click="enableEditing"
-        >Edit</v-btn
-      >
-      <v-btn v-if="isFriend" color="info">UnFollow</v-btn>
-      <v-btn v-if="!isFriend" color="info">Follow</v-btn>
+      <v-btn v-if="isThisMe" color="info" @click="enableEditing">Edit</v-btn>
+      <template v-else>
+        <v-btn v-if="isfollowing" color="warning" @click="unfollow"
+          >UnFollow</v-btn
+        >
+        <v-btn v-else color="info" @click="follow">Follow</v-btn>
+        <v-chip class="ma-2" color="green" text-color="white" v-if="isfollows">
+          Follows You
+        </v-chip>
+      </template>
     </v-card-actions>
   </v-card>
   <v-card v-else>
@@ -49,12 +54,18 @@ export default {
   props: {
     id: { required: true },
   },
-  computed: { ...mapGetters("auth", ["isLoggedIn", "getUser"]) },
+  computed: {
+    ...mapGetters("auth", ["isLoggedIn", "getUser"]),
+    isThisMe() {
+      return this.getUser.id === this.id;
+    },
+  },
   data() {
     return {
       me: {},
       editing: false,
-      isFriend: false,
+      isfollowing: false,
+      isfollows: false,
     };
   },
   async created() {
@@ -69,10 +80,13 @@ export default {
         .catch((err) => console.log(err.reponse.data));
     },
     async loadFriendship() {
-      return UsersService.getFriendship(this.me.id)
+      UsersService.isfollowing(this.me.id)
         .then((data) => {
-          this.isFriend = data.isFriend;
+          this.isfollowing = data.result;
         })
+        .catch((err) => console.log(err.reponse.data));
+      UsersService.isfollows(this.me.id)
+        .then((data) => (this.isfollows = data.result))
         .catch((err) => console.log(err.reponse.data));
     },
     enableEditing() {
@@ -90,6 +104,12 @@ export default {
     },
     cancel() {
       this.editing = false;
+    },
+    async follow() {
+      // send request
+    },
+    async unfollow() {
+      // send delete friendship request
     },
   },
 };
