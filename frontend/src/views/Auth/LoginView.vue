@@ -1,17 +1,24 @@
-// src/views/Login.vue
-
 <template>
-  <div>
-    <h1>Login</h1>
-    <input type="text" placeholder="Username" v-model="username" />
-    <input type="text" placeholder="Password" v-model="password" />
-    <input type="button" @click="login" value="Login" />
-    <div v-if="errors">
-      <p v-for="error in errors" v-bind:key="error">
-        {{ error }}
-      </p>
-    </div>
-  </div>
+  <v-containter>
+    <v-card max-width="500">
+      <v-toolbar flat color="blue-grey" dark>
+        <v-toolbar-title>Login</v-toolbar-title>
+      </v-toolbar>
+
+      <v-card-text>
+        <v-text-field filled label="Username" :value="username"></v-text-field>
+        <v-text-field filled label="Passwrod" :value="password"></v-text-field>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="error" depressed> Clear </v-btn>
+        <v-btn color="success" depressed @click="login"> Login </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-containter>
 </template>
 
 <script>
