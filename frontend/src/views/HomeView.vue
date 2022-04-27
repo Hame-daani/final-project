@@ -1,58 +1,54 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card class="my-50">
       <v-toolbar flat color="blue-grey" dark>
         <v-toolbar-title>Recent Reviews</v-toolbar-title>
       </v-toolbar>
-      <v-card-text>
-        <loading-circular :flag="recentReviewsLoading" />
-        <v-row class="justify-space-around">
-          <v-col v-for="review in recentReviews" :key="review.id" cols="5">
-            <review-preview :review="review" />
-          </v-col>
-        </v-row>
-      </v-card-text>
+      <loading-circular :flag="recentReviewsLoading" />
+      <v-slide-group v-model="slide" show-arrows>
+        <v-slide-item v-for="review in recentReviews" :key="review.id">
+          <review-preview :review="review" />
+        </v-slide-item>
+      </v-slide-group>
     </v-card>
 
-    <v-container v-show="isLoggedIn">
-      <v-card>
+    <template v-if="isLoggedIn">
+      <v-card class="my-50">
         <v-toolbar flat color="blue-grey" dark>
           <v-toolbar-title>Friends Reviews</v-toolbar-title>
         </v-toolbar>
         <loading-circular :flag="friendsReviewsLoading" />
-        <v-row class="justify-space-around">
-          <v-col
-            v-for="review in friendsRecentReviews"
-            :key="review.id"
-            cols="5"
-          >
+        <v-slide-group v-model="slide" show-arrows>
+          <v-slide-item v-for="review in friendsRecentReviews" :key="review.id">
             <review-preview :review="review" />
-          </v-col>
-        </v-row>
+          </v-slide-item>
+        </v-slide-group>
       </v-card>
-      <v-card>
+
+      <v-card class="my-50">
         <v-toolbar flat color="blue-grey" dark>
-          <v-toolbar-title>Global Recomendation</v-toolbar-title>
+          <v-toolbar-title>Global Recommendation</v-toolbar-title>
         </v-toolbar>
         <loading-circular :flag="globalLoading" />
-        <v-row class="justify-space-around">
-          <v-col v-for="movie in globalRecs" :key="movie.id" cols="5">
+        <v-slide-group v-model="slide" show-arrows>
+          <v-slide-item v-for="movie in globalRecs" :key="movie.id">
             <movie-preview :movie="movie" />
-          </v-col>
-        </v-row>
+          </v-slide-item>
+        </v-slide-group>
       </v-card>
-      <v-card>
+
+      <v-card class="my-50">
         <v-toolbar flat color="blue-grey" dark>
           <v-toolbar-title>Friends Recommendation</v-toolbar-title>
         </v-toolbar>
         <loading-circular :flag="friendsLoading" />
-        <v-row class="justify-space-around">
-          <v-col v-for="movie in friendsRecs" :key="movie.id" cols="5">
+        <v-slide-group v-model="slide" show-arrows>
+          <v-slide-item v-for="movie in friendsRecs" :key="movie.id">
             <movie-preview :movie="movie" />
-          </v-col>
-        </v-row>
+          </v-slide-item>
+        </v-slide-group>
       </v-card>
-    </v-container>
+    </template>
   </v-container>
 </template>
 
@@ -80,6 +76,7 @@ export default {
       friendsRecentReviews: [],
       globalRecs: [],
       friendsRecs: [],
+      slide: null,
     };
   },
   async created() {

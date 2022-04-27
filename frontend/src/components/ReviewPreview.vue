@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="mx-auto my-3"
-    max-width="400"
+    class="mx-auto my-3 pa-5"
+    width="400"
     :to="{ name: 'review', params: { id: me.id } }"
   >
     <v-row v-if="showMovie">
@@ -15,19 +15,18 @@
       </v-col>
       <v-col cols="7" class="d-flex flex-column justify-space-between">
         <v-row class="text-subtitle-2">{{ me.movie.title }} </v-row>
-        <v-row class="text-h5">{{ me.user.username }}</v-row>
+        <v-row class="text-h6">{{ me.user.username }}</v-row>
         <v-row
           ><v-rating v-model="me.rating" length="10" small dense readonly
         /></v-row>
       </v-col>
     </v-row>
-    <v-row v-else>
-      <v-row class="">{{ me.movie.title }} </v-row>
-      <v-row>{{ me.user.username }}</v-row>
-      <v-row
-        ><v-rating v-model="me.rating" length="10" small dense readonly
-      /></v-row>
-    </v-row>
+    <template v-else>
+      <v-card-title>{{ me.user.username }}</v-card-title>
+      <v-card-subtitle>
+        <v-rating v-model="me.rating" length="10" small dense readonly
+      /></v-card-subtitle>
+    </template>
     <v-card-text>
       {{ me.text }}
     </v-card-text>
