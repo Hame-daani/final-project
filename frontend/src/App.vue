@@ -4,9 +4,7 @@
       <v-list>
         <v-list-item class="px-2">
           <v-list-item-avatar v-if="isLoggedIn">
-            <v-img
-              src="https://randomuser.me/api/portraits/women/85.jpg"
-            ></v-img>
+            <v-img :src="user.pic"></v-img>
           </v-list-item-avatar>
         </v-list-item>
 

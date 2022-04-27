@@ -16,9 +16,7 @@
       <v-col cols="7" class="d-flex flex-column justify-space-between">
         <v-row>
           <v-avatar>
-            <v-img
-              src="https://randomuser.me/api/portraits/women/85.jpg"
-            ></v-img>
+            <v-img :src="me.user.pic"></v-img>
           </v-avatar>
           <span class="text-subtitle-2 ma-3">
             {{ me.user.first_name }}
@@ -33,7 +31,7 @@
     <template v-else>
       <v-card-title
         ><v-avatar>
-          <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
+          <v-img :src="me.user.pic"></v-img>
         </v-avatar>
         <span class="text-subtitle-2 ma-3">
           {{ me.user.first_name }}
