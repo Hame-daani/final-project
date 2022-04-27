@@ -1,36 +1,56 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title>Recent Reviews</v-card-title>
-      <loading-circular :flag="recentReviewsLoading" />
-      <review-preview
-        v-for="review in recentReviews"
-        :review="review"
-        :key="review.id"
-      />
+      <v-toolbar flat color="blue-grey" dark>
+        <v-toolbar-title>Recent Reviews</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text>
+        <loading-circular :flag="recentReviewsLoading" />
+        <v-row class="justify-space-around">
+          <v-col v-for="review in recentReviews" :key="review.id" cols="5">
+            <review-preview :review="review" />
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
+
     <v-container v-show="isLoggedIn">
       <v-card>
-        <v-card-title>Friends Reviews</v-card-title>
+        <v-toolbar flat color="blue-grey" dark>
+          <v-toolbar-title>Friends Reviews</v-toolbar-title>
+        </v-toolbar>
         <loading-circular :flag="friendsReviewsLoading" />
-        <review-preview
-          v-for="review in friendsRecentReviews"
-          :review="review"
-          :key="review.id"
-        />
+        <v-row class="justify-space-around">
+          <v-col
+            v-for="review in friendsRecentReviews"
+            :key="review.id"
+            cols="5"
+          >
+            <review-preview :review="review" />
+          </v-col>
+        </v-row>
       </v-card>
       <v-card>
-        <v-card-title>GLobal Recommendations</v-card-title>
+        <v-toolbar flat color="blue-grey" dark>
+          <v-toolbar-title>Global Recomendation</v-toolbar-title>
+        </v-toolbar>
         <loading-circular :flag="globalLoading" />
-        <movie-preview
-          v-for="movie in globalRecs"
-          :movie="movie"
-          :key="movie.id"
-        />
+        <v-row class="justify-space-around">
+          <v-col v-for="movie in globalRecs" :key="movie.id" cols="5">
+            <movie-preview :movie="movie" />
+          </v-col>
+        </v-row>
       </v-card>
       <v-card>
-        <v-card-title>Friends Recommendations</v-card-title>
+        <v-toolbar flat color="blue-grey" dark>
+          <v-toolbar-title>Friends Recommendation</v-toolbar-title>
+        </v-toolbar>
         <loading-circular :flag="friendsLoading" />
+        <v-row class="justify-space-around">
+          <v-col v-for="movie in friendsRecs" :key="movie.id" cols="5">
+            <movie-preview :movie="movie" />
+          </v-col>
+        </v-row>
       </v-card>
     </v-container>
   </v-container>

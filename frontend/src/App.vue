@@ -3,7 +3,7 @@
     <v-navigation-drawer permanent app expand-on-hover>
       <v-list>
         <v-list-item class="px-2">
-          <v-list-item-avatar>
+          <v-list-item-avatar v-if="isLoggedIn">
             <v-img
               src="https://randomuser.me/api/portraits/women/85.jpg"
             ></v-img>
@@ -15,11 +15,9 @@
             <v-list-item-title class="text-h6">
               {{ user.username }}
             </v-list-item-title>
-            <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-content v-else>
             <v-list-item-title class="text-h6"> guest </v-list-item-title>
-            <v-list-item-subtitle>geust@this.com</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
