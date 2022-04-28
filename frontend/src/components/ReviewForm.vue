@@ -1,28 +1,31 @@
 <template>
   <v-container>
-    <template>
-      <v-form ref="form">
-        <v-text-field
-          label="text"
-          v-model="review.text"
-          :rules="rules"
-          hide-details="auto"
-          multi-line
-          clearable
-          required
-        ></v-text-field>
-        <v-rating
-          v-model="review.rating"
-          ref="rating"
-          length="10"
-          hover
-          clearable
-          required
-        ></v-rating>
-        <v-btn @click="submit"> submit </v-btn>
-        <v-btn @click="clear">clear</v-btn>
-      </v-form>
-    </template>
+    <v-form ref="form">
+      <v-textarea
+        label="text"
+        v-model="review.text"
+        :rules="rules"
+        hide-details="auto"
+        multiline
+        filled
+        clearable
+        required
+      ></v-textarea>
+      <v-rating
+        v-model="review.rating"
+        ref="rating"
+        length="10"
+        hover
+        clearable
+        required
+      ></v-rating>
+      <v-btn @click="submit" color="green" icon>
+        <v-icon>mdi-send</v-icon>
+      </v-btn>
+      <v-btn @click="clear" color="red" icon>
+        <v-icon>mdi-backspace</v-icon>
+      </v-btn>
+    </v-form>
   </v-container>
 </template>
 
