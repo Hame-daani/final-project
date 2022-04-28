@@ -1,10 +1,11 @@
 <template>
   <v-card>
-    <v-container>
+    <v-container class="d-flex justify-center">
       <comment-form v-if="isLoggedIn" @comment-submitted="addComment($event)" />
     </v-container>
+    <v-divider></v-divider>
     <v-card-title> Comments </v-card-title>
-    <v-card :loading="loading">
+    <v-card :loading="loading" class="pa-7" flat>
       <v-card-text>
         <comment-card
           v-for="comment in comments"

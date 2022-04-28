@@ -1,20 +1,26 @@
 <template>
-  <v-card>
+  <v-card flat style="width: 700px">
     <v-card-title v-if="!editing"> Comment on this </v-card-title>
     <v-card-title v-else> Edit your comment </v-card-title>
-    <v-form ref="form">
-      <v-text-field
+    <v-form ref="form" class="pa-5">
+      <v-textarea
         label="text"
         v-model="me.text"
         :rules="rules"
         hide-details="auto"
         multi-line
         clearable
+        filled
+        shaped
         required
-      ></v-text-field>
-      <v-card-actions>
-        <v-btn @click="submit"> Submit </v-btn>
-        <v-btn @click="cancel" v-if="editing || replying"> Cancel </v-btn>
+      ></v-textarea>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn @click="cancel" v-if="editing || replying" color="red" icon>
+          <v-icon> mdi-cancel </v-icon>
+        </v-btn>
+        <v-btn @click="submit" color="green" icon>
+          <v-icon> mdi-send</v-icon>
+        </v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -58,7 +64,7 @@ export default {
     },
     cancel() {
       this.$emit("cancel");
-      this.$refs.form.reset();
+      // this.$refs.form.reset();
     },
   },
 };

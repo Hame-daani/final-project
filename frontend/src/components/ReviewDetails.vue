@@ -74,7 +74,9 @@
           <v-row><v-divider></v-divider></v-row>
 
           <v-row>
-            <v-card-text>{{ me.text }}</v-card-text>
+            <v-card-text style="white-space: pre-line">{{
+              me.text
+            }}</v-card-text>
           </v-row>
 
           <template v-if="isLoggedIn && me.user.id == getUser.id">
