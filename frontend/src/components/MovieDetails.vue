@@ -46,7 +46,10 @@
               <span>{{ movie.avg_rating | decimalPlace }}</span>
             </v-tooltip>
           </v-row>
-          <v-row class="d-flex justify-center align-center mt-5">
+          <v-row
+            v-if="movie.estimated_rating"
+            class="d-flex justify-center align-center mt-5"
+          >
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-chip v-on="on" v-bind="attrs">

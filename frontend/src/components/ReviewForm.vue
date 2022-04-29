@@ -2,7 +2,7 @@
   <v-container class="d-flex justify-center">
     <v-form ref="form" style="width: 700px">
       <v-textarea
-        label="text"
+        label="Write your review here..."
         v-model="review.text"
         :rules="rules"
         hide-details="auto"

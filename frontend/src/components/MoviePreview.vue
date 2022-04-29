@@ -1,32 +1,74 @@
 <template>
-  <v-card :to="{ name: 'movie', params: { id: me.id } }">
-    <v-card-title>{{ me.title }}</v-card-title>
-    <v-card-subtitle>{{ me.year }}</v-card-subtitle>
-    <v-container>
-      <label for="">Average Rating</label>
-      <span class="text-caption mr-2">
-        ({{ me.avg_rating | decimalPlace }})
-      </span>
-      <v-rating
-        v-model="me.avg_rating"
-        length="10"
-        readonly
-        half-increments
-      ></v-rating>
-    </v-container>
-    <v-container v-show="me.estimated_rating">
-      <label for="">Estimated Rating</label>
-      <span class="text-caption mr-2">
-        ({{ me.estimated_rating | decimalPlace }})
-      </span>
-      <v-rating
-        v-model="me.estimated_rating"
-        length="10"
-        readonly
-        half-increments
-      ></v-rating>
-    </v-container>
-    <v-card-text>{{ me.genres }}</v-card-text>
+  <v-card
+    class="mx-auto my-3 pa-5"
+    width="400"
+    :to="{ name: 'movie', params: { id: me.id } }"
+    shaped
+    elevation="3"
+  >
+    <v-row>
+      <v-col>
+        <!-- img -->
+        <v-img :src="me.poster" class="float-left" width="130" contain></v-img>
+      </v-col>
+      <v-col class="d-flex flex-column" cols="7">
+        <!-- detail -->
+        <v-row>
+          <span class="text-h6">{{ me.title }}</span>
+        </v-row>
+        <v-row>
+          <span class="text-caption">{{ me.year }}</span>
+        </v-row>
+        <v-row>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs">
+                <v-rating
+                  v-model="me.avg_rating"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
+              </v-chip>
+            </template>
+            <span>Average Rating: {{ me.avg_rating | decimalPlace }}</span>
+          </v-tooltip>
+        </v-row>
+        <v-row v-if="me.estimated_rating">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs">
+                <v-rating
+                  v-model="me.estimated_rating"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
+              </v-chip>
+            </template>
+            <span
+              >Estimated Rating {{ me.estimated_rating | decimalPlace }}</span
+            >
+          </v-tooltip>
+        </v-row>
+        <v-row v-if="me.similarity">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs" color="yellow">
+                {{ me.similarity }}
+              </v-chip>
+            </template>
+            <span>Similarity</span>
+          </v-tooltip>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 

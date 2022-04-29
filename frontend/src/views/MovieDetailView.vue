@@ -3,41 +3,56 @@
     <v-container>
       <movie-details :id="id" :reviewCounts="reviewCounts" />
     </v-container>
+    <v-container>
+      <v-card shaped>
+        <v-card-title>Similar Movies</v-card-title>
+        <loading-circular :flag="similarMoviesLoading" />
+        <v-slide-group v-model="slide" show-arrows>
+          <v-slide-item
+            class="me-3"
+            v-for="movie in similarMovies"
+            :key="movie.id"
+          >
+            <movie-preview :key="movie.id" :movie="movie" />
+          </v-slide-item>
+        </v-slide-group>
+      </v-card>
+    </v-container>
     <v-container v-if="isLoggedIn">
-      <v-card>
+      <v-card shaped>
         <v-card-title>My Review</v-card-title>
         <loading-circular :flag="myReviewsLoading" />
-        <review-preview
-          v-if="!myReviewsLoading && myReview"
-          :review="myReview"
-          :showMovie="false"
-        />
-        <review-form
-          v-if="!myReviewsLoading && !myReview"
-          @review-submited="submitReview($event)"
-        />
+        <v-container>
+          <review-preview
+            v-if="!myReviewsLoading && myReview"
+            :review="myReview"
+            :showMovie="false"
+          />
+          <review-form
+            v-if="!myReviewsLoading && !myReview"
+            @review-submited="submitReview($event)"
+          />
+        </v-container>
       </v-card>
     </v-container>
     <v-container>
       <v-card>
         <v-card-title>Others Reviews</v-card-title>
         <loading-circular :flag="otherReviewsLoading" />
-        <review-preview
-          v-for="review in otherReviews"
-          :key="review.id"
-          :review="review"
-          :showMovie="false"
-        />
-      </v-card>
-    </v-container>
-    <v-container>
-      <v-card>
-        <v-card-title>Similar Movies</v-card-title>
-        <loading-circular :flag="similarMoviesLoading" />
-        <movie-preview
-          v-for="movie in similarMovies"
-          :key="movie.id"
-          :movie="movie"
+        <v-row>
+          <review-preview
+            v-for="review in otherReviews"
+            :key="review.id"
+            :review="review"
+            :showMovie="false"
+          />
+        </v-row>
+        <v-pagination
+          v-model="reviewsPage"
+          class="my-10"
+          :length="reviews_total_pages"
+          @input="loadOtherReviews"
+          :total-visible="10"
         />
       </v-card>
     </v-container>
@@ -69,6 +84,8 @@ export default {
       otherReviews: [],
       similarMovies: [],
       reviewCounts: 0,
+      reviewsPage: 1,
+      reviews_total_pages: 1,
       myReviewsLoading: false,
       otherReviewsLoading: false,
       similarMoviesLoading: false,
@@ -81,8 +98,8 @@ export default {
     if (this.isLoggedIn) {
       await this.loadMyReview();
     }
-    await this.loadOtherReviews();
     await this.loadSimilarMovies();
+    await this.loadOtherReviews();
   },
   methods: {
     async loadMyReview() {
@@ -102,14 +119,17 @@ export default {
     },
     async loadOtherReviews() {
       this.otherReviewsLoading = true;
+      this.otherReviews = [];
       const payload = {
         params: {
           movie: this.id,
+          page: this.reviewsPage,
         },
       };
       return ReviewsService.getReviews(payload)
         .then((data) => {
           this.otherReviews = data.results;
+          this.reviews_total_pages = data.total_pages;
           this.reviewCounts = data.count;
         })
         .then(() => {

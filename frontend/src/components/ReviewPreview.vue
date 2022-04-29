@@ -3,6 +3,8 @@
     class="mx-auto my-3 pa-5"
     width="400"
     :to="{ name: 'review', params: { id: me.id } }"
+    shaped
+    elevation="3"
   >
     <v-row v-if="showMovie">
       <v-col>
@@ -23,9 +25,9 @@
           </span>
         </v-row>
         <v-row class="text-h6">{{ me.movie.title }}</v-row>
-        <v-row
-          ><v-rating v-model="me.rating" length="10" small dense readonly
-        /></v-row>
+        <v-row>
+          <v-rating v-model="me.rating" length="10" small dense readonly />
+        </v-row>
       </v-col>
     </v-row>
     <template v-else>
@@ -41,7 +43,7 @@
         <v-rating v-model="me.rating" length="10" small dense readonly
       /></v-card-subtitle>
     </template>
-    <v-card-text>
+    <v-card-text class="text-truncate">
       {{ me.text }}
     </v-card-text>
   </v-card>
