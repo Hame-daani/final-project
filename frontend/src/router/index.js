@@ -90,7 +90,10 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  scrollBehavior() {
+    window.scrollTo(0, 0);
+  }
 })
 
 router.beforeEach((to, from, next) => {
