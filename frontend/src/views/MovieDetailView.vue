@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-container>
-      <movie-details :id="id" />
+      <movie-details :id="id" :reviewCounts="reviewCounts" />
     </v-container>
     <v-container v-if="isLoggedIn">
       <v-card>
@@ -68,6 +68,7 @@ export default {
       myReview: {},
       otherReviews: [],
       similarMovies: [],
+      reviewCounts: 0,
       myReviewsLoading: false,
       otherReviewsLoading: false,
       similarMoviesLoading: false,
@@ -107,7 +108,10 @@ export default {
         },
       };
       return ReviewsService.getReviews(payload)
-        .then((data) => (this.otherReviews = data.results))
+        .then((data) => {
+          this.otherReviews = data.results;
+          this.reviewCounts = data.count;
+        })
         .then(() => {
           this.otherReviewsLoading = false;
         })

@@ -37,7 +37,7 @@
     </v-navigation-drawer>
 
     <!-- Sizes your content based upon application components -->
-    <v-main>
+    <v-main style="background-color: #9fa8da">
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
         <router-view :key="$route.fullPath"></router-view>

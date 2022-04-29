@@ -49,7 +49,7 @@
                     <review-form
                       :review_data="me"
                       @review-submited="updateReview($event)"
-                      :key="JSON.stringify(review)"
+                      :key="JSON.stringify(me)"
                     />
                   </v-card-text>
                 </v-card>
