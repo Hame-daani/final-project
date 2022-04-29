@@ -4,7 +4,7 @@
     <v-card-title v-else> Edit your comment </v-card-title>
     <v-form ref="form" class="pa-5">
       <v-textarea
-        label="text"
+        label="Write your comment here..."
         v-model="me.text"
         :rules="rules"
         hide-details="auto"
@@ -12,7 +12,6 @@
         clearable
         filled
         shaped
-        required
       ></v-textarea>
       <v-card-actions class="d-flex justify-end">
         <v-btn @click="cancel" v-if="editing || replying" color="red" icon>

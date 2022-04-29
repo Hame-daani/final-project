@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card shaped>
     <v-container class="d-flex justify-center">
       <comment-form v-if="isLoggedIn" @comment-submitted="addComment($event)" />
     </v-container>

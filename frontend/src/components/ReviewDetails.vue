@@ -1,5 +1,5 @@
 <template>
-  <v-card class="my-3 pa-5" height="500">
+  <v-card class="my-3 pa-5" height="500" shaped>
     <loading-circular :flag="loading" />
     <template v-if="!loading && me">
       <v-row>
@@ -9,20 +9,78 @@
         </v-col>
         <v-col class="d-flex flex-column justify-space-between pa-5" cols="8">
           <v-row>
-            <v-avatar>
-              <v-img :src="me.user.pic"></v-img>
-            </v-avatar>
-            <span class="text-h7 pa-3">
-              Review By
-              <span class="red--text">
-                <router-link
-                  :to="{ name: 'profile', params: { id: me.user.id } }"
-                  style="text-decoration: none; color: inherit"
-                >
-                  {{ me.user.first_name }} {{ me.user.last_name }}
-                </router-link>
+            <v-col cols="10">
+              <router-link
+                :to="{ name: 'profile', params: { id: me.user.id } }"
+                style="text-decoration: none; color: inherit"
+              >
+                <v-avatar>
+                  <v-img :src="me.user.pic"></v-img>
+                </v-avatar>
+              </router-link>
+              <span class="text-h7 pa-3">
+                Review By
+                <span class="red--text">
+                  <router-link
+                    :to="{ name: 'profile', params: { id: me.user.id } }"
+                    style="text-decoration: none; color: inherit"
+                  >
+                    {{ me.user.first_name }} {{ me.user.last_name }}
+                  </router-link>
+                </span>
               </span>
-            </span>
+            </v-col>
+            <v-col v-if="isLoggedIn && me.user.id == getUser.id">
+              <v-dialog v-model="editDialog" persistent max-width="700">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="info" dark v-bind="attrs" v-on="on" icon>
+                    <v-icon> mdi-pencil </v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title class="d-flex justify-space-between">
+                    {{ me.movie.title }}
+                    <v-btn color="grey" @click="editDialog = false" icon>
+                      <v-icon> mdi-cancel </v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
+                  <v-card-text>
+                    <review-form
+                      :review_data="me"
+                      @review-submited="updateReview($event)"
+                      :key="JSON.stringify(review)"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="deleteDialog" persistent max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="error" dark v-bind="attrs" v-on="on" icon>
+                    <v-icon> mdi-delete </v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title class="text-h5">
+                    Deleting this review
+                  </v-card-title>
+                  <v-card-text>Are you sure?</v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="green darken-1"
+                      text
+                      @click="deleteDialog = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="deleteReview">
+                      Yes
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
           </v-row>
           <v-row>
             <span class="text-h4">
@@ -53,6 +111,17 @@
               Updated at: {{ me.updated_at | getDate }}
             </span></v-row
           >
+
+          <v-row><v-divider></v-divider></v-row>
+
+          <v-row>
+            <v-card-text style="white-space: pre-line">{{
+              me.text
+            }}</v-card-text>
+          </v-row>
+
+          <v-row><v-divider></v-divider></v-row>
+
           <v-row>
             <v-btn color="red" v-if="isLoggedIn && !isLiked" @click="like" icon>
               <v-icon> mdi-heart-outline </v-icon>
@@ -70,71 +139,6 @@
               {{ this.likes.length }} Likes
             </span>
           </v-row>
-
-          <v-row><v-divider></v-divider></v-row>
-
-          <v-row>
-            <v-card-text style="white-space: pre-line">{{
-              me.text
-            }}</v-card-text>
-          </v-row>
-
-          <template v-if="isLoggedIn && me.user.id == getUser.id">
-            <v-row><v-divider></v-divider></v-row>
-            <v-card-actions>
-              <v-row>
-                <v-dialog v-model="editDialog" persistent max-width="700">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="info" dark v-bind="attrs" v-on="on" icon>
-                      <v-icon> mdi-pencil </v-icon>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title class="d-flex justify-space-between">
-                      {{ me.movie.title }}
-                      <v-btn color="grey" @click="editDialog = false" icon>
-                        <v-icon> mdi-cancel </v-icon>
-                      </v-btn>
-                    </v-card-title>
-                    <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
-                    <v-card-text>
-                      <review-form
-                        :review_data="me"
-                        @review-submited="updateReview($event)"
-                        :key="JSON.stringify(review)"
-                      />
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="deleteDialog" persistent max-width="290">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="error" dark v-bind="attrs" v-on="on" icon>
-                      <v-icon> mdi-delete </v-icon>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title class="text-h5">
-                      Deleting this review
-                    </v-card-title>
-                    <v-card-text>Are you sure?</v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="green darken-1"
-                        text
-                        @click="deleteDialog = false"
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-btn color="green darken-1" text @click="deleteReview">
-                        Yes
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-row>
-            </v-card-actions>
-          </template>
         </v-col>
       </v-row>
     </template>

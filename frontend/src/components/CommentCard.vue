@@ -21,12 +21,14 @@
             </span>
           </v-row>
         </v-col>
-        <v-col class="pt-7" cols="7">
+        <v-col><v-divider vertical></v-divider></v-col>
+        <v-col class="pt-7" cols="5">
           <span class="text-body-1" style="white-space: pre-line">
             {{ me.text }}
           </span>
         </v-col>
-        <v-col cols="1" class="pt-7">
+        <v-col><v-divider vertical></v-divider></v-col>
+        <v-col class="pt-7" cols="1">
           <template v-if="isLoggedIn">
             <template v-if="getUser.id === me.user.id">
               <v-row>
@@ -76,7 +78,7 @@
           </template>
         </v-col>
       </v-row>
-      <v-row class="pl-5 pb-3">
+      <v-row class="pl-5 pb-3 d-flex justify-center">
         <v-btn
           v-if="isLoggedIn && !isLiked"
           color="red"
@@ -93,7 +95,7 @@
         >
           <v-icon> mdi-heart </v-icon>
         </v-btn>
-        <span class="red--text py-2">
+        <span class="red--text py-2 mr-15">
           <v-icon v-if="!isLoggedIn" color="red"> mdi-heart </v-icon>
           {{ this.likes.length }} Likes
         </span>

@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-form ref="form">
+  <v-container class="d-flex justify-center">
+    <v-form ref="form" style="width: 700px">
       <v-textarea
         label="text"
         v-model="review.text"
@@ -9,7 +9,7 @@
         multiline
         filled
         clearable
-        required
+        shaped
       ></v-textarea>
       <v-rating
         v-model="review.rating"
@@ -19,11 +19,11 @@
         clearable
         required
       ></v-rating>
-      <v-btn @click="submit" color="green" icon>
-        <v-icon>mdi-send</v-icon>
-      </v-btn>
       <v-btn @click="clear" color="red" icon>
         <v-icon>mdi-backspace</v-icon>
+      </v-btn>
+      <v-btn @click="submit" color="green" icon>
+        <v-icon>mdi-send</v-icon>
       </v-btn>
     </v-form>
   </v-container>
