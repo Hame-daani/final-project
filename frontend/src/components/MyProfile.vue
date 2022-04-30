@@ -1,26 +1,96 @@
 <template>
-  <v-card v-if="!editing">
-    <v-card-title> {{ me.username }} </v-card-title>
-    <v-card-text> Name: {{ me.first_name }} {{ me.last_name }} </v-card-text>
-    <v-card-text> Email: {{ me.email }} </v-card-text>
-    <v-card-text> Gender: {{ me.gender }} </v-card-text>
-    <v-chip class="ma-2" color="blue" text-color="white" v-if="me.similarity">
-      Similarity: {{ me.similarity }}
-    </v-chip>
-    <v-card-actions v-if="isLoggedIn">
-      <v-btn v-if="isThisMe" color="info" @click="enableEditing">Edit</v-btn>
-      <template v-else>
-        <v-btn v-if="isfollowing" color="warning" @click="unfollow"
-          >UnFollow</v-btn
-        >
-        <v-btn v-else color="info" @click="follow">Follow</v-btn>
-        <v-chip class="ma-2" color="green" text-color="white" v-if="isfollows">
-          Follows You
-        </v-chip>
-      </template>
-    </v-card-actions>
+  <v-card v-if="!editing" flat>
+    <!-- profile detail -->
+    <v-row class="d-flex flex-row">
+      <v-col class="pa-5" cols="3">
+        <!-- pic -->
+        <v-avatar size="200" tile>
+          <v-img :src="me.pic"></v-img>
+        </v-avatar>
+      </v-col>
+      <v-col class="d-flex flex-column mt-7">
+        <!-- detail -->
+        <v-row>
+          <span class="text-h5 mr-3">{{ me.username }}</span>
+          <v-chip class="ml-1 white--text" v-if="isfollows" color="green">
+            Follows You
+          </v-chip>
+        </v-row>
+        <v-row v-if="me.similarity">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs" color="yellow">
+                <v-rating
+                  v-model="similarity"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
+              </v-chip>
+            </template>
+            <span>Similarity: {{ me.similarity }}</span>
+          </v-tooltip>
+        </v-row>
+        <v-row>
+          First Name:
+          <span class="text-body-2 ml-2">{{ me.first_name }} </span>
+        </v-row>
+        <v-row>
+          Last Name: <span class="text-body-2 ml-2">{{ me.last_name }} </span>
+        </v-row>
+        <v-row>
+          Date Joined:
+          <span class="text-body-2 ml-2">
+            {{ me.date_joined | getDate }}
+          </span>
+        </v-row>
+        <v-row>
+          Gender: <span class="text-body-2 ml-2">{{ me.gender }} </span>
+        </v-row>
+      </v-col>
+      <v-col v-if="!isThisMe" cols="2">
+        <!-- buttons -->
+        <v-tooltip bottom v-if="isfollowing">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="red"
+              rounded
+              @click="unfollow"
+              v-on="on"
+              v-bind="attrs"
+            >
+              <v-icon> mdi-account-minus </v-icon>
+            </v-btn>
+          </template>
+          <span>Unfollow</span>
+        </v-tooltip>
+        <v-tooltip v-else bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="blue"
+              rounded
+              @click="follow"
+              v-on="on"
+              v-bind="attrs"
+            >
+              <v-icon> mdi-account-plus </v-icon>
+            </v-btn>
+          </template>
+          <span>Follow</span>
+        </v-tooltip>
+      </v-col>
+      <v-col v-else cols="1">
+        <v-btn icon>
+          <v-icon> mdi-pencil </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-card>
   <v-card v-else>
+    <!-- edit profile -->
     <v-card-title> Editing Your Info </v-card-title>
     <template>
       <v-form ref="form">
@@ -61,6 +131,9 @@ export default {
     ...mapGetters("auth", ["isLoggedIn", "getUser"]),
     isThisMe() {
       return this.getUser.id === this.id;
+    },
+    similarity() {
+      return this.me.similarity * 5 + 5;
     },
   },
   data() {
@@ -117,6 +190,15 @@ export default {
       return UsersService.unfollow(this.me.id)
         .then(() => this.loadFriendship())
         .catch((err) => console.log(err.reponse.data));
+    },
+  },
+  filters: {
+    decimalPlace(num) {
+      return parseFloat(num).toFixed(2);
+    },
+    getDate(timestamp) {
+      const d = new Date(timestamp);
+      return d.toLocaleString();
     },
   },
 };

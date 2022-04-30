@@ -1,18 +1,30 @@
 <template>
   <v-container>
-    <v-tabs v-model="tab" center-active>
-      <v-tab v-for="item in items" :key="item.tab">
-        {{ item.tab }}
-      </v-tab>
-    </v-tabs>
-    <v-card flat>
-      <v-card-text>
+    <v-card shaped>
+      <v-toolbar flat color="blue-grey" dark>
+        <v-tabs
+          v-model="tab"
+          fixed-tabs
+          align-with-title
+          active-class="yellow--text"
+        >
+          <v-tab
+            v-for="item in items"
+            :key="item.tab"
+            class="d-flex flex-column justify-space-around"
+          >
+            <v-icon>{{ item.icon }}</v-icon>
+            {{ item.tab }}
+          </v-tab>
+        </v-tabs>
+      </v-toolbar>
+      <v-container class="pa-10">
         <component
           v-bind:is="items[tab].content"
           :key="tab"
           :id="user_id"
         ></component>
-      </v-card-text>
+      </v-container>
     </v-card>
   </v-container>
 </template>
@@ -46,14 +58,54 @@ export default {
     return {
       tab: 0,
       tabs: [
-        { tab: "Profile", content: MyProfile, private: false },
-        { tab: "Following", content: MyFollowing, private: false },
-        { tab: "Followers", content: MyFollowers, private: false },
-        { tab: "Comments", content: MyComments, private: false },
-        { tab: "Reviews", content: MyReviews, private: false },
-        { tab: "Watchlist", content: MyWatchlist, private: false },
-        { tab: "Favorites", content: MyFavorites, private: false },
-        { tab: "Taste Group", content: TasteGroup, private: true },
+        {
+          tab: "Profile",
+          content: MyProfile,
+          private: false,
+          icon: "mdi-account",
+        },
+        {
+          tab: "Following",
+          content: MyFollowing,
+          private: false,
+          icon: "mdi-account-multiple",
+        },
+        {
+          tab: "Followers",
+          content: MyFollowers,
+          private: false,
+          icon: "mdi-account-group",
+        },
+        {
+          tab: "Comments",
+          content: MyComments,
+          private: false,
+          icon: "mdi-comment-multiple",
+        },
+        {
+          tab: "Reviews",
+          content: MyReviews,
+          private: false,
+          icon: "mdi-note-multiple",
+        },
+        {
+          tab: "Watchlist",
+          content: MyWatchlist,
+          private: false,
+          icon: "mdi-clock",
+        },
+        {
+          tab: "Favorites",
+          content: MyFavorites,
+          private: false,
+          icon: "mdi-heart",
+        },
+        {
+          tab: "Taste Group",
+          content: TasteGroup,
+          private: true,
+          icon: "mdi-account-multiple-plus",
+        },
       ],
     };
   },
