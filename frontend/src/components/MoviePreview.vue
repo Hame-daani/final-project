@@ -61,10 +61,18 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip v-on="on" v-bind="attrs" color="yellow">
-                {{ me.similarity }}
+                <v-rating
+                  v-model="similarity"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
               </v-chip>
             </template>
-            <span>Similarity</span>
+            <span>Similarity: {{ me.similarity }}</span>
           </v-tooltip>
         </v-row>
       </v-col>
@@ -79,6 +87,11 @@ export default {
     return {
       me: this.movie,
     };
+  },
+  computed: {
+    similarity() {
+      return this.me.similarity * 5 + 5;
+    },
   },
   filters: {
     decimalPlace(num) {
