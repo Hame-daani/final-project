@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer permanent app expand-on-hover>
+    <v-navigation-drawer permanent app expand-on-hover :mini-variant="true">
       <v-list>
         <v-list-item class="px-2">
           <v-list-item-avatar v-if="isLoggedIn">
