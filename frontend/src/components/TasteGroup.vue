@@ -1,9 +1,14 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card flat>
       <v-card-title> My Taste Group </v-card-title>
       <loading-circular :flag="loading" />
-      <user-preview v-for="user in users" :key="user.id" :user="user" />
+      <v-divider></v-divider>
+      <v-row>
+        <v-col v-for="user in users" :key="user.id">
+          <user-preview :user="user" />
+        </v-col>
+      </v-row>
     </v-card>
     <v-pagination
       v-model="page"

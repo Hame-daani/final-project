@@ -27,18 +27,38 @@
       <v-col><v-divider vertical></v-divider></v-col>
       <v-col class="my-7" cols="4">
         <!-- icons -->
-        <span class="ma-3 text-caption">
-          {{ watched }}
-          <v-icon color="green"> mdi-eye </v-icon>
-        </span>
-        <span class="ma-3 text-caption">
-          {{ favorites }}
-          <v-icon color="red"> mdi-heart </v-icon>
-        </span>
-        <span class="ma-3 text-caption">
-          {{ watchlist }}
-          <v-icon color="grey"> mdi-clock </v-icon>
-        </span>
+        <v-row>
+          <span class="ma-3 text-caption">
+            {{ watched }}
+            <v-icon color="green"> mdi-eye </v-icon>
+          </span>
+          <span class="ma-3 text-caption">
+            {{ favorites }}
+            <v-icon color="red"> mdi-heart </v-icon>
+          </span>
+          <span class="ma-3 text-caption">
+            {{ watchlist }}
+            <v-icon color="grey"> mdi-clock </v-icon>
+          </span>
+        </v-row>
+        <v-row v-if="similarity">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs" color="yellow">
+                <v-rating
+                  v-model="similarity"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
+              </v-chip>
+            </template>
+            <span>Similarity: {{ me.similarity }}</span>
+          </v-tooltip>
+        </v-row>
       </v-col>
     </v-row>
   </v-card>
@@ -62,6 +82,11 @@ export default {
   },
   async created() {
     this.loadData();
+  },
+  computed: {
+    similarity() {
+      return this.me.similarity * 5 + 5;
+    },
   },
   methods: {
     async loadData() {
