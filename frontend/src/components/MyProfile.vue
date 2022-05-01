@@ -15,6 +15,9 @@
           <v-chip class="ml-1 white--text" v-if="isfollows" color="green">
             Follows You
           </v-chip>
+          <v-chip class="ml-1 white--text" v-if="isfollowing" color="purple">
+            Following
+          </v-chip>
         </v-row>
         <v-row v-if="me.similarity">
           <v-tooltip bottom>
@@ -36,19 +39,20 @@
         </v-row>
         <v-row>
           First Name:
-          <span class="text-body-2 ml-2">{{ me.first_name }} </span>
+          <span class="text-subtitle-2 ml-2">{{ me.first_name }} </span>
         </v-row>
         <v-row>
-          Last Name: <span class="text-body-2 ml-2">{{ me.last_name }} </span>
+          Last Name:
+          <span class="text-subtitle-2 ml-2">{{ me.last_name }} </span>
         </v-row>
         <v-row>
           Date Joined:
-          <span class="text-body-2 ml-2">
+          <span class="text-subtitle-2 ml-2">
             {{ me.date_joined | getDate }}
           </span>
         </v-row>
         <v-row>
-          Gender: <span class="text-body-2 ml-2">{{ me.gender }} </span>
+          Gender: <span class="text-subtitle-2 ml-2">{{ me.gender }} </span>
         </v-row>
       </v-col>
       <v-col v-if="isLoggedIn && !isThisMe" cols="2">

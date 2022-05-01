@@ -34,5 +34,9 @@ export default {
     async unfollow(id) {
         return axios.post(base + id + "/unfollow/").then((res) => res.data)
     },
+    async getExtras(id) {
+        // following,follwers,watched,wathclist,favorites
+        return axios.get(base + id + "/extras/").then((res) => res.data)
+    },
 
 };

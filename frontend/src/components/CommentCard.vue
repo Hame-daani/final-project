@@ -3,7 +3,7 @@
     <v-card>
       <v-row>
         <v-col class="pl-7 pt-5" cols="1">
-          <v-avatar>
+          <v-avatar size="75">
             <router-link :to="{ name: 'profile', params: { id: me.user.id } }">
               <v-img :src="me.user.pic"></v-img>
             </router-link>

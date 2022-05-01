@@ -1,9 +1,17 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title> My Following </v-card-title>
+    <v-card flat>
+      <v-card-title>
+        <v-badge color="green" :content="count"> My Followings </v-badge>
+      </v-card-title>
       <loading-circular :flag="loading" />
-      <user-preview v-for="user in following" :key="user.id" :user="user" />
+      <v-divider></v-divider>
+      <user-preview
+        class="my-5"
+        v-for="user in following"
+        :key="user.id"
+        :user="user"
+      />
     </v-card>
     <v-pagination
       v-model="page"
@@ -35,6 +43,7 @@ export default {
       following: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       loading: false,
     };
   },
@@ -51,6 +60,7 @@ export default {
         .then((data) => {
           this.following = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));
