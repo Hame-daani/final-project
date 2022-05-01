@@ -1,6 +1,13 @@
 <template>
-  <v-card class="my-3 pa-10" shaped>
-    <loading-circular :flag="loading" />
+  <v-card class="my-3 pa-10" shaped :loading="loading">
+    <template slot="progress">
+      <v-progress-linear
+        color="deep-purple"
+        height="10"
+        indeterminate
+        rounded
+      ></v-progress-linear>
+    </template>
     <v-row>
       <v-row>
         <v-col cols="4">
@@ -155,12 +162,11 @@
 <script>
 import MoviesService from "@/services/MoviesService";
 import { mapGetters } from "vuex";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import LikesService from "@/services/LikesService";
 
 export default {
   name: "MovieView",
-  components: { LoadingCircular },
+  components: {},
   props: { id: { required: true }, reviewCounts: { required: true } },
   data() {
     return {

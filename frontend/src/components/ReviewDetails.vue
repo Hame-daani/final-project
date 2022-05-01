@@ -1,6 +1,13 @@
 <template>
-  <v-card class="my-3 pa-5" height="500" shaped>
-    <loading-circular :flag="loading" />
+  <v-card class="my-3 pa-5" height="500" shaped :loading="loading">
+    <template slot="progress">
+      <v-progress-linear
+        color="deep-purple"
+        height="10"
+        indeterminate
+        rounded
+      ></v-progress-linear>
+    </template>
     <template v-if="!loading && me">
       <v-row>
         <v-col>
@@ -146,14 +153,13 @@
 </template>
 
 <script>
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewsService from "@/services/ReviewsService";
 import LikesService from "@/services/LikesService";
 import { mapGetters } from "vuex";
 
 export default {
-  components: { LoadingCircular, ReviewForm },
+  components: { ReviewForm },
   props: { id: { required: true } },
   data() {
     return {

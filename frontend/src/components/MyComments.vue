@@ -1,10 +1,17 @@
 <template>
   <v-container>
-    <v-card flat>
+    <v-card flat :loading="loading">
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
       <v-card-title>
         <v-badge color="green" :content="count"> My Comments </v-badge>
       </v-card-title>
-      <loading-circular :flag="loading" />
       <v-divider></v-divider>
       <comment-card
         v-for="comment in comments"
@@ -25,12 +32,10 @@
 
 <script>
 import CommentsService from "@/services/CommentsService";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import CommentCard from "@/components/CommentCard.vue";
 
 export default {
   components: {
-    LoadingCircular,
     CommentCard,
   },
   props: {

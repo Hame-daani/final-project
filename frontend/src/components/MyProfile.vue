@@ -1,5 +1,13 @@
 <template>
-  <v-card v-if="!editing" flat>
+  <v-card v-if="!editing" flat :loading="loading">
+    <template slot="progress">
+      <v-progress-linear
+        color="deep-purple"
+        height="10"
+        indeterminate
+        rounded
+      ></v-progress-linear>
+    </template>
     <!-- profile detail -->
     <v-row class="d-flex flex-row">
       <v-col class="pa-5" cols="3">
@@ -170,6 +178,7 @@ export default {
     return {
       me: {},
       valid: true,
+      loading: false,
       editing: false,
       isfollowing: false,
       isfollows: false,
@@ -182,8 +191,10 @@ export default {
   },
   methods: {
     async loadData() {
+      this.loading = true;
       return UsersService.getUser(this.id)
         .then((data) => (this.me = data))
+        .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));
     },
     async loadFriendship() {

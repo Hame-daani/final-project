@@ -1,10 +1,17 @@
 <template>
   <v-container>
-    <v-card flat>
+    <v-card flat :loading="loading">
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
       <v-card-title>
         <v-badge color="green" :content="count"> My Watchlist </v-badge>
       </v-card-title>
-      <loading-circular :flag="loading" />
       <v-divider></v-divider>
       <v-row>
         <v-col v-for="movie in watchlist" :key="movie.id">
@@ -23,11 +30,9 @@
 
 <script>
 import UsersService from "@/services/UsersService";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import MoviePreview from "@/components/MoviePreview.vue";
 export default {
   components: {
-    LoadingCircular,
     MoviePreview,
   },
   props: {
