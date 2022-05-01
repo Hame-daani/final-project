@@ -20,6 +20,11 @@
           <span class="text-caption">{{ me.year }}</span>
         </v-row>
         <v-row>
+          <v-chip v-for="genre in me.genres" :key="genre">
+            {{ genre }}
+          </v-chip>
+        </v-row>
+        <v-row>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-chip v-on="on" v-bind="attrs">

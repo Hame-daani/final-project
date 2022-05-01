@@ -1,13 +1,16 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title> My Watchlist </v-card-title>
+    <v-card flat>
+      <v-card-title>
+        <v-badge color="green" :content="count"> My Watchlist </v-badge>
+      </v-card-title>
       <loading-circular :flag="loading" />
-      <movie-preview
-        v-for="movie in watchlist"
-        :key="movie.id"
-        :movie="movie"
-      />
+      <v-divider></v-divider>
+      <v-row>
+        <v-col v-for="movie in watchlist" :key="movie.id">
+          <movie-preview :movie="movie" />
+        </v-col>
+      </v-row>
     </v-card>
     <v-pagination
       v-model="page"
@@ -38,6 +41,7 @@ export default {
       watchlist: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       loading: false,
     };
   },
@@ -54,6 +58,7 @@ export default {
         .then((data) => {
           this.watchlist = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));
