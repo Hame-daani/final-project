@@ -1,48 +1,85 @@
 <template>
   <v-container>
-    <v-toolbar dense>
-      <v-text-field hide-details single-line v-model="search"></v-text-field>
-      <v-btn icon @click="doSearch">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-select
-      v-model="selected_genres"
-      :items="genres"
-      label="Genres"
-      chips
-      deletable-chips
-      clearable
-    ></v-select>
-    <v-toolbar dense>
-      <v-checkbox v-model="toggle_year"> </v-checkbox>
-      <v-slider
-        v-model="year"
-        label="year"
-        thumb-label="always"
-        min="1900"
-        max="2022"
-        :disabled="!toggle_year"
-      ></v-slider>
-    </v-toolbar>
-    <loading-circular :flag="loading" />
-    <movie-preview v-for="movie in movies" :movie="movie" :key="movie.id" />
-    <v-pagination
-      v-model="page"
-      class="my-4"
-      :length="total_pages"
-      @input="loadMovies"
-    />
+    <v-card class="ma-5" shaped>
+      <!-- search -->
+      <v-toolbar flat color="blue-grey" dark>Search</v-toolbar>
+      <v-row>
+        <v-col class="ma-3" cols="8">
+          <v-text-field
+            label="Type movie title here..."
+            hide-details
+            single-line
+            clearable
+            v-model="search"
+          ></v-text-field>
+          <v-row>
+            <v-col>
+              <v-select
+                v-model="selected_genres"
+                :items="genres"
+                label="Genres"
+                chips
+                deletable-chips
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col class="d-flex align-center">
+              <v-checkbox v-model="toggle_year"> </v-checkbox>
+              <v-slider
+                class="mt-5"
+                v-model="year"
+                label="year"
+                thumb-label="always"
+                min="1900"
+                max="2022"
+                :disabled="!toggle_year"
+              ></v-slider>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col class="d-flex justify-center align-center">
+          <v-btn @click="doSearch" rounded>
+            Search
+            <v-icon>mdi-magnify</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+    <v-card class="ma-5 mt-10" :loading="loading" shaped>
+      <!-- result  -->
+      <v-toolbar flat color="blue-grey" dark>
+        Results <span v-if="count">: Total of ({{ count }})</span></v-toolbar
+      >
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
+      <v-row class="mt-3">
+        <v-col v-for="movie in movies" :key="movie.id">
+          <movie-preview :movie="movie" />
+        </v-col>
+      </v-row>
+      <v-pagination
+        v-model="page"
+        class="my-4"
+        :length="total_pages"
+        @input="loadMovies"
+        total-visible="10"
+      />
+    </v-card>
   </v-container>
 </template>
 
 <script>
 import MoviesService from "@/services/MoviesService";
 import MoviePreview from "@/components/MoviePreview.vue";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 
 export default {
-  components: { MoviePreview, LoadingCircular },
+  components: { MoviePreview },
   data() {
     return {
       loading: false,
@@ -50,6 +87,7 @@ export default {
       movies: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       search: "",
       year: "",
       selected_genres: [],
@@ -99,6 +137,7 @@ export default {
         .then((data) => {
           this.movies = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => {
           this.loading = false;
