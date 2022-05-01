@@ -15,7 +15,7 @@
           contain
         ></v-img>
       </v-col>
-      <v-col cols="7" class="d-flex flex-column justify-space-between">
+      <v-col cols="7" class="d-flex flex-column justify-space-between mt-3">
         <v-row>
           <v-avatar>
             <v-img :src="me.user.pic"></v-img>
