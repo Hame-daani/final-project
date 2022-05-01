@@ -51,7 +51,7 @@
           Gender: <span class="text-body-2 ml-2">{{ me.gender }} </span>
         </v-row>
       </v-col>
-      <v-col v-if="!isThisMe" cols="2">
+      <v-col v-if="isLoggedIn && !isThisMe" cols="2">
         <!-- buttons -->
         <v-tooltip bottom v-if="isfollowing">
           <template v-slot:activator="{ on, attrs }">
@@ -82,8 +82,8 @@
           <span>Follow</span>
         </v-tooltip>
       </v-col>
-      <v-col v-else cols="1">
-        <v-btn icon>
+      <v-col v-else-if="isThisMe" cols="1">
+        <v-btn color="blue" @click="enableEditing" icon>
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
       </v-col>
@@ -93,28 +93,54 @@
     <!-- edit profile -->
     <v-card-title> Editing Your Info </v-card-title>
     <template>
-      <v-form ref="form">
-        <v-text-field
-          label="First Name"
-          v-model="me.first_name"
-          hide-details="auto"
-          required
-        ></v-text-field>
-        <v-text-field
-          label="Last Name"
-          v-model="me.last_name"
-          hide-details="auto"
-          required
-        ></v-text-field>
-        <v-text-field
-          label="Email"
-          v-model="me.email"
-          hide-details="auto"
-          required
-        ></v-text-field>
-        <v-btn @click="update" color="info"> Update </v-btn>
-        <v-btn @click="cancel" color="yellow"> Cancel </v-btn>
-      </v-form>
+      <v-row class="d-flex justify-space-around">
+        <v-col cols="3">
+          <!-- pic -->
+          <v-file-input
+            accept="image/*"
+            label="Select you avatar"
+          ></v-file-input>
+        </v-col>
+        <v-col cols="7">
+          <!-- info -->
+          <v-form ref="form" v-model="valid" lazy-validation> </v-form>
+          <v-row>
+            <v-text-field
+              name="firstname"
+              v-model="me.first_name"
+              label="First Name"
+              required
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              name="lastname"
+              v-model="me.last_name"
+              label="Last Name"
+              required
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              name="email"
+              v-model="me.email"
+              label="Email"
+              required
+            ></v-text-field>
+          </v-row>
+        </v-col>
+        <v-col class="d-flex flex-column justify-space-around" cols="1">
+          <v-btn color="green" @click="update" icon>
+            <v-icon> mdi-send </v-icon>
+          </v-btn>
+          <v-btn color="red" @click="clear" icon>
+            <v-icon> mdi-backspace </v-icon>
+          </v-btn>
+          <v-btn color="grey" @click="cancel" icon>
+            <v-icon> mdi-cancel </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
   </v-card>
 </template>
@@ -139,6 +165,7 @@ export default {
   data() {
     return {
       me: {},
+      valid: true,
       editing: false,
       isfollowing: false,
       isfollows: false,
@@ -180,6 +207,10 @@ export default {
     },
     cancel() {
       this.editing = false;
+    },
+    clear() {
+      // TODO does not work
+      this.$refs.form.reset();
     },
     async follow() {
       return UsersService.follow(this.me.id)
