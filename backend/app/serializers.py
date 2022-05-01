@@ -2,10 +2,13 @@ from rest_framework import serializers
 
 from .models import Comment, FriendRequest, Like, Review, User, Movie
 
+from random import randint
+
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     similarity = serializers.FloatField(required=False, source="sim")
+    pic = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -18,8 +21,15 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
-            "avatar",
+            "pic",
+            "date_joined",
         )
+
+    def get_pic(self, obj):
+        if obj.gender == "F":
+            return f"https://randomuser.me/api/portraits/women/{obj.id%100}.jpg"
+        else:
+            return f"https://randomuser.me/api/portraits/men/{obj.id%100}.jpg"
 
     def create(self, validated_data):
         user = User(**validated_data)
