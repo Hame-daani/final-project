@@ -1,8 +1,11 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title> My Comments </v-card-title>
+    <v-card flat>
+      <v-card-title>
+        <v-badge color="green" :content="count"> My Comments </v-badge>
+      </v-card-title>
       <loading-circular :flag="loading" />
+      <v-divider></v-divider>
       <comment-card
         v-for="comment in comments"
         :key="comment.id"
@@ -41,6 +44,7 @@ export default {
       comments: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       loading: false,
     };
   },
@@ -58,6 +62,7 @@ export default {
         .then((data) => {
           this.comments = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));

@@ -1,6 +1,6 @@
 <template>
   <v-container class="my-5">
-    <v-card>
+    <v-card shaped>
       <v-row>
         <v-col class="pl-7 pt-5" cols="1">
           <v-avatar size="75">
@@ -9,7 +9,7 @@
             </router-link>
           </v-avatar>
         </v-col>
-        <v-col class="pa-8" cols="3">
+        <v-col class="pa-10" cols="3">
           <v-row>
             <span class="text-h6">
               {{ me.user.first_name }} {{ me.user.last_name }}
@@ -123,7 +123,7 @@
       </v-row>
     </v-card>
     <v-expansion-panels inset>
-      <v-expansion-panel v-if="this.me.comments.length">
+      <v-expansion-panel v-if="this.me.comments.length && !preview">
         <v-expansion-panel-header> Replies </v-expansion-panel-header>
         <v-expansion-panel-content>
           <comment-card
