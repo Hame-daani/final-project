@@ -29,15 +29,6 @@
         <v-btn color="success" depressed @click="login"> Login </v-btn>
       </v-card-actions>
     </v-card>
-    <!-- <v-snackbar v-model="snackbar">
-      {{ error }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar> -->
     <v-alert
       v-model="alert"
       class="mt-5"
@@ -59,16 +50,15 @@ export default {
       password: "",
       alert: false,
       error: "",
-      timeout: 2000,
     };
   },
   methods: {
     async login() {
       const payload = {
-        username: this.username,
-        password: this.password,
-        // username: "EricWeber4298",
-        // password: "12345678",
+        // username: this.username,
+        // password: this.password,
+        username: "EricWeber4298",
+        password: "12345678",
       };
       return this.$store
         .dispatch("auth/login", payload)
