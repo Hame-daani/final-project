@@ -10,6 +10,7 @@
             hide-details
             single-line
             clearable
+            @keyup.enter="doSearch"
             v-model="search"
           ></v-text-field>
           <v-row>
@@ -130,7 +131,7 @@ export default {
           page: this.page,
           genres: this.selected_genres,
           year: this.toggle_year ? this.year : "",
-          search: encodeURIComponent(this.search.trim()),
+          search: this.search,
         },
       };
       return MoviesService.getAll(payload)
