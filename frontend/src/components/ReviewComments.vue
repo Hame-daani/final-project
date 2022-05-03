@@ -1,9 +1,9 @@
 <template>
   <v-card shaped>
-    <v-container class="d-flex justify-center">
-      <comment-form v-if="isLoggedIn" @comment-submitted="addComment($event)" />
+    <v-container v-if="isLoggedIn" class="d-flex flex-column">
+      <comment-form @comment-submitted="addComment($event)" />
+      <v-divider></v-divider>
     </v-container>
-    <v-divider></v-divider>
     <v-card-title> Comments </v-card-title>
     <v-card :loading="loading" class="pa-7" flat>
       <v-card-text>

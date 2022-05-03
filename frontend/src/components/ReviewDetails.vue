@@ -98,15 +98,24 @@
                 {{ me.movie.title }}
               </router-link>
               <span class="text-subtitle-2">{{ me.movie.year }}</span>
-              <v-rating
-                v-model="me.rating"
-                length="10"
-                readonly
-                size="15"
-                half-increments
-                dense
-              ></v-rating>
             </span>
+          </v-row>
+          <v-row>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-chip v-on="on" v-bind="attrs">
+                  <v-rating
+                    v-model="me.rating"
+                    length="10"
+                    readonly
+                    size="15"
+                    half-increments
+                    dense
+                  ></v-rating>
+                </v-chip>
+              </template>
+              <span>{{ me.rating | decimalPlace }}</span>
+            </v-tooltip>
           </v-row>
           <v-row
             ><span class="text-caption">

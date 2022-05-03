@@ -122,10 +122,12 @@
         </v-dialog>
       </v-row>
     </v-card>
-    <v-expansion-panels inset>
+    <v-expansion-panels inset accordion>
       <v-expansion-panel v-if="this.me.comments.length && !preview">
-        <v-expansion-panel-header> Replies </v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header>
+          {{ me.comments.length }} Replies
+        </v-expansion-panel-header>
+        <v-expansion-panel-content eager>
           <comment-card
             v-for="comment in me.comments"
             :key="comment.id"

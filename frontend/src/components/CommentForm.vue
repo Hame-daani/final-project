@@ -1,5 +1,5 @@
 <template>
-  <v-card flat style="width: 700px">
+  <v-card flat style="width: 700px" class="align-self-center">
     <v-card-title v-if="!editing"> Comment on this </v-card-title>
     <v-card-title v-else> Edit your comment </v-card-title>
     <v-form ref="form" class="pa-5">
