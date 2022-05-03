@@ -42,6 +42,7 @@ export default {
         async logout({ commit }) {
             return AuthService.logout()
                 .then(() => commit('RESET', ''))
+                .then(() => Axios.defaults.headers.common['AUTHORIZATION'] = "")
         }
     },
 }

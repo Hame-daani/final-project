@@ -14,8 +14,9 @@ const routes = [
   {
     path: '/',
     name: 'home',
+    icon: "mdi-home",
     component: loadView("HomeView"),
-    mata: {
+    meta: {
       requiresAuth: false,
       nav: true
     }
@@ -23,6 +24,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
+    icon: "mdi-account-box",
     component: loadView("ProfileView"),
     meta: {
       nav: true,
@@ -32,8 +34,9 @@ const routes = [
   {
     path: "/sign-up",
     name: "sign-up",
+    icon: "mdi-account-plus",
     component: loadView("Auth/SignUpView"),
-    mata: {
+    meta: {
       nav: true,
       requiresAuth: false,
     }
@@ -42,18 +45,19 @@ const routes = [
     path: "/login",
     name: "login",
     component: loadView("Auth/LoginView"),
-    mata: {
-      nav: true,
+    meta: {
+      nav: false,
       requiresAuth: false,
     }
   },
   {
     path: "/movies/",
     name: "movies",
+    icon: "mdi-movie",
     component: loadView("MoviesView"),
     props: true,
-    mata: {
-      nav: false,
+    meta: {
+      nav: true,
       requiresAuth: false,
     }
   },
@@ -62,7 +66,7 @@ const routes = [
     name: "movie",
     component: loadView("MovieDetailView"),
     props: true,
-    mata: {
+    meta: {
       nav: false,
       requiresAuth: false,
     }
@@ -82,7 +86,7 @@ const routes = [
     name: "review",
     component: loadView("ReviewDetailView"),
     props: true,
-    mata: {
+    meta: {
       nav: false,
       requiresAuth: false,
     }
