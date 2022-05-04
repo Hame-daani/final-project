@@ -42,12 +42,12 @@
             <span>Average Rating: {{ me.avg_rating | decimalPlace }}</span>
           </v-tooltip>
         </v-row>
-        <v-row v-if="me.estimated_rating">
+        <v-row v-if="me.friends_er">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip v-on="on" v-bind="attrs">
+              <v-chip v-on="on" v-bind="attrs" color="yellow">
                 <v-rating
-                  v-model="me.estimated_rating"
+                  v-model="me.friends_er"
                   length="10"
                   size="5"
                   small
@@ -58,7 +58,28 @@
               </v-chip>
             </template>
             <span
-              >Estimated Rating {{ me.estimated_rating | decimalPlace }}</span
+              >Friends Estimated Rating:
+              {{ me.friends_er | decimalPlace }}</span
+            >
+          </v-tooltip>
+        </v-row>
+        <v-row v-if="me.global_er">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip v-on="on" v-bind="attrs" color="yellow">
+                <v-rating
+                  v-model="me.global_er"
+                  length="10"
+                  size="5"
+                  small
+                  dense
+                  half-increments
+                  readonly
+                />
+              </v-chip>
+            </template>
+            <span
+              >Global Estimated Rating: {{ me.global_er | decimalPlace }}</span
             >
           </v-tooltip>
         </v-row>

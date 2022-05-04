@@ -151,7 +151,7 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-chip v-on="on" v-bind="attrs">
-                  <span class="text-h7">Average Rating: </span>
+                  <span class="text-h7 mr-1">AVR: </span>
                   <v-rating
                     v-model="movie.avg_rating"
                     length="10"
@@ -163,19 +163,19 @@
                   />
                 </v-chip>
               </template>
-              <span>{{ movie.avg_rating | decimalPlace }}</span>
+              <span>Average Rating: {{ movie.avg_rating | decimalPlace }}</span>
             </v-tooltip>
           </v-row>
           <v-row
-            v-if="movie.estimated_rating"
+            v-if="movie.global_er"
             class="d-flex justify-center align-center mt-5"
           >
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-chip v-on="on" v-bind="attrs">
-                  <span class="text-h7">Estimated Rating: </span>
+                  <span class="text-h7 mr-1">GER: </span>
                   <v-rating
-                    v-model="movie.estimated_rating"
+                    v-model="movie.global_er"
                     length="10"
                     size="15"
                     color="blue"
@@ -185,7 +185,35 @@
                   />
                 </v-chip>
               </template>
-              <span>{{ movie.estimated_rating | decimalPlace }}</span>
+              <span>
+                Global Estimated Rating:
+                {{ movie.global_er | decimalPlace }}
+              </span>
+            </v-tooltip>
+          </v-row>
+          <v-row
+            v-if="movie.friends_er"
+            class="d-flex justify-center align-center mt-5"
+          >
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-chip v-on="on" v-bind="attrs">
+                  <span class="text-h7 mr-1">FER: </span>
+                  <v-rating
+                    v-model="movie.friends_er"
+                    length="10"
+                    size="15"
+                    color="blue"
+                    readonly
+                    dense
+                    half-increments
+                  />
+                </v-chip>
+              </template>
+              <span>
+                Friends Estimated Rating:
+                {{ movie.friends_er | decimalPlace }}
+              </span>
             </v-tooltip>
           </v-row>
         </v-col>
