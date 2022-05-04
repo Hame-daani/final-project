@@ -26,12 +26,125 @@
               {{ reviewCounts }}
             </span>
             <span class="ma-3 text-caption">
-              <v-icon color="red"> mdi-heart </v-icon>
-              {{ likes.length }}
+              <v-dialog v-model="likesDialog" persistent max-width="700">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon color="red" v-bind="attrs" v-on="on">
+                    mdi-heart
+                  </v-icon>
+                  {{ likes.length }}
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <v-row class="d-flex justify-space-between pa-5">
+                      <span> Liked by: </span>
+                      <v-btn color="grey" @click="likesDialog = false" icon>
+                        <v-icon> mdi-cancel </v-icon>
+                      </v-btn>
+                    </v-row>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-virtual-scroll
+                      :bench="2"
+                      :items="likes"
+                      height="300"
+                      item-height="64"
+                    >
+                      <template v-slot:default="{ item }">
+                        <v-list-item>
+                          <v-list-item-avatar>
+                            <v-avatar size="56" class="white--text">
+                              <v-img :src="item.user.pic"> </v-img>
+                            </v-avatar>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title>{{
+                              item.user.username
+                            }}</v-list-item-title>
+                          </v-list-item-content>
+
+                          <v-list-item-action>
+                            <v-btn
+                              depressed
+                              small
+                              :to="{
+                                name: 'profile',
+                                params: { id: item.user.id },
+                              }"
+                            >
+                              View User
+
+                              <v-icon color="orange darken-4" right>
+                                mdi-open-in-new
+                              </v-icon>
+                            </v-btn>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-virtual-scroll>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
             </span>
             <span class="ma-3 text-caption">
-              <v-icon color="grey"> mdi-clock </v-icon>
-              {{ watchlist.length }}
+              <v-dialog v-model="watchlistDialog" persistent max-width="700">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon color="grey" v-bind="attrs" v-on="on">
+                    mdi-clock
+                  </v-icon>
+                  {{ watchlist.length }}
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <v-row class="d-flex justify-space-between pa-5">
+                      <span> Watchlisted by: </span>
+                      <v-btn color="grey" @click="watchlistDialog = false" icon>
+                        <v-icon> mdi-cancel </v-icon>
+                      </v-btn>
+                    </v-row>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-virtual-scroll
+                      :bench="2"
+                      :items="watchlist"
+                      height="300"
+                      item-height="64"
+                    >
+                      <template v-slot:default="{ item }">
+                        <v-list-item>
+                          <v-list-item-avatar>
+                            <v-avatar size="56" class="white--text">
+                              <v-img :src="item.pic"> </v-img>
+                            </v-avatar>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title>{{
+                              item.username
+                            }}</v-list-item-title>
+                          </v-list-item-content>
+
+                          <v-list-item-action>
+                            <v-btn
+                              depressed
+                              small
+                              :to="{ name: 'profile', params: { id: item.id } }"
+                            >
+                              View User
+
+                              <v-icon color="orange darken-4" right>
+                                mdi-open-in-new
+                              </v-icon>
+                            </v-btn>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-virtual-scroll>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
             </span>
           </v-row>
           <v-row class="d-flex justify-center align-center">
@@ -161,12 +274,13 @@
 
 <script>
 import MoviesService from "@/services/MoviesService";
+// import UserPreview from "@/components/UserPreview";
 import { mapGetters } from "vuex";
 import LikesService from "@/services/LikesService";
 
 export default {
   name: "MovieView",
-  components: {},
+  // components: { UserPreview },
   props: { id: { required: true }, reviewCounts: { required: true } },
   data() {
     return {
@@ -174,6 +288,8 @@ export default {
       likes: [],
       watchlist: [],
       loading: false,
+      watchlistDialog: false,
+      likesDialog: false,
     };
   },
   computed: {
@@ -202,6 +318,7 @@ export default {
       return LikesService.getLikes("movies/", this.movie.id)
         .then((data) => {
           this.likes = data;
+          console.log(this.likes);
         })
         .catch((err) => console.log(err.reponse.data));
     },

@@ -4,10 +4,17 @@
       <movie-details :id="id" :reviewCounts="reviewCounts" />
     </v-container>
     <v-container>
-      <v-card shaped>
+      <v-card shaped :loading="similarMoviesLoading">
         <v-card-title>Similar Movies</v-card-title>
-        <loading-circular :flag="similarMoviesLoading" />
-        <v-slide-group v-model="slide" show-arrows>
+        <template slot="progress">
+          <v-progress-linear
+            color="deep-purple"
+            height="10"
+            indeterminate
+            rounded
+          ></v-progress-linear>
+        </template>
+        <v-slide-group show-arrows>
           <v-slide-item
             class="me-3"
             v-for="movie in similarMovies"
