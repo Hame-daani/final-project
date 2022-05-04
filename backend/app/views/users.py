@@ -150,3 +150,19 @@ class UserViewSet(ModelViewSet):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["GET"])
+    def extras(self, request, pk=None):
+        try:
+            obj = self.get_object()
+            ct = ContentType.objects.get_for_model(Movie)
+            res = {
+                "following": obj.following.count(),
+                "followers": obj.followers.count(),
+                "watched": obj.reviews.count(),
+                "watchlist": obj.watchlist.count(),
+                "favorites": obj.likes.filter(content_type=ct).count(),
+            }
+            return Response(res, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
