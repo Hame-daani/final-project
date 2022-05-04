@@ -1,15 +1,49 @@
 <template>
-  <v-card :to="{ name: 'review', params: { id: me.id } }">
-    <template v-if="showMovie">
-      <v-card-title>{{ me.movie.title }}</v-card-title>
-      <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
-    </template>
+  <v-card
+    class="mx-auto my-3 pa-5"
+    width="400"
+    :to="{ name: 'review', params: { id: me.id } }"
+    shaped
+    elevation="3"
+  >
+    <v-row v-if="showMovie">
+      <v-col>
+        <v-img
+          :src="me.movie.poster"
+          class="float-left"
+          width="130"
+          contain
+        ></v-img>
+      </v-col>
+      <v-col cols="7" class="d-flex flex-column justify-space-between mt-3">
+        <v-row>
+          <v-avatar>
+            <v-img :src="me.user.pic"></v-img>
+          </v-avatar>
+          <span class="text-subtitle-2 ma-3">
+            {{ me.user.first_name }}
+          </span>
+        </v-row>
+        <v-row class="text-h6">{{ me.movie.title }}</v-row>
+        <v-row>
+          <v-rating v-model="me.rating" length="10" small dense readonly />
+        </v-row>
+      </v-col>
+    </v-row>
     <template v-else>
-      <v-card-title>{{ me.user.username }}</v-card-title>
+      <v-card-title
+        ><v-avatar>
+          <v-img :src="me.user.pic"></v-img>
+        </v-avatar>
+        <span class="text-subtitle-2 ma-3">
+          {{ me.user.first_name }}
+        </span></v-card-title
+      >
+      <v-card-subtitle>
+        <v-rating v-model="me.rating" length="10" small dense readonly
+      /></v-card-subtitle>
     </template>
-    <v-card-subtitle>{{ me.created_at }}</v-card-subtitle>
-    <v-rating v-model="me.rating" length="10" readonly></v-rating>
-    <v-card-text>
+    <v-card-text class="text-truncate">
       {{ me.text }}
     </v-card-text>
   </v-card>

@@ -1,9 +1,21 @@
 <template>
   <v-container>
-    <v-card>
+    <v-card flat :loading="loading">
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
       <v-card-title> My Taste Group </v-card-title>
-      <loading-circular :flag="loading" />
-      <user-preview v-for="user in users" :key="user.id" :user="user" />
+      <v-divider></v-divider>
+      <v-row>
+        <v-col v-for="user in users" :key="user.id">
+          <user-preview :user="user" />
+        </v-col>
+      </v-row>
     </v-card>
     <v-pagination
       v-model="page"
@@ -16,12 +28,10 @@
 
 <script>
 import RecommenderService from "@/services/RecommenderService";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import UserPreview from "@/components/UserPreview.vue";
 
 export default {
   components: {
-    LoadingCircular,
     UserPreview,
   },
   props: {

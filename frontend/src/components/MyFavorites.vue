@@ -1,13 +1,23 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title> My Favorites </v-card-title>
-      <loading-circular :flag="loading" />
-      <movie-preview
-        v-for="movie in favorites"
-        :key="movie.id"
-        :movie="movie"
-      />
+    <v-card flat :loading="loading">
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
+      <v-card-title>
+        <v-badge color="green" :content="count"> My Watchlist </v-badge>
+      </v-card-title>
+      <v-divider></v-divider>
+      <v-row>
+        <v-col v-for="movie in favorites" :key="movie.id">
+          <movie-preview :movie="movie" />
+        </v-col>
+      </v-row>
     </v-card>
     <v-pagination
       v-model="page"
@@ -19,13 +29,11 @@
 </template>
 
 <script>
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import MoviePreview from "@/components/MoviePreview.vue";
 import UsersService from "@/services/UsersService";
 
 export default {
   components: {
-    LoadingCircular,
     MoviePreview,
   },
   props: {
@@ -39,6 +47,7 @@ export default {
       favorites: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       loading: false,
     };
   },
@@ -55,6 +64,7 @@ export default {
         .then((data) => {
           this.favorites = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));

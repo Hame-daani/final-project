@@ -1,9 +1,24 @@
 <template>
   <v-container>
-    <v-card>
-      <v-card-title> My followers </v-card-title>
-      <loading-circular :flag="loading" />
-      <user-preview v-for="user in followers" :key="user.id" :user="user" />
+    <v-card flat :loading="loading">
+      <template slot="progress">
+        <v-progress-linear
+          color="deep-purple"
+          height="10"
+          indeterminate
+          rounded
+        ></v-progress-linear>
+      </template>
+      <v-card-title>
+        <v-badge color="green" :content="count"> My Followers </v-badge>
+      </v-card-title>
+      <v-divider></v-divider>
+      <user-preview
+        class="my-5"
+        v-for="user in followers"
+        :key="user.id"
+        :user="user"
+      />
     </v-card>
     <v-pagination
       v-model="page"
@@ -16,12 +31,10 @@
 
 <script>
 import UsersService from "@/services/UsersService";
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import UserPreview from "@/components/UserPreview.vue";
 
 export default {
   components: {
-    LoadingCircular,
     UserPreview,
   },
   props: {
@@ -35,6 +48,7 @@ export default {
       followers: [],
       page: 1,
       total_pages: 1,
+      count: 0,
       loading: false,
     };
   },
@@ -51,6 +65,7 @@ export default {
         .then((data) => {
           this.followers = data.results;
           this.total_pages = data.total_pages;
+          this.count = data.count;
         })
         .then(() => (this.loading = false))
         .catch((err) => console.log(err.reponse.data));

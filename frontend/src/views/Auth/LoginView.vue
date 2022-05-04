@@ -1,17 +1,45 @@
-// src/views/Login.vue
-
 <template>
-  <div>
-    <h1>Login</h1>
-    <input type="text" placeholder="Username" v-model="username" />
-    <input type="text" placeholder="Password" v-model="password" />
-    <input type="button" @click="login" value="Login" />
-    <div v-if="errors">
-      <p v-for="error in errors" v-bind:key="error">
-        {{ error }}
-      </p>
-    </div>
-  </div>
+  <v-container class="d-flex flex-column align-center justify-center">
+    <v-card width="500">
+      <v-toolbar flat color="blue-grey" dark>
+        <v-toolbar-title>Login</v-toolbar-title>
+      </v-toolbar>
+
+      <v-card-text>
+        <v-text-field
+          filled
+          label="Username"
+          v-model="username"
+          type="username"
+        ></v-text-field>
+        <v-text-field
+          filled
+          label="Passwrod"
+          v-model="password"
+          type="password"
+          @keyup.enter="login"
+        ></v-text-field>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="error" depressed @click="clear"> Clear </v-btn>
+        <v-btn color="success" depressed @click="login"> Login </v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-alert
+      v-model="alert"
+      class="mt-5"
+      prominent
+      type="error"
+      width="500"
+      dismissible
+    >
+      {{ error }}
+    </v-alert>
+  </v-container>
 </template>
 
 <script>
@@ -20,7 +48,8 @@ export default {
     return {
       username: "",
       password: "",
-      errors: [],
+      alert: false,
+      error: "",
     };
   },
   methods: {
@@ -34,7 +63,16 @@ export default {
       return this.$store
         .dispatch("auth/login", payload)
         .then(() => this.$router.push({ name: "dashboard" }))
-        .catch((err) => alert(err.response.data.non_field_errors));
+        .catch((err) => {
+          this.error = "";
+          for (const [key, value] of Object.entries(err.response.data))
+            this.error += `${key}: ${value} \n`;
+          this.alert = true;
+        });
+    },
+    clear() {
+      this.username = "";
+      this.password = "";
     },
   },
 };

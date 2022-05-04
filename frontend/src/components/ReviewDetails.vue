@@ -1,77 +1,232 @@
 <template>
-  <v-card>
-    <loading-circular :flag="loading" />
-    <template v-if="!loading && me && !editing">
-      <v-card-title>{{ me.movie.title }}</v-card-title>
-      <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
-      <v-card-subtitle
-        >created at: {{ me.created_at | getDate }}</v-card-subtitle
-      >
-      <v-card-subtitle v-if="isUpdated"
-        >updated at: {{ me.updated_at | getDate }}</v-card-subtitle
-      >
-      <v-card-subtitle> Num Likes: {{ this.likes.length }} </v-card-subtitle>
-      <v-container>
-        <label for="">Rating</label>
-        <span class="text-caption mr-2">
-          ({{ me.rating | decimalPlace }})
-        </span>
-        <v-rating
-          v-model="me.rating"
-          length="10"
-          readonly
-          half-increments
-        ></v-rating>
-      </v-container>
-      <v-card-text>{{ me.text }}</v-card-text>
-      <v-card-actions v-if="isLoggedIn">
-        <v-btn v-if="!isLiked" color="info" @click="like">Like</v-btn>
-        <v-btn v-if="isLiked" color="info" @click="unlike">Unlike</v-btn>
-        <template v-if="me.user.id == getUser.id">
-          <v-btn color="info" @click="enableEditing">Edit</v-btn>
-          <v-dialog v-model="dialog" persistent max-width="290">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="warning" dark v-bind="attrs" v-on="on">
-                Delete
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title class="text-h5">
-                Deleting this review
-              </v-card-title>
-              <v-card-text>Are you sure?</v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="green darken-1" text @click="dialog = false">
-                  Cancel
-                </v-btn>
-                <v-btn color="green darken-1" text @click="deleteReview">
-                  Yes
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </template>
-      </v-card-actions>
+  <v-card class="my-3 pa-5" height="500" shaped :loading="loading">
+    <template slot="progress">
+      <v-progress-linear
+        color="deep-purple"
+        height="10"
+        indeterminate
+        rounded
+      ></v-progress-linear>
     </template>
-    <template v-if="editing">
-      <v-card-title>{{ me.movie.title }}</v-card-title>
-      <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
-      <review-form :review_data="me" @review-submited="updateReview($event)" />
-      <v-btn color="yellow" @click="cancelEditing">Cancle</v-btn>
+    <template v-if="!loading && me">
+      <v-row>
+        <v-col>
+          <v-img :src="me.movie.poster" class="float-left" width="300" contain>
+          </v-img>
+        </v-col>
+        <v-col class="d-flex flex-column justify-space-between pa-5" cols="8">
+          <v-row>
+            <v-col cols="10">
+              <router-link
+                :to="{ name: 'profile', params: { id: me.user.id } }"
+                style="text-decoration: none; color: inherit"
+              >
+                <v-avatar>
+                  <v-img :src="me.user.pic"></v-img>
+                </v-avatar>
+              </router-link>
+              <span class="text-h7 pa-3">
+                Review By
+                <span class="red--text">
+                  <router-link
+                    :to="{ name: 'profile', params: { id: me.user.id } }"
+                    style="text-decoration: none; color: inherit"
+                  >
+                    {{ me.user.first_name }} {{ me.user.last_name }}
+                  </router-link>
+                </span>
+              </span>
+            </v-col>
+            <v-col v-if="isLoggedIn && me.user.id == getUser.id">
+              <v-dialog v-model="editDialog" persistent max-width="700">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="info" dark v-bind="attrs" v-on="on" icon>
+                    <v-icon> mdi-pencil </v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title class="d-flex justify-space-between">
+                    {{ me.movie.title }}
+                    <v-btn color="grey" @click="editDialog = false" icon>
+                      <v-icon> mdi-cancel </v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-card-subtitle>{{ me.user.username }}</v-card-subtitle>
+                  <v-card-text>
+                    <review-form
+                      :review_data="me"
+                      @review-submited="updateReview($event)"
+                      :key="JSON.stringify(me)"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="deleteDialog" persistent max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="error" dark v-bind="attrs" v-on="on" icon>
+                    <v-icon> mdi-delete </v-icon>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title class="text-h5">
+                    Deleting this review
+                  </v-card-title>
+                  <v-card-text>Are you sure?</v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="green darken-1"
+                      text
+                      @click="deleteDialog = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="deleteReview">
+                      Yes
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+          </v-row>
+          <v-row>
+            <span class="text-h4">
+              <router-link
+                :to="{ name: 'movie', params: { id: me.movie.id } }"
+                style="text-decoration: none; color: inherit"
+              >
+                {{ me.movie.title }}
+              </router-link>
+              <span class="text-subtitle-2">{{ me.movie.year }}</span>
+            </span>
+          </v-row>
+          <v-row>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-chip v-on="on" v-bind="attrs">
+                  <v-rating
+                    v-model="me.rating"
+                    length="10"
+                    readonly
+                    size="15"
+                    half-increments
+                    dense
+                  ></v-rating>
+                </v-chip>
+              </template>
+              <span>{{ me.rating | decimalPlace }}</span>
+            </v-tooltip>
+          </v-row>
+          <v-row
+            ><span class="text-caption">
+              Created at: {{ me.created_at | getDate }}
+            </span></v-row
+          >
+          <v-row v-if="isUpdated"
+            ><span class="text-caption">
+              Updated at: {{ me.updated_at | getDate }}
+            </span></v-row
+          >
+
+          <v-row><v-divider></v-divider></v-row>
+
+          <v-row>
+            <v-card-text style="white-space: pre-line">{{
+              me.text
+            }}</v-card-text>
+          </v-row>
+
+          <v-row><v-divider></v-divider></v-row>
+
+          <v-row>
+            <v-btn color="red" v-if="isLoggedIn && !isLiked" @click="like" icon>
+              <v-icon> mdi-heart-outline </v-icon>
+            </v-btn>
+            <v-btn
+              color="red"
+              v-if="isLoggedIn && isLiked"
+              @click="unlike"
+              icon
+            >
+              <v-icon> mdi-heart </v-icon>
+            </v-btn>
+            <span class="overline red--text">
+              <v-icon v-if="!isLoggedIn" color="red"> mdi-heart </v-icon>
+              <v-dialog v-model="likesDialog" persistent max-width="700">
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on">
+                    {{ likes.length }} Likes
+                  </span>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <v-row class="d-flex justify-space-between pa-5">
+                      <span> Liked by: </span>
+                      <v-btn color="grey" @click="likesDialog = false" icon>
+                        <v-icon> mdi-cancel </v-icon>
+                      </v-btn>
+                    </v-row>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-virtual-scroll
+                      :bench="2"
+                      :items="likes"
+                      height="300"
+                      item-height="64"
+                    >
+                      <template v-slot:default="{ item }">
+                        <v-list-item>
+                          <v-list-item-avatar>
+                            <v-avatar size="56" class="white--text">
+                              <v-img :src="item.user.pic"> </v-img>
+                            </v-avatar>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ item.user.username }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+
+                          <v-list-item-action>
+                            <v-btn
+                              depressed
+                              small
+                              :to="{
+                                name: 'profile',
+                                params: { id: item.user.id },
+                              }"
+                            >
+                              View User
+
+                              <v-icon color="orange darken-4" right>
+                                mdi-open-in-new
+                              </v-icon>
+                            </v-btn>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-virtual-scroll>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+            </span>
+          </v-row>
+        </v-col>
+      </v-row>
     </template>
   </v-card>
 </template>
 
 <script>
-import LoadingCircular from "@/components/LoadingCircular.vue";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewsService from "@/services/ReviewsService";
 import LikesService from "@/services/LikesService";
 import { mapGetters } from "vuex";
 
 export default {
-  components: { LoadingCircular, ReviewForm },
+  components: { ReviewForm },
   props: { id: { required: true } },
   data() {
     return {
@@ -79,7 +234,9 @@ export default {
       likes: [],
       loading: false,
       editing: false,
-      dialog: false,
+      deleteDialog: false,
+      editDialog: false,
+      likesDialog: false,
     };
   },
   computed: {
@@ -115,19 +272,13 @@ export default {
       };
       return ReviewsService.update(payload)
         .then((data) => (this.me = data))
-        .then(() => (this.editing = false))
+        .then(() => (this.editDialog = false))
         .catch((err) => {
           console.log(err.response.data);
         });
     },
-    enableEditing() {
-      this.editing = true;
-    },
-    cancelEditing() {
-      this.editing = false;
-    },
     async deleteReview() {
-      this.dialog = false;
+      this.deleteDialog = false;
       return ReviewsService.delete(this.id)
         .then(() =>
           this.$router.push({ name: "movie", params: { id: this.me.movie.id } })
