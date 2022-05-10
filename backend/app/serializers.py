@@ -9,6 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     similarity = serializers.FloatField(required=False, source="sim")
     pic = serializers.SerializerMethodField()
+    gender = serializers.CharField(source="get_gender_display")
 
     class Meta:
         model = User
@@ -40,7 +41,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MovieSerializer(serializers.ModelSerializer):
     similarity = serializers.FloatField(required=False, source="sim")
-    estimated_rating = serializers.FloatField(required=False, source="er")
+    friends_er = serializers.FloatField(required=False)
+    global_er = serializers.FloatField(required=False)
     avg_rating = serializers.FloatField(required=False)
 
     class Meta:

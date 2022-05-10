@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from app.models import Movie
 from app.serializers import MovieSerializer, UserSerializer
 from app.filters import MovieFilter
-from recommender.module import FriendsRecommender
+from recommender.module import FriendsRecommender, GlobalRecommender
 from app.mixins import Likeable
 
 
@@ -31,7 +31,10 @@ class MovieViewSet(ReadOnlyModelViewSet, Likeable):
         if request.user.is_authenticated:
             r = FriendsRecommender.get_estimated_rating(request.user, instance)
             if r:
-                instance.er = r["rating"]
+                instance.friends_er = r["rating"]
+            r = GlobalRecommender.get_estimated_rating(request.user, instance)
+            if r:
+                instance.global_er = r["rating"]
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
