@@ -1,29 +1,44 @@
-# final-project
+# Cinema Social Media with Recommendation System
 
-## Data
 
-movies: 977 (max: 999, min: 1) (2 sec)  
-rating: 164,715  (758 sec)  
-users: 5,000 (max:4999, min: 1)  (9 sec + 95 sec extras)  
 
-total time: 811 sec: 13.5 min
+## Technologies
 
-### Calculation time
+list of technologies that has been used in this project.
 
-- users: 3303 in 27 min
-- movies: 702 in 4 min
+### Backend
 
-## features
+- Django: Server
+- Postgresql: Database
+- Celery: Task Manager for handling periodic tasks that generate required data
+- Redis: Message Broker for Celery
+- djangorestframework: API
 
-### General
+### Frontend
 
-- average users rating
-- similar movies among all users
-- popular movies among all users
-- find people in taste group
+- VueJs V2: Client App
+- Vuex: State Management
+- Vue-Router: Vue Router!
+- Vuetify:  UI Library with beautifully handcrafted Material Components
 
-### Friends
+## Algorithms
 
-- recommended from friends rating
-- popular movies among friends
-- estimate rating among friends
+In this project the recommender systems has been implemented using *collabrative filtering*. Similarity Score between uesrs and between movie calculated using *Pearson Correlation Coefficient*.
+
+## Features
+
+In this project two instance of recommender has been implemented.
+
+- global recommender: uses the *user's ratings* to calculate its data
+- friends recommender: uses the *user's friends' ratings* to calculate its data
+
+each have a set of features:
+
+- Global
+  - Recommendation List: list of 10 top movies based on Estimated Rating
+  - Movie Estimated Rating: based on user's ratings
+  - Similar Movies: list of 10 most similar movies
+  - User Taste Group: list of 100 people with most similar taste to the user
+- Friends
+  - Recommendation List: list of 10 top movies base on Estimated Rating
+  - Movie Estimated Rating: based on user's freinds' ratings
