@@ -6,18 +6,27 @@ list of technologies that has been used in this project.
 
 ### Backend
 
-- Django: Server
-- Postgresql: Database
-- Celery: Task Manager for handling periodic tasks that generate required data
-- Redis: Message Broker for Celery
-- djangorestframework: API
+- Django
+  - Server
+- Postgresql
+  - Database
+- Celery
+  - Task Queue for handling periodic tasks that generate required data
+- Redi
+  - Message Broker for Celery
+- djangorestframework
+  - REST API
 
 ### Frontend
 
-- VueJs V2: Client App
-- Vuex: State Management
-- Vue-Router: Vue Router!
-- Vuetify:  UI Library with beautifully handcrafted Material Components
+- VueJs V2
+  - Client App
+- Vuex
+  - State Management
+- Vue-Router
+  - Vue Router!
+- Vuetify
+  - UI Library with beautifully handcrafted Material Components
 
 ## Algorithms
 
