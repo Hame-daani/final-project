@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="mx-auto my-3 pa-5"
+    class="mx-auto my-3 ml-3 pa-5"
     width="400"
     :to="{ name: 'movie', params: { id: me.id } }"
     shaped

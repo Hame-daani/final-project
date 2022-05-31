@@ -225,6 +225,9 @@
                 <span class="text-h4">
                   {{ movie.title }}
                   <span class="text-subtitle-2"> {{ movie.year }} </span>
+                  <v-btn class="ml-2" :href="movie.imdb_link" target="_blank">
+                    IMDB
+                  </v-btn>
                 </span>
               </v-row>
               <v-row class="pa-3">

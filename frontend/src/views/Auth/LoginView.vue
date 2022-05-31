@@ -55,10 +55,10 @@ export default {
   methods: {
     async login() {
       const payload = {
-        // username: this.username,
-        // password: this.password,
-        username: "EricWeber4298",
-        password: "12345678",
+        username: this.username,
+        password: this.password,
+        // username: "EricWeber4298",
+        // password: "12345678",
       };
       return this.$store
         .dispatch("auth/login", payload)
