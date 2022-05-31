@@ -1,5 +1,7 @@
 # Cinema Social Media with Recommendation System
 
+for more info [read this](docs/gozaresh.docx)
+
 ## Technologies
 
 list of technologies that has been used in this project.
@@ -12,7 +14,7 @@ list of technologies that has been used in this project.
   - Database
 - Celery
   - Task Queue for handling periodic tasks that generate required data
-- Redi
+- Redis
   - Message Broker for Celery
 - djangorestframework
   - REST API
@@ -30,7 +32,7 @@ list of technologies that has been used in this project.
 
 ## Algorithms
 
-In this project the recommender systems has been implemented using **collabrative filtering**. Similarity Score between uesrs and between movie calculated using **Pearson Correlation Coefficient**.
+In this project the recommender systems has been implemented using **Collaborative Filtering**. Similarity Score between uesrs and between movie calculated using **Pearson Correlation Coefficient**.
 
 ## Features
 
