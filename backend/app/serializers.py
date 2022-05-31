@@ -44,10 +44,15 @@ class MovieSerializer(serializers.ModelSerializer):
     friends_er = serializers.FloatField(required=False)
     global_er = serializers.FloatField(required=False)
     avg_rating = serializers.FloatField(required=False)
+    imdb_link = serializers.SerializerMethodField()
 
     class Meta:
         model = Movie
         fields = "__all__"
+
+    def get_imdb_link(self, obj):
+        base = "https://www.imdb.com/"
+        return f"{base}/title/tt{int(obj.imdbid):07}"
 
 
 class ReviewSerializer(serializers.ModelSerializer):
