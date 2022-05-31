@@ -76,17 +76,39 @@ class FriendsRecommender:
                 )
             )
             .annotate(
-                er=Case(
+                friends_er=Case(
                     When(sim_sum=0, then=0),
                     default=F("total") / F("sim_sum"),
                     output_field=FloatField(),
                 )
             )
         )
-        return movies.order_by("-er")[:10]
+        return movies.order_by("-friends_er")[:10]
 
 
 class GlobalRecommender:
+    @staticmethod
+    def get_estimated_rating(user: User, movie):
+        """
+        return estimated rating for a movie.
+        formoula: [similariy*rating for all in myRatings] / sum(similarities)
+        Ex.time: 800 ms
+        """
+
+        myfriends = user.following.all()
+        results = (
+            Review.objects.filter(user=user)
+            .filter(movie__similarities__target_id=movie.id)
+            .aggregate(
+                sim_sum=Sum("movie__similarities__score"),
+                total=Sum(F("movie__similarities__score") * F("rating")),
+            )
+        )
+        sim_sum, total = results["sim_sum"], results["total"]
+        if not sim_sum or not total:
+            return 0
+        return {"rating": int(total // sim_sum), "sim": float(sim_sum)}
+
     @staticmethod
     def get_TCS(me, user):
         try:
@@ -123,7 +145,7 @@ class GlobalRecommender:
             .annotate(sim_sum=Sum(F("similarities__score")))
             .annotate(total=Sum(F("similarities__score") * F("reviews__rating")))
             .annotate(
-                er=Case(
+                global_er=Case(
                     When(sim_sum=0, then=0),
                     default=F("total") / F("sim_sum"),
                     output_field=FloatField(),
@@ -131,4 +153,4 @@ class GlobalRecommender:
             )
         )
 
-        return movies.order_by("-er")[:10]
+        return movies.order_by("-global_er")[:10]
